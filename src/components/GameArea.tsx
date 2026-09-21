@@ -14,19 +14,19 @@ const alienStyles = {
   scout: {
     arm: 'bg-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.8)]',
     body: 'inset-x-1 top-1 bottom-2 rounded-t-xl rounded-b-md border-emerald-300 bg-emerald-900/80 shadow-[0_0_10px_rgba(52,211,153,0.55)]',
-    eyes: 'left-2 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[12px_0_0_#10b981]',
+    eyes: 'rounded-full bg-emerald-500',
     label: 'bottom-0.5 text-emerald-100',
   },
   brute: {
     arm: 'bg-amber-300 shadow-[0_0_6px_rgba(252,211,77,0.8)]',
     body: 'inset-x-0.5 top-2 bottom-2 rounded-md border-amber-300 bg-amber-900/80 shadow-[0_0_10px_rgba(252,211,77,0.55)]',
-    eyes: 'left-2 top-1 h-1.5 w-1.5 rounded-sm bg-amber-500 shadow-[12px_0_0_#f59e0b]',
+    eyes: 'rounded-sm bg-amber-500',
     label: 'bottom-0.5 text-amber-100',
   },
   trickster: {
     arm: 'bg-fuchsia-300 shadow-[0_0_6px_rgba(240,171,252,0.8)]',
-    body: 'inset-x-2 top-0.5 bottom-2 rounded-full border-fuchsia-300 bg-fuchsia-900/80 shadow-[0_0_10px_rgba(240,171,252,0.55)]',
-    eyes: 'left-2 top-1 h-1.5 w-1.5 rounded-full bg-fuchsia-500 shadow-[12px_0_0_#d946ef]',
+    body: 'inset-x-2 top-2 bottom-2 rounded-full border-fuchsia-300 bg-fuchsia-900/80 shadow-[0_0_10px_rgba(240,171,252,0.55)]',
+    eyes: 'rounded-full bg-fuchsia-500',
     label: 'bottom-0.5 text-fuchsia-100',
   },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
@@ -109,10 +109,25 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
             }}
           >
             <div className="type-invader-alien relative h-full w-full">
+              {alien.variant === 'trickster' && (
+                <>
+                  <span className="type-invader-antenna absolute left-3 top-0 h-3 w-0.5 origin-bottom -rotate-12 bg-fuchsia-400">
+                    <span className="absolute -left-0.5 -top-1 h-1.5 w-1.5 rounded-full bg-fuchsia-500" />
+                  </span>
+                  <span className="type-invader-antenna absolute right-3 top-0 h-3 w-0.5 origin-bottom rotate-12 bg-fuchsia-400">
+                    <span className="absolute -left-0.5 -top-1 h-1.5 w-1.5 rounded-full bg-fuchsia-500" />
+                  </span>
+                </>
+              )}
               <span className={`type-invader-arm absolute left-0 top-3 h-3 w-1.5 rounded-full ${style.arm}`} />
               <span className={`type-invader-arm absolute right-0 top-3 h-3 w-1.5 rounded-full ${style.arm}`} />
               <div className={`absolute border-2 ${style.body}`}>
-                <div className={`absolute ${style.eyes}`} />
+                {alien.variant !== 'trickster' && (
+                  <div className="absolute inset-x-1 top-1 flex justify-center gap-2">
+                    <span className={`h-1.5 w-1.5 ${style.eyes}`} />
+                    <span className={`h-1.5 w-1.5 ${style.eyes}`} />
+                  </div>
+                )}
                 <div className={`absolute inset-x-0 text-center font-mono text-sm font-black uppercase leading-none ${style.label}`}>
                   {alien.char}
                 </div>
