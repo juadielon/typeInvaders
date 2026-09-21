@@ -1,0 +1,49 @@
+# Type Invaders roadmap
+
+This roadmap is a guide, not a fixed promise. Before starting a new feature,
+read the README and `docs/product.md`, then confirm any open decision that
+affects the feature's behaviour or scope.
+
+## Completed
+
+- Docker-based React, TypeScript, Vite, and Tailwind project setup.
+- First playable game loop with aliens, lasers, shields, score, WPM, and
+  accuracy.
+- Five-level home-row progression and visual finger guidance.
+- Game-over, level-up, and victory screens.
+- Unit tests for the core rules and selected UI behaviour.
+- Setup, play, test, and production-preview documentation.
+
+## Next priorities
+
+1. Expand the lesson path beyond the initial home-row key set while keeping
+   each lesson approachable for beginners.
+2. Add a lesson selection and replay experience so players can practise a
+   particular set of keys.
+3. Improve accessibility with reduced-motion support, clearer focus states,
+   and options for colour and text size.
+4. Add optional sound effects with a visible mute control.
+5. Save local progress and lesson results so players can resume practice.
+6. Design responsive controls before adding phone or tablet support.
+
+## Open decisions
+
+- Should inaccurate keystrokes have a visible penalty, or remain neutral
+  while accuracy is tracked?
+- How should players unlock or choose lessons: a fixed sequence, free
+  selection, or both?
+- Should saved progress stay in the browser only, or eventually use an
+  account-based service?
+- What is the right session length and difficulty curve for complete
+  beginners?
+- Which accessibility settings should be available in the first post-MVP
+  release?
+
+## Working agreement
+
+- Create a focused branch and pull request for each independent change.
+- Keep the Docker-only workflow unless the product guide is intentionally
+  updated.
+- Add or update targeted tests whenever game logic changes.
+- Update the README for installation, run, or testing changes.
+- Update this roadmap after completing a milestone or changing priorities.

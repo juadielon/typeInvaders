@@ -23,6 +23,7 @@ Node.js/npm installation on your machine is required.
 - [Adding a dependency](#adding-a-dependency)
 - [Production build preview](#production-build-preview)
 - [Project structure](#project-structure)
+- [Product and roadmap](#product-and-roadmap)
 
 ## How the game works
 
@@ -121,6 +122,9 @@ build.
 type-invaders/
 ├── Dockerfile              # Multi-stage build: deps -> dev -> build -> prod
 ├── docker-compose.yml       # Dev (Vite) and prod (nginx) services
+├── docs/
+│   ├── product.md           # Product vision, scope, and technical decisions
+│   └── roadmap.md           # Completed work, upcoming priorities, open questions
 ├── src/
 │   ├── App.tsx              # Main layout & game state manager
 │   ├── main.tsx              # React entry point
@@ -146,3 +150,10 @@ type-invaders/
 - No sound effects and no persistence of scores/progress between sessions
   (both are natural fast-follow additions).
 
+## Product and roadmap
+
+Read [the product guide](docs/product.md) for the intended learner,
+gameplay principles, current scope, and established technical decisions.
+Read [the roadmap](docs/roadmap.md) before planning new work; it records
+completed milestones, prioritised next steps, and decisions that still need
+input.
