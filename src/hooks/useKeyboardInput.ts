@@ -2,12 +2,10 @@ import { useEffect } from 'react'
 import type { GameStatus } from '../types/game'
 
 /**
- * Captures global physical keydown events while the game is playing.
- * - Ignores repeated keydown events fired while a key is held down
- *   (`event.repeat`), so one physical press = one shot attempt.
- * - Normalizes to lowercase and only forwards single printable characters
- *   relevant to the trainer (letters and semicolon); modifiers, function
- *   keys, etc. are ignored.
+ * Listens for physical keydown events while the game is playing.
+ * Ignores repeats (holding a key down shouldn't fire twice) and anything
+ * that isn't a plain letter or semicolon, so modifier/function keys don't
+ * count as a shot.
  */
 export function useKeyboardInput(status: GameStatus, onKey: (key: string) => void) {
   useEffect(() => {

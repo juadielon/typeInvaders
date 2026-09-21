@@ -42,7 +42,7 @@ export function GameArea({ aliens, lasers }: GameAreaProps) {
         />
       ))}
 
-      {/* Player ship, fixed at the bottom center */}
+      {/* Player ship, fixed at the bottom centre */}
       <div
         className="absolute left-1/2 -translate-x-1/2 border-x-[16px] border-b-[24px] border-x-transparent border-b-sky-400"
         style={{ top: SHIP_Y }}

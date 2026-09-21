@@ -12,12 +12,11 @@ export type GameAction =
   | { type: 'SPAWN' }
 
 /**
- * Drives the game loop with requestAnimationFrame + delta-time:
- * - Dispatches SPAWN on a per-level interval.
- * - Dispatches TICK every frame (alien descent, bottom-boundary collisions,
- *   laser expiry are all handled by the reducer using dt).
- * - Pauses automatically when the tab loses focus (visibilitychange) so
- *   players aren't punished for switching tabs; resumes cleanly on return.
+ * Runs the game loop with requestAnimationFrame and delta-time, rather than
+ * setInterval, so alien speed stays consistent no matter the screen's
+ * refresh rate. It also spawns aliens on a timer and pauses everything
+ * when the tab loses focus, so a player switching tabs doesn't come back
+ * to a wall of aliens they didn't see coming.
  */
 export function useGameLoop(
   status: GameStatus,
