@@ -35,6 +35,25 @@ export interface Laser {
   createdAt: number
 }
 
+export interface Explosion {
+  id: string
+  /** Centre position of the burst, in the same coordinate space as aliens. */
+  x: number
+  y: number
+  /** Timestamp (ms) the explosion was created, used to expire the animation. */
+  createdAt: number
+}
+
+export interface Mothership {
+  id: string
+  /** Single lowercase character this mothership must be "shot" with. */
+  char: string
+  /** Horizontal centre position in px from the left of the playfield. */
+  x: number
+  /** Travel direction: 1 moves left-to-right, -1 moves right-to-left. */
+  direction: 1 | -1
+}
+
 export interface LevelConfig {
   id: number
   /** Human-readable label, e.g. "Level 1: F & J". */
@@ -54,6 +73,7 @@ export interface GameState {
   levelIndex: number
   aliens: Alien[]
   lasers: Laser[]
+  explosions: Explosion[]
   /** Horizontal ship position in px from the left of the playfield. */
   shipX: number
   shieldHp: number
@@ -65,6 +85,10 @@ export interface GameState {
   victory: boolean
   /** Timestamp (ms) the current level/game started, used for WPM calc. */
   startedAt: number
+  /** The roaming mothership, or null when none is currently on screen. */
+  mothership: Mothership | null
+  /** Timestamp (ms) of the next roll to decide whether a mothership appears. */
+  mothershipNextCheckAt: number
 }
 
 export interface KeyFingerInfo {

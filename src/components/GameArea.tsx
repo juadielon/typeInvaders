@@ -1,5 +1,14 @@
-import type { Alien, Laser } from '../types/game'
-import { ALIEN_SIZE, PLAYFIELD_HEIGHT, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
+import type { Alien, Explosion, Laser, Mothership } from '../types/game'
+import {
+  ALIEN_SIZE,
+  MOTHERSHIP_HEIGHT,
+  MOTHERSHIP_LANE_HEIGHT,
+  MOTHERSHIP_WIDTH,
+  MOTHERSHIP_Y,
+  PLAYFIELD_HEIGHT,
+  PLAYFIELD_WIDTH,
+  SHIP_Y,
+} from '../hooks/useGameLoop'
 
 const alienStyles = {
   scout: {
@@ -25,11 +34,13 @@ const alienStyles = {
 interface GameAreaProps {
   aliens: Alien[]
   lasers: Laser[]
+  explosions: Explosion[]
+  mothership: Mothership | null
   shipX: number
 }
 
 /** Renders the playfield: descending aliens, laser hit animations, and the player ship. */
-export function GameArea({ aliens, lasers, shipX }: GameAreaProps) {
+export function GameArea({ aliens, lasers, explosions, mothership, shipX }: GameAreaProps) {
   return (
     <div
       className="relative overflow-hidden rounded-lg border border-slate-700 bg-slate-950"
@@ -37,6 +48,30 @@ export function GameArea({ aliens, lasers, shipX }: GameAreaProps) {
     >
       {/* Starfield-ish backdrop */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#1e293b_0%,transparent_60%)]" />
+
+      {/* The mothership roams the reserved top lane, above the descending aliens. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 border-b border-slate-800/80"
+        style={{ height: MOTHERSHIP_LANE_HEIGHT }}
+      />
+
+      {mothership && (
+        <div
+          className="absolute"
+          style={{
+            width: MOTHERSHIP_WIDTH,
+            height: MOTHERSHIP_HEIGHT,
+            transform: `translate(${mothership.x - MOTHERSHIP_WIDTH / 2}px, ${MOTHERSHIP_Y}px)`,
+          }}
+        >
+          <div className="type-invader-mothership relative h-full w-full rounded-full border-2 border-violet-300 bg-violet-900/80 shadow-[0_0_12px_rgba(196,181,253,0.7)]">
+            <div className="absolute inset-x-3 top-0.5 h-2 rounded-full bg-violet-400/70" />
+            <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-black uppercase text-violet-100">
+              {mothership.char}
+            </div>
+          </div>
+        </div>
+      )}
 
       {aliens.map((alien) => {
         const style = alienStyles[alien.variant]
@@ -47,7 +82,7 @@ export function GameArea({ aliens, lasers, shipX }: GameAreaProps) {
             style={{
               width: ALIEN_SIZE,
               height: ALIEN_SIZE,
-              transform: `translate(${alien.x - ALIEN_SIZE / 2}px, ${alien.y}px)`,
+              transform: `translate(${alien.x - ALIEN_SIZE / 2}px, ${MOTHERSHIP_LANE_HEIGHT + alien.y}px)`,
             }}
           >
             <div className="type-invader-alien relative h-full w-full">
@@ -72,16 +107,31 @@ export function GameArea({ aliens, lasers, shipX }: GameAreaProps) {
           className="absolute w-0.5 bg-sky-400 shadow-[0_0_8px_2px_rgba(56,189,248,0.8)]"
           style={{
             left: laser.x,
-            top: Math.min(laser.fromY, laser.toY),
+            top: MOTHERSHIP_LANE_HEIGHT + Math.min(laser.fromY, laser.toY),
             height: Math.abs(laser.fromY - laser.toY),
           }}
         />
       ))}
 
+      {/* A brief, minimal burst so a kill feels registered without stealing focus from typing. */}
+      {explosions.map((explosion) => (
+        <div
+          key={explosion.id}
+          className="pointer-events-none absolute"
+          style={{
+            width: ALIEN_SIZE,
+            height: ALIEN_SIZE,
+            transform: `translate(${explosion.x - ALIEN_SIZE / 2}px, ${MOTHERSHIP_LANE_HEIGHT + explosion.y - ALIEN_SIZE / 2}px)`,
+          }}
+        >
+          <div className="type-invader-explosion h-full w-full rounded-full bg-[radial-gradient(circle,rgba(254,240,138,0.9)_0%,rgba(251,146,60,0.6)_45%,transparent_75%)]" />
+        </div>
+      ))}
+
       {/* The ship lines up with each target before firing. */}
       <div
         className="absolute h-8 w-12 -translate-x-1/2 transition-[left] duration-150 ease-out"
-        style={{ left: shipX, top: SHIP_Y }}
+        style={{ left: shipX, top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y }}
       >
         <div className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 rounded-t-full border-2 border-sky-200 bg-sky-900/80 shadow-[0_0_8px_rgba(125,211,252,0.8)]" />
         <div className="absolute left-1/2 top-2 h-4 w-9 -translate-x-1/2 rounded-t-xl rounded-b-md border-2 border-sky-300 bg-sky-800/80 shadow-[0_0_12px_rgba(56,189,248,0.65)]" />

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { LEVELS } from '../data/levels'
-import { ALIEN_SIZE, SHIP_Y } from '../hooks/useGameLoop'
-import { ALIEN_VARIANTS, type Alien } from '../types/game'
+import { ALIEN_SIZE, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
+import { ALIEN_VARIANTS, type Alien, type Mothership } from '../types/game'
 import { createInitialState, gameReducer } from './gameReducer'
 
 function testAlien(overrides: Partial<Alien> = {}): Alien {
@@ -11,6 +11,16 @@ function testAlien(overrides: Partial<Alien> = {}): Alien {
     variant: 'scout',
     x: 10,
     y: 50,
+    ...overrides,
+  }
+}
+
+function testMothership(overrides: Partial<Mothership> = {}): Mothership {
+  return {
+    id: 'm1',
+    char: 'f',
+    x: 100,
+    direction: 1,
     ...overrides,
   }
 }
@@ -102,6 +112,8 @@ describe('gameReducer', () => {
     expect(state.lasers).toHaveLength(1)
     expect(state.lasers[0].x).toBe(state.shipX)
     expect(state.lasers[0].fromY).toBe(SHIP_Y)
+    expect(state.explosions).toHaveLength(1)
+    expect(state.explosions[0].x).toBe(20)
   })
 
   it('registers a misfire without affecting shield HP when no alien matches', () => {
@@ -155,5 +167,68 @@ describe('gameReducer', () => {
 
     expect(state.status).toBe('gameOver')
     expect(state.victory).toBe(true)
+  })
+
+  it('clears an explosion once its brief lifetime has elapsed', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, aliens: [testAlien()] }
+
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
+    expect(state.explosions).toHaveLength(1)
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.5, now: performance.now() + 1000 })
+    expect(state.explosions).toHaveLength(0)
+  })
+
+  it('does not spawn a mothership while the shield is above the threshold', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, shieldHp: 100, mothershipNextCheckAt: 0 }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1 })
+
+    expect(state.mothership).toBeNull()
+  })
+
+  it('spawns a mothership once the shield drops below the threshold and a check is due', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, shieldHp: 40, mothershipNextCheckAt: 0 }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1 })
+
+    expect(state.mothership).not.toBeNull()
+    expect(LEVELS[0].allowedKeys).toContain(state.mothership?.char)
+  })
+
+  it('moves the mothership across the playfield and removes it once it exits', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, mothership: testMothership({ x: PLAYFIELD_WIDTH - 10, direction: 1 }) }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1 })
+    expect(state.mothership?.x).toBeGreaterThan(PLAYFIELD_WIDTH - 10)
+
+    state = gameReducer(state, { type: 'TICK', dt: 5, now: 2 })
+    expect(state.mothership).toBeNull()
+  })
+
+  it('restores shield HP and awards a bonus when the mothership is hit', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, shieldHp: 40, mothership: testMothership({ char: 'f' }) }
+
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
+
+    expect(state.mothership).toBeNull()
+    expect(state.shieldHp).toBe(70)
+    expect(state.score).toBe(50)
+    expect(state.kills).toBe(0)
+    expect(state.explosions).toHaveLength(1)
+  })
+
+  it('caps the shield restore from the mothership at full health', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, shieldHp: 90, mothership: testMothership({ char: 'f' }) }
+
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
+
+    expect(state.shieldHp).toBe(100)
   })
 })

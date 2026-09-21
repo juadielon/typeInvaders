@@ -1,11 +1,17 @@
 import { useEffect, useRef } from 'react'
 import type { GameStatus, LevelConfig } from '../types/game'
 
+export const ALIEN_LANE_HEIGHT = 420
+export const MOTHERSHIP_LANE_HEIGHT = 56
 export const PLAYFIELD_WIDTH = 760
-export const PLAYFIELD_HEIGHT = 420
+export const PLAYFIELD_HEIGHT = ALIEN_LANE_HEIGHT + MOTHERSHIP_LANE_HEIGHT
 export const ALIEN_SIZE = 40
-export const SHIP_Y = PLAYFIELD_HEIGHT - 40
+export const SHIP_Y = ALIEN_LANE_HEIGHT - 40
 export const MAX_ALIENS = 6
+export const MOTHERSHIP_WIDTH = 56
+export const MOTHERSHIP_HEIGHT = 26
+/** The mothership's fixed vertical position within its reserved top lane. */
+export const MOTHERSHIP_Y = (MOTHERSHIP_LANE_HEIGHT - MOTHERSHIP_HEIGHT) / 2
 
 export type GameAction =
   | { type: 'TICK'; dt: number; now: number }
