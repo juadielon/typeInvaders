@@ -1,13 +1,16 @@
 # Type Invaders
 
 **Type Invaders** is a Space Invaders–style arcade game that doubles as a
-touch-typing tutor for complete beginners. Alien "invaders" descend from the
-top of the screen, each labelled with a single Home Row letter. Instead of
-aiming a ship, the player destroys aliens by typing the correct letter on
-their physical keyboard — the game automatically "fires" at the closest
-matching alien. A Visual Keyboard overlay highlights the target key and the
-correct hand/finger to use, and a simple level system gradually introduces
-more keys as the player improves.
+touch-typing tutor for complete beginners. Alien "invaders" — in a few
+different visual varieties — descend from the top of the screen, each
+labelled with a single Home Row letter. The player destroys aliens by typing
+the correct letter on their physical keyboard; the on-screen ship glides to
+the closest matching alien and fires the shot from its own position. A
+Visual Keyboard overlay highlights the target key and the correct
+hand/finger to use, and a simple level system gradually introduces more keys
+as the player improves. A rescuable "mothership" occasionally drifts across
+a lane above the aliens whenever your Shield has taken damage — destroying
+it restores some Shield HP and a score bonus.
 
 It is built with **React + TypeScript**, bundled with **Vite**, and styled
 with **Tailwind CSS**. The entire toolchain runs inside **Docker** — no
@@ -28,19 +31,27 @@ Node.js/npm installation on your machine is required.
 ## How the game works
 
 - Aliens descend from the top of the playfield, each labelled with a Home
-  Row letter (Level 1 starts with `F` and `J` only).
-- Type the letter shown on an alien to destroy it with a laser — the game
-  always targets the lowest (most urgent) on-screen alien matching that
-  key.
+  Row letter (Level 1 starts with `F` and `J` only). They come in a few
+  visual varieties (scout, brute, trickster), which are purely cosmetic —
+  the letter is all that matters for gameplay.
+- Type the letter shown on an alien to destroy it with a laser — the ship
+  glides to and fires from the position of the lowest (most urgent)
+  on-screen alien matching that key, with a small explosion on a hit.
 - The Visual Keyboard overlay below the playfield highlights the currently
   relevant key(s) and shows a hint such as "F → Left Index" or
   "J → Right Index". It is a reference only — gameplay only responds to
   your physical keyboard.
-- Letting an alien reach the bottom costs 20 Shield HP. Your Shield starts
+- Letting an alien reach the bottom costs 10 Shield HP. Your Shield starts
   at 100 HP; reaching 0 ends the game.
+- Whenever your Shield has taken any damage, a rescuable "mothership" may
+  drift across a lane above the aliens from time to time. It carries one of
+  the level's practice letters — destroy it to restore some Shield HP and
+  earn a score bonus. It doesn't count toward a level's kill target, so it's
+  a bonus rather than a requirement.
 - Clearing the required number of aliens in a level advances you to the
   next level, which unlocks additional keys and increases difficulty
-  (faster spawns, faster descent).
+  (faster spawns, faster descent); the screen is cleared of aliens before
+  the next level begins.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
   but are not saved between sessions in this MVP.
 
@@ -128,7 +139,7 @@ type-invaders/
 ├── src/
 │   ├── App.tsx              # Main layout & game state manager
 │   ├── main.tsx              # React entry point
-│   ├── types/game.ts         # Alien, Laser, LevelConfig, GameState types
+│   ├── types/game.ts         # Alien, Laser, Explosion, Mothership, GameState types
 │   ├── data/levels.ts        # Level configuration (keys, speed, targets)
 │   ├── state/gameReducer.ts  # Pure reducer driving all game logic
 │   ├── hooks/

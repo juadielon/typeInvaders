@@ -1,3 +1,66 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes type-invader-wiggle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+@keyframes type-invader-limbs {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-12deg);
+  }
+
+  50% {
+    transform: translateY(3px) rotate(12deg);
+  }
+}
+
+.type-invader-alien {
+  animation: type-invader-wiggle 700ms steps(2, end) infinite;
+}
+
+.type-invader-arm,
+.type-invader-leg {
+  animation: type-invader-limbs 700ms steps(2, end) infinite;
+  transform-origin: top center;
+}
+
+@keyframes type-invader-explosion {
+  0% {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.type-invader-explosion {
+  animation: type-invader-explosion 300ms ease-out forwards;
+}
+
+@keyframes type-invader-mothership-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.type-invader-mothership {
+  animation: type-invader-mothership-drift 900ms ease-in-out infinite;
+}

@@ -14,7 +14,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
       <ul className="max-w-md list-disc space-y-1 pl-5 text-left text-xs text-slate-400">
         <li>Rest your fingers on the Home Row: A S D F &nbsp; J K L ;</li>
         <li>Watch the keyboard overlay below the playfield for hints.</li>
-        <li>An alien reaching the bottom costs you 20 Shield HP.</li>
+        <li>An alien reaching the bottom costs you 10 Shield HP.</li>
       </ul>
       <button
         onClick={onStart}

@@ -8,10 +8,16 @@ export type HandSide = 'left' | 'right'
 
 export type Finger = 'pinky' | 'ring' | 'middle' | 'index' | 'thumb'
 
+export const ALIEN_VARIANTS = ['scout', 'brute', 'trickster'] as const
+
+export type AlienVariant = (typeof ALIEN_VARIANTS)[number]
+
 export interface Alien {
   id: string
   /** Single lowercase character this alien must be "shot" with. */
   char: string
+  /** Visual alien type; gameplay rules stay tied to the character. */
+  variant: AlienVariant
   /** Horizontal position in px from the left of the playfield. */
   x: number
   /** Vertical position in px from the top of the playfield. */
@@ -27,6 +33,31 @@ export interface Laser {
   toY: number
   /** Timestamp (ms) the laser was created, used to expire the animation. */
   createdAt: number
+}
+
+export interface Explosion {
+  id: string
+  /** Centre position of the burst, in the same coordinate space as aliens. */
+  x: number
+  y: number
+  /** Timestamp (ms) the explosion was created, used to expire the animation. */
+  createdAt: number
+}
+
+export const MOTHERSHIP_VARIANTS = ['saucer', 'cruiser', 'orb'] as const
+
+export type MothershipVariant = (typeof MOTHERSHIP_VARIANTS)[number]
+
+export interface Mothership {
+  id: string
+  /** Single lowercase character this mothership must be "shot" with. */
+  char: string
+  /** Visual mothership type; only one mothership is ever on screen at a time. */
+  variant: MothershipVariant
+  /** Horizontal centre position in px from the left of the playfield. */
+  x: number
+  /** Travel direction: 1 moves left-to-right, -1 moves right-to-left. */
+  direction: 1 | -1
 }
 
 export interface LevelConfig {
@@ -48,6 +79,9 @@ export interface GameState {
   levelIndex: number
   aliens: Alien[]
   lasers: Laser[]
+  explosions: Explosion[]
+  /** Horizontal ship position in px from the left of the playfield. */
+  shipX: number
   shieldHp: number
   score: number
   kills: number
@@ -57,6 +91,10 @@ export interface GameState {
   victory: boolean
   /** Timestamp (ms) the current level/game started, used for WPM calc. */
   startedAt: number
+  /** The roaming mothership, or null when none is currently on screen. */
+  mothership: Mothership | null
+  /** Timestamp (ms) of the next roll to decide whether a mothership appears. */
+  mothershipNextCheckAt: number
 }
 
 export interface KeyFingerInfo {

@@ -1,9 +1,39 @@
 import { LEVELS } from '../data/levels'
-import type { Alien, GameState, Laser } from '../types/game'
-import { ALIEN_SIZE, MAX_ALIENS, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
+import {
+  ALIEN_VARIANTS,
+  MOTHERSHIP_VARIANTS,
+  type Alien,
+  type AlienVariant,
+  type Explosion,
+  type GameState,
+  type Laser,
+  type Mothership,
+  type MothershipVariant,
+} from '../types/game'
+import {
+  ALIEN_SIZE,
+  MAX_ALIENS,
+  MOTHERSHIP_LANE_HEIGHT,
+  MOTHERSHIP_WIDTH,
+  PLAYFIELD_WIDTH,
+  SHIP_Y,
+} from '../hooks/useGameLoop'
 
-const HIT_DAMAGE = 20
+const HIT_DAMAGE = 10
 const LASER_LIFETIME_MS = 250
+const EXPLOSION_LIFETIME_MS = 300
+
+// The mothership only shows up once the shield has taken any damage, and only
+// now and then, so it reads as a rare rescue opportunity rather than a routine target.
+const MOTHERSHIP_SHIELD_THRESHOLD = 100
+const MOTHERSHIP_SHIELD_RESTORE = 30
+const MOTHERSHIP_SCORE_BONUS = 50
+const MOTHERSHIP_SPEED = 90
+const MOTHERSHIP_MIN_CHECK_DELAY_MS = 8000
+const MOTHERSHIP_MAX_CHECK_DELAY_MS = 16000
+const MOTHERSHIP_RETRY_DELAY_MS = 2000
+/** The mothership's centre in the alien coordinate space, so it renders inside the reserved top lane. */
+const MOTHERSHIP_LASER_Y = -(MOTHERSHIP_LANE_HEIGHT / 2)
 
 export type Action =
   | { type: 'START_GAME' }
@@ -25,6 +55,8 @@ export function createInitialState(): GameState {
     levelIndex: 0,
     aliens: [],
     lasers: [],
+    explosions: [],
+    shipX: PLAYFIELD_WIDTH / 2,
     shieldHp: 100,
     score: 0,
     kills: 0,
@@ -32,6 +64,8 @@ export function createInitialState(): GameState {
     totalKeystrokes: 0,
     victory: false,
     startedAt: 0,
+    mothership: null,
+    mothershipNextCheckAt: 0,
   }
 }
 
@@ -39,9 +73,39 @@ function randomChar(allowedKeys: string[]): string {
   return allowedKeys[Math.floor(Math.random() * allowedKeys.length)]
 }
 
+function randomVariant(): AlienVariant {
+  return ALIEN_VARIANTS[Math.floor(Math.random() * ALIEN_VARIANTS.length)]
+}
+
+function randomMothershipVariant(): MothershipVariant {
+  return MOTHERSHIP_VARIANTS[Math.floor(Math.random() * MOTHERSHIP_VARIANTS.length)]
+}
+
 function randomX(): number {
   const margin = ALIEN_SIZE
   return margin + Math.random() * (PLAYFIELD_WIDTH - margin * 2)
+}
+
+function randomMothershipCheckDelay(): number {
+  return (
+    MOTHERSHIP_MIN_CHECK_DELAY_MS +
+    Math.random() * (MOTHERSHIP_MAX_CHECK_DELAY_MS - MOTHERSHIP_MIN_CHECK_DELAY_MS)
+  )
+}
+
+function spawnMothership(allowedKeys: string[]): Mothership {
+  const direction = Math.random() < 0.5 ? 1 : -1
+  return {
+    id: nextId('mothership'),
+    char: randomChar(allowedKeys),
+    variant: randomMothershipVariant(),
+    direction,
+    x: direction === 1 ? -MOTHERSHIP_WIDTH / 2 : PLAYFIELD_WIDTH + MOTHERSHIP_WIDTH / 2,
+  }
+}
+
+function explosionAt(x: number, y: number, now: number): Explosion {
+  return { id: nextId('explosion'), x, y, createdAt: now }
 }
 
 export function gameReducer(state: GameState, action: Action): GameState {
@@ -51,6 +115,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         ...createInitialState(),
         status: 'playing',
         startedAt: performance.now(),
+        mothershipNextCheckAt: performance.now() + randomMothershipCheckDelay(),
       }
 
     case 'RESET':
@@ -60,9 +125,14 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.status !== 'playing') return state
       if (state.aliens.length >= MAX_ALIENS) return state
       const level = LEVELS[state.levelIndex]
+      // Stop feeding in new aliens once enough are already in play (destroyed
+      // or on screen) to clear the level, so the screen empties out naturally
+      // instead of levelling up with a wall of aliens still descending.
+      if (state.kills + state.aliens.length >= level.targetKills) return state
       const alien: Alien = {
         id: nextId('alien'),
         char: randomChar(level.allowedKeys),
+        variant: randomVariant(),
         x: randomX(),
         y: -ALIEN_SIZE,
       }
@@ -88,23 +158,58 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const lasers = state.lasers.filter(
         (laser) => action.now - laser.createdAt < LASER_LIFETIME_MS,
       )
+      const explosions = state.explosions.filter(
+        (explosion) => action.now - explosion.createdAt < EXPLOSION_LIFETIME_MS,
+      )
 
       if (shieldHp <= 0) {
         return {
           ...state,
           aliens: [],
           lasers,
+          explosions,
           shieldHp: 0,
           status: 'gameOver',
+          mothership: null,
         }
       }
 
-      return { ...state, aliens: survivors, lasers, shieldHp }
+      // Move the mothership along its lane and drop it once it exits the playfield.
+      let mothership = state.mothership
+      if (mothership) {
+        const nextX = mothership.x + mothership.direction * MOTHERSHIP_SPEED * action.dt
+        const exited =
+          (mothership.direction === 1 && nextX > PLAYFIELD_WIDTH + MOTHERSHIP_WIDTH) ||
+          (mothership.direction === -1 && nextX < -MOTHERSHIP_WIDTH)
+        mothership = exited ? null : { ...mothership, x: nextX }
+      }
+
+      // Sporadically roll for a new mothership, but only while shields are low.
+      let mothershipNextCheckAt = state.mothershipNextCheckAt
+      if (action.now >= mothershipNextCheckAt) {
+        if (!mothership && shieldHp < MOTHERSHIP_SHIELD_THRESHOLD) {
+          mothership = spawnMothership(level.allowedKeys)
+          mothershipNextCheckAt = action.now + randomMothershipCheckDelay()
+        } else {
+          mothershipNextCheckAt = action.now + MOTHERSHIP_RETRY_DELAY_MS
+        }
+      }
+
+      return {
+        ...state,
+        aliens: survivors,
+        lasers,
+        explosions,
+        shieldHp,
+        mothership,
+        mothershipNextCheckAt,
+      }
     }
 
     case 'KEY_PRESS': {
       if (state.status !== 'playing') return state
       const { key } = action
+      const now = performance.now()
 
       // Target the lowest (closest to the ship) alien matching this key.
       let targetIndex = -1
@@ -119,18 +224,44 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const totalKeystrokes = state.totalKeystrokes + 1
 
       if (targetIndex === -1) {
-        // Misfire: no matching alien on screen for this key.
+        // No descending alien matches; see if the mothership does instead.
+        if (state.mothership && state.mothership.char === key) {
+          const laser: Laser = {
+            id: nextId('laser'),
+            x: state.mothership.x,
+            fromY: SHIP_Y,
+            toY: MOTHERSHIP_LASER_Y,
+            createdAt: now,
+          }
+          const explosion = explosionAt(state.mothership.x, MOTHERSHIP_LASER_Y, now)
+
+          return {
+            ...state,
+            mothership: null,
+            lasers: [...state.lasers, laser],
+            explosions: [...state.explosions, explosion],
+            shipX: state.mothership.x,
+            shieldHp: Math.min(100, state.shieldHp + MOTHERSHIP_SHIELD_RESTORE),
+            score: state.score + MOTHERSHIP_SCORE_BONUS,
+            correctKeystrokes: state.correctKeystrokes + 1,
+            totalKeystrokes,
+          }
+        }
+
+        // Misfire: no matching alien or mothership on screen for this key.
         return { ...state, totalKeystrokes }
       }
 
       const target = state.aliens[targetIndex]
+      const impactY = target.y + ALIEN_SIZE / 2
       const laser: Laser = {
         id: nextId('laser'),
         x: target.x,
         fromY: SHIP_Y,
-        toY: target.y,
-        createdAt: performance.now(),
+        toY: impactY,
+        createdAt: now,
       }
+      const explosion = explosionAt(target.x, impactY, now)
 
       const aliens = state.aliens.filter((_, index) => index !== targetIndex)
       const kills = state.kills + 1
@@ -142,8 +273,12 @@ export function gameReducer(state: GameState, action: Action): GameState {
         const isLastLevel = state.levelIndex >= LEVELS.length - 1
         return {
           ...state,
-          aliens,
+          // Any aliens still descending are cleared immediately so the level
+          // transition doesn't leave stragglers visible on screen.
+          aliens: [],
           lasers: [...state.lasers, laser],
+          explosions: [...state.explosions, explosion],
+          shipX: target.x,
           score,
           kills,
           correctKeystrokes,
@@ -157,6 +292,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
         ...state,
         aliens,
         lasers: [...state.lasers, laser],
+        explosions: [...state.explosions, explosion],
+        shipX: target.x,
         score,
         kills,
         correctKeystrokes,
@@ -180,3 +317,4 @@ export function gameReducer(state: GameState, action: Action): GameState {
       return state
   }
 }
+

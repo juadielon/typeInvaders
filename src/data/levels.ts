@@ -11,7 +11,7 @@ export const LEVELS: LevelConfig[] = [
     allowedKeys: ['f', 'j'],
     spawnIntervalMs: 1800,
     descentSpeed: 40,
-    targetKills: 15,
+    targetKills: 20,
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ export const LEVELS: LevelConfig[] = [
     allowedKeys: ['f', 'j', 'd', 'k'],
     spawnIntervalMs: 1600,
     descentSpeed: 48,
-    targetKills: 20,
+    targetKills: 26,
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ export const LEVELS: LevelConfig[] = [
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';'],
     spawnIntervalMs: 1500,
     descentSpeed: 54,
-    targetKills: 22,
+    targetKills: 28,
   },
   {
     id: 4,
@@ -35,7 +35,7 @@ export const LEVELS: LevelConfig[] = [
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';', 's', 'l'],
     spawnIntervalMs: 1400,
     descentSpeed: 60,
-    targetKills: 25,
+    targetKills: 32,
   },
   {
     id: 5,
@@ -43,6 +43,6 @@ export const LEVELS: LevelConfig[] = [
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h'],
     spawnIntervalMs: 1200,
     descentSpeed: 68,
-    targetKills: 30,
+    targetKills: 38,
   },
 ]
