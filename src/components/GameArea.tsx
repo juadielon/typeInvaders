@@ -4,10 +4,11 @@ import { ALIEN_SIZE, PLAYFIELD_HEIGHT, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/
 interface GameAreaProps {
   aliens: Alien[]
   lasers: Laser[]
+  shipX: number
 }
 
 /** Renders the playfield: descending aliens, laser hit animations, and the player ship. */
-export function GameArea({ aliens, lasers }: GameAreaProps) {
+export function GameArea({ aliens, lasers, shipX }: GameAreaProps) {
   return (
     <div
       className="relative overflow-hidden rounded-lg border border-slate-700 bg-slate-950"
@@ -42,10 +43,10 @@ export function GameArea({ aliens, lasers }: GameAreaProps) {
         />
       ))}
 
-      {/* Player ship, fixed at the bottom centre */}
+      {/* The ship lines up with each target before firing. */}
       <div
-        className="absolute left-1/2 -translate-x-1/2 border-x-[16px] border-b-[24px] border-x-transparent border-b-sky-400"
-        style={{ top: SHIP_Y }}
+        className="absolute -translate-x-1/2 border-x-[16px] border-b-[24px] border-x-transparent border-b-sky-400 transition-[left] duration-150 ease-out"
+        style={{ left: shipX, top: SHIP_Y }}
       />
     </div>
   )

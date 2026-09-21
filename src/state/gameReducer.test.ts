@@ -85,6 +85,10 @@ describe('gameReducer', () => {
     expect(state.kills).toBe(1)
     expect(state.correctKeystrokes).toBe(1)
     expect(state.totalKeystrokes).toBe(1)
+    expect(state.shipX).toBe(20)
+    expect(state.lasers).toHaveLength(1)
+    expect(state.lasers[0].x).toBe(state.shipX)
+    expect(state.lasers[0].fromY).toBe(SHIP_Y)
   })
 
   it('registers a misfire without affecting shield HP when no alien matches', () => {

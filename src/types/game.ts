@@ -48,6 +48,8 @@ export interface GameState {
   levelIndex: number
   aliens: Alien[]
   lasers: Laser[]
+  /** Horizontal ship position in px from the left of the playfield. */
+  shipX: number
   shieldHp: number
   score: number
   kills: number

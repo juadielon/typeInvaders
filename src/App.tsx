@@ -62,7 +62,7 @@ function App() {
           />
 
           <div className="relative">
-            <GameArea aliens={state.aliens} lasers={state.lasers} />
+            <GameArea aliens={state.aliens} lasers={state.lasers} shipX={state.shipX} />
 
             {state.status === 'levelUp' && (
               <div className="absolute inset-0 flex items-center justify-center">
