@@ -25,10 +25,10 @@ function movementInstruction(key: string): string {
 /** Pauses the action so learners can prepare their hands for each level. */
 export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90 p-4">
+    <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90">
       <section
         aria-labelledby="level-briefing-title"
-        className="max-h-full w-full max-w-2xl overflow-y-auto rounded-lg border border-emerald-400/70 bg-slate-900 p-6 text-slate-100 shadow-xl"
+        className="h-full w-full overflow-y-auto rounded-lg border border-emerald-400/70 bg-slate-900 p-6 text-slate-100 shadow-xl"
       >
         <p className="text-sm font-semibold uppercase tracking-widest text-emerald-300">
           Prepare for {level.label}
