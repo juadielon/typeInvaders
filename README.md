@@ -36,7 +36,7 @@ Node.js/npm installation on your machine is required.
   relevant key(s) and shows a hint such as "F → Left Index" or
   "J → Right Index". It is a reference only — gameplay only responds to
   your physical keyboard.
-- Letting an alien reach the bottom costs 20 Shield HP. Your Shield starts
+- Letting an alien reach the bottom costs 10 Shield HP. Your Shield starts
   at 100 HP; reaching 0 ends the game.
 - Clearing the required number of aliens in a level advances you to the
   next level, which unlocks additional keys and increases difficulty

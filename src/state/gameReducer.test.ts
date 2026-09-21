@@ -72,14 +72,14 @@ describe('gameReducer', () => {
     state = gameReducer(state, { type: 'TICK', dt: 1, now: performance.now() })
 
     expect(state.aliens).toHaveLength(0)
-    expect(state.shieldHp).toBe(80)
+    expect(state.shieldHp).toBe(90)
   })
 
   it('ends the game when shield HP reaches zero', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
     state = {
       ...state,
-      shieldHp: 20,
+      shieldHp: 10,
       aliens: [testAlien({ x: 100, y: SHIP_Y - ALIEN_SIZE })],
     }
 

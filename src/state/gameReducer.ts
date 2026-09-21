@@ -17,7 +17,7 @@ import {
   SHIP_Y,
 } from '../hooks/useGameLoop'
 
-const HIT_DAMAGE = 20
+const HIT_DAMAGE = 10
 const LASER_LIFETIME_MS = 250
 const EXPLOSION_LIFETIME_MS = 300
 

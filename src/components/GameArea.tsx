@@ -104,7 +104,7 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
       {lasers.map((laser) => (
         <div
           key={laser.id}
-          className="absolute w-0.5 bg-sky-400 shadow-[0_0_8px_2px_rgba(56,189,248,0.8)]"
+          className="absolute w-0.5 bg-gradient-to-t from-sky-400 to-sky-400/0 shadow-[0_0_4px_1px_rgba(56,189,248,0.6)]"
           style={{
             left: laser.x,
             top: MOTHERSHIP_LANE_HEIGHT + Math.min(laser.fromY, laser.toY),
