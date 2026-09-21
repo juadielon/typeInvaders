@@ -31,8 +31,12 @@ The game must be enjoyable without assuming they already type quickly.
 The MVP includes:
 
 - Home-row typing lessons across five progressively harder levels.
-- Descending single-letter aliens, laser feedback, scoring, shields, and
-  game-over and victory states.
+- Descending single-letter aliens in a few cosmetic varieties, a ship that
+  glides to and fires from its target, laser feedback with a hit
+  explosion, scoring, shields, and game-over and victory states.
+- A rescuable mothership that appears occasionally once the Shield has
+  taken damage, rewarding a correct keystroke with restored Shield HP and
+  bonus score without counting toward level progression.
 - WPM and accuracy shown during a game.
 - A visual keyboard that identifies the relevant key and finger.
 - Unit tests for the game reducer, keyboard mapping, and start screen.

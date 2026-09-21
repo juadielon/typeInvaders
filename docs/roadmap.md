@@ -11,6 +11,11 @@ affects the feature's behaviour or scope.
   accuracy.
 - Five-level home-row progression and visual finger guidance.
 - Game-over, level-up, and victory screens.
+- A ship that glides to and fires from its target, redesigned to match the
+  alien sprite aesthetic, plus a few cosmetic alien varieties.
+- A brief hit explosion effect and a rescuable mothership bonus mechanic
+  (multiple visual shapes, appears once the Shield has taken damage).
+- The screen clears of remaining aliens before a level-up transition.
 - Unit tests for the core rules and selected UI behaviour.
 - Setup, play, test, and production-preview documentation.
 
