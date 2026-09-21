@@ -44,10 +44,16 @@ export interface Explosion {
   createdAt: number
 }
 
+export const MOTHERSHIP_VARIANTS = ['saucer', 'cruiser', 'orb'] as const
+
+export type MothershipVariant = (typeof MOTHERSHIP_VARIANTS)[number]
+
 export interface Mothership {
   id: string
   /** Single lowercase character this mothership must be "shot" with. */
   char: string
+  /** Visual mothership type; only one mothership is ever on screen at a time. */
+  variant: MothershipVariant
   /** Horizontal centre position in px from the left of the playfield. */
   x: number
   /** Travel direction: 1 moves left-to-right, -1 moves right-to-left. */

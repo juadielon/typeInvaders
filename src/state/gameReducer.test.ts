@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { LEVELS } from '../data/levels'
 import { ALIEN_SIZE, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
-import { ALIEN_VARIANTS, type Alien, type Mothership } from '../types/game'
+import { ALIEN_VARIANTS, MOTHERSHIP_VARIANTS, type Alien, type Mothership } from '../types/game'
 import { createInitialState, gameReducer } from './gameReducer'
 
 function testAlien(overrides: Partial<Alien> = {}): Alien {
@@ -19,6 +19,7 @@ function testMothership(overrides: Partial<Mothership> = {}): Mothership {
   return {
     id: 'm1',
     char: 'f',
+    variant: 'saucer',
     x: 100,
     direction: 1,
     ...overrides,
@@ -199,6 +200,7 @@ describe('gameReducer', () => {
 
     expect(state.mothership).not.toBeNull()
     expect(LEVELS[0].allowedKeys).toContain(state.mothership?.char)
+    expect(MOTHERSHIP_VARIANTS).toContain(state.mothership?.variant)
   })
 
   it('moves the mothership across the playfield and removes it once it exits', () => {

@@ -1,12 +1,14 @@
 import { LEVELS } from '../data/levels'
 import {
   ALIEN_VARIANTS,
+  MOTHERSHIP_VARIANTS,
   type Alien,
   type AlienVariant,
   type Explosion,
   type GameState,
   type Laser,
   type Mothership,
+  type MothershipVariant,
 } from '../types/game'
 import {
   ALIEN_SIZE,
@@ -75,6 +77,10 @@ function randomVariant(): AlienVariant {
   return ALIEN_VARIANTS[Math.floor(Math.random() * ALIEN_VARIANTS.length)]
 }
 
+function randomMothershipVariant(): MothershipVariant {
+  return MOTHERSHIP_VARIANTS[Math.floor(Math.random() * MOTHERSHIP_VARIANTS.length)]
+}
+
 function randomX(): number {
   const margin = ALIEN_SIZE
   return margin + Math.random() * (PLAYFIELD_WIDTH - margin * 2)
@@ -92,6 +98,7 @@ function spawnMothership(allowedKeys: string[]): Mothership {
   return {
     id: nextId('mothership'),
     char: randomChar(allowedKeys),
+    variant: randomMothershipVariant(),
     direction,
     x: direction === 1 ? -MOTHERSHIP_WIDTH / 2 : PLAYFIELD_WIDTH + MOTHERSHIP_WIDTH / 2,
   }

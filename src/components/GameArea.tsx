@@ -31,6 +31,24 @@ const alienStyles = {
   },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
 
+const mothershipStyles = {
+  saucer: {
+    hull: 'rounded-full border-violet-300 bg-violet-900/80 shadow-[0_0_12px_rgba(196,181,253,0.7)]',
+    accent: 'inset-x-3 top-0.5 h-2 rounded-full bg-violet-400/70',
+    label: 'text-violet-100',
+  },
+  cruiser: {
+    hull: 'rounded-md border-cyan-300 bg-cyan-900/80 shadow-[0_0_12px_rgba(103,232,249,0.7)]',
+    accent: 'inset-x-2 top-1 h-1.5 rounded-sm bg-cyan-400/70',
+    label: 'text-cyan-100',
+  },
+  orb: {
+    hull: 'rounded-full border-rose-300 bg-rose-900/80 shadow-[0_0_12px_rgba(253,164,175,0.7)]',
+    accent: 'left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-300/70',
+    label: 'text-rose-100',
+  },
+} satisfies Record<Mothership['variant'], Record<'hull' | 'accent' | 'label', string>>
+
 interface GameAreaProps {
   aliens: Alien[]
   lasers: Laser[]
@@ -50,11 +68,6 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,#1e293b_0%,transparent_60%)]" />
 
       {/* The mothership roams the reserved top lane, above the descending aliens. */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 border-b border-slate-800/80"
-        style={{ height: MOTHERSHIP_LANE_HEIGHT }}
-      />
-
       {mothership && (
         <div
           className="absolute"
@@ -64,9 +77,19 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
             transform: `translate(${mothership.x - MOTHERSHIP_WIDTH / 2}px, ${MOTHERSHIP_Y}px)`,
           }}
         >
-          <div className="type-invader-mothership relative h-full w-full rounded-full border-2 border-violet-300 bg-violet-900/80 shadow-[0_0_12px_rgba(196,181,253,0.7)]">
-            <div className="absolute inset-x-3 top-0.5 h-2 rounded-full bg-violet-400/70" />
-            <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-black uppercase text-violet-100">
+          <div
+            className={`type-invader-mothership relative h-full w-full border-2 ${mothershipStyles[mothership.variant].hull}`}
+          >
+            {mothership.variant === 'cruiser' && (
+              <>
+                <span className="absolute -left-1.5 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-cyan-400/70" />
+                <span className="absolute -right-1.5 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-cyan-400/70" />
+              </>
+            )}
+            <div className={`absolute ${mothershipStyles[mothership.variant].accent}`} />
+            <div
+              className={`absolute inset-0 flex items-center justify-center font-mono text-xs font-black uppercase ${mothershipStyles[mothership.variant].label}`}
+            >
               {mothership.char}
             </div>
           </div>
@@ -101,17 +124,21 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
         )
       })}
 
-      {lasers.map((laser) => (
-        <div
-          key={laser.id}
-          className="absolute w-0.5 bg-gradient-to-t from-sky-400 to-sky-400/0 shadow-[0_0_4px_1px_rgba(56,189,248,0.6)]"
-          style={{
-            left: laser.x,
-            top: MOTHERSHIP_LANE_HEIGHT + Math.min(laser.fromY, laser.toY),
-            height: Math.abs(laser.fromY - laser.toY),
-          }}
-        />
-      ))}
+      {lasers.map((laser) => {
+        const top = MOTHERSHIP_LANE_HEIGHT + Math.min(laser.fromY, laser.toY)
+        const height = Math.abs(laser.fromY - laser.toY)
+        return (
+          // overflow-hidden clips the glow to these exact bounds, so it can't
+          // bleed past the impact point and make the beam look like it overshot.
+          <div
+            key={laser.id}
+            className="pointer-events-none absolute overflow-hidden"
+            style={{ left: laser.x - 3, top, width: 6, height }}
+          >
+            <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-gradient-to-t from-sky-400 to-sky-400/0 shadow-[0_0_6px_2px_rgba(56,189,248,0.7)]" />
+          </div>
+        )
+      })}
 
       {/* A brief, minimal burst so a kill feels registered without stealing focus from typing. */}
       {explosions.map((explosion) => (
