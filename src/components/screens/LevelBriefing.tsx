@@ -6,11 +6,6 @@ interface LevelBriefingProps {
   onBegin: () => void
 }
 
-const HOME_POSITION_GUIDE = [
-  'Left hand: pinky on A, ring on S, middle on D and index on F.',
-  'Right hand: index on J, middle on K, ring on L and pinky on ;.',
-]
-
 function movementInstruction(key: string): string {
   const finger = fingerLabel(key)
   if (key === 'g') {
@@ -43,11 +38,18 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
           The raised bumps on F and J help you find the correct position without looking down.
         </p>
 
-        <ul className="mt-3 grid gap-1 text-sm text-slate-300 sm:grid-cols-2">
-          {HOME_POSITION_GUIDE.map((instruction) => (
-            <li key={instruction}>{instruction}</li>
-          ))}
-          <li>Rest both thumbs lightly on the spacebar.</li>
+        <ul className="mt-3 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
+          <li className="rounded border border-slate-700 bg-slate-800/60 px-3 py-2">
+            <strong className="block text-emerald-300">Left hand</strong>
+            Pinky on A, ring on S, middle on D and index on F.
+          </li>
+          <li className="rounded border border-slate-700 bg-slate-800/60 px-3 py-2">
+            <strong className="block text-emerald-300">Right hand</strong>
+            Index on J, middle on K, ring on L and pinky on ;.
+          </li>
+          <li className="rounded border border-slate-700 bg-slate-800/60 px-3 py-1.5 text-center sm:col-span-2">
+            Rest both thumbs lightly on the spacebar.
+          </li>
         </ul>
 
         <div className="mt-3 rounded-md border border-slate-700 bg-slate-950/60 p-3">
