@@ -22,7 +22,7 @@ export function VisualKeyboard({ activeKeys }: VisualKeyboardProps) {
         <div key={rowIndex} className="flex gap-1.5">
           {row.map((key) => {
             const isActive = activeSet.has(key)
-            const isHomeRow = rowIndex === 1
+            const isHomeRow = rowIndex === 2
             return (
               <div
                 key={key}
