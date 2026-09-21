@@ -27,16 +27,21 @@ function testMothership(overrides: Partial<Mothership> = {}): Mothership {
 }
 
 describe('gameReducer', () => {
-  it('starts a fresh game in the playing status with a full shield', () => {
+  it('starts a fresh game at the first level briefing with a full shield', () => {
     const state = gameReducer(createInitialState(), { type: 'START_GAME' })
-    expect(state.status).toBe('playing')
+    expect(state.status).toBe('levelBriefing')
     expect(state.shieldHp).toBe(100)
     expect(state.levelIndex).toBe(0)
   })
 
+  function beginGame() {
+    const briefing = gameReducer(createInitialState(), { type: 'START_GAME' })
+    return gameReducer(briefing, { type: 'BEGIN_LEVEL' })
+  }
+
   it('spawns an alien using an allowed key for the current level', () => {
     const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0)
-    const playing = gameReducer(createInitialState(), { type: 'START_GAME' })
+    const playing = beginGame()
     const next = gameReducer(playing, { type: 'SPAWN' })
 
     expect(next.aliens).toHaveLength(1)
@@ -46,7 +51,7 @@ describe('gameReducer', () => {
   })
 
   it('does not spawn aliens beyond the simultaneous cap', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     for (let i = 0; i < 10; i += 1) {
       state = gameReducer(state, { type: 'SPAWN' })
     }
@@ -54,7 +59,7 @@ describe('gameReducer', () => {
   })
 
   it('moves aliens downward on each TICK', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = gameReducer(state, { type: 'SPAWN' })
     const startY = state.aliens[0].y
 
@@ -64,7 +69,7 @@ describe('gameReducer', () => {
   })
 
   it('removes an alien and deducts shield HP once it reaches the bottom', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = {
       ...state,
       aliens: [testAlien({ x: 100, y: SHIP_Y - ALIEN_SIZE })],
@@ -77,7 +82,7 @@ describe('gameReducer', () => {
   })
 
   it('ends the game when shield HP reaches zero', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = {
       ...state,
       shieldHp: 10,
@@ -92,7 +97,7 @@ describe('gameReducer', () => {
   })
 
   it('destroys the lowest matching alien on a correct keypress', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = {
       ...state,
       aliens: [
@@ -120,7 +125,7 @@ describe('gameReducer', () => {
   })
 
   it('registers a misfire without affecting shield HP when no alien matches', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, aliens: [testAlien()] }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'j' })
@@ -131,8 +136,8 @@ describe('gameReducer', () => {
     expect(state.correctKeystrokes).toBe(0)
   })
 
-  it('triggers levelUp after reaching the level kill target and clears remaining aliens', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+  it('opens the next level briefing after reaching the kill target and clears remaining aliens', () => {
+    let state = beginGame()
     state = {
       ...state,
       kills: LEVELS[0].targetKills - 1,
@@ -141,12 +146,14 @@ describe('gameReducer', () => {
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
 
-    expect(state.status).toBe('levelUp')
+    expect(state.status).toBe('levelBriefing')
+    expect(state.levelIndex).toBe(1)
+    expect(state.kills).toBe(0)
     expect(state.aliens).toHaveLength(0)
   })
 
   it('stops spawning aliens once enough are already in play to clear the level', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, kills: LEVELS[0].targetKills - 1, aliens: [testAlien()] }
 
     state = gameReducer(state, { type: 'SPAWN' })
@@ -154,19 +161,15 @@ describe('gameReducer', () => {
     expect(state.aliens).toHaveLength(1)
   })
 
-  it('advances to the next level and resets the per-level kill counter', () => {
+  it('begins play only when the learner continues from the briefing', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
-    state = { ...state, status: 'levelUp', levelIndex: 0, kills: LEVELS[0].targetKills }
-
-    state = gameReducer(state, { type: 'ADVANCE_LEVEL' })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
 
     expect(state.status).toBe('playing')
-    expect(state.levelIndex).toBe(1)
-    expect(state.kills).toBe(0)
   })
 
   it('declares victory after clearing the final level', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     const lastIndex = LEVELS.length - 1
     const key = LEVELS[lastIndex].allowedKeys[0]
     state = {
@@ -183,7 +186,7 @@ describe('gameReducer', () => {
   })
 
   it('clears an explosion once its brief lifetime has elapsed', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, aliens: [testAlien()] }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
@@ -194,7 +197,7 @@ describe('gameReducer', () => {
   })
 
   it('does not spawn a mothership while the shield is full', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, shieldHp: 100, mothershipNextCheckAt: 0 }
 
     state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1 })
@@ -203,7 +206,7 @@ describe('gameReducer', () => {
   })
 
   it('spawns a mothership once the shield has taken any damage and a check is due', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, shieldHp: 99, mothershipNextCheckAt: 0 }
 
     state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1 })
@@ -214,7 +217,7 @@ describe('gameReducer', () => {
   })
 
   it('moves the mothership across the playfield and removes it once it exits', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, mothership: testMothership({ x: PLAYFIELD_WIDTH - 10, direction: 1 }) }
 
     state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1 })
@@ -225,7 +228,7 @@ describe('gameReducer', () => {
   })
 
   it('restores shield HP and awards a bonus when the mothership is hit', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, shieldHp: 40, mothership: testMothership({ char: 'f' }) }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
@@ -238,7 +241,7 @@ describe('gameReducer', () => {
   })
 
   it('caps the shield restore from the mothership at full health', () => {
-    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    let state = beginGame()
     state = { ...state, shieldHp: 90, mothership: testMothership({ char: 'f' }) }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })

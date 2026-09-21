@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer } from 'react'
+import { useCallback, useMemo, useReducer } from 'react'
 import { LEVELS } from './data/levels'
 import { useGameLoop } from './hooks/useGameLoop'
 import { useKeyboardInput } from './hooks/useKeyboardInput'
@@ -7,10 +7,8 @@ import { GameArea } from './components/GameArea'
 import { VisualKeyboard } from './components/VisualKeyboard'
 import { HUD } from './components/HUD'
 import { StartScreen } from './components/screens/StartScreen'
-import { LevelUpBanner } from './components/screens/LevelUpBanner'
+import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
-
-const LEVEL_UP_DELAY_MS = 1500
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState)
@@ -23,13 +21,6 @@ function App() {
     dispatch({ type: 'KEY_PRESS', key })
   }, [])
   useKeyboardInput(state.status, handleKey)
-
-  // Auto-advance from the levelUp banner into the next level after a pause.
-  useEffect(() => {
-    if (state.status !== 'levelUp') return
-    const timer = setTimeout(() => dispatch({ type: 'ADVANCE_LEVEL' }), LEVEL_UP_DELAY_MS)
-    return () => clearTimeout(timer)
-  }, [state.status])
 
   const elapsedMinutes = Math.max((performance.now() - state.startedAt) / 60000, 1 / 60)
   const wpm = Math.round(state.correctKeystrokes / 5 / elapsedMinutes)
@@ -70,10 +61,11 @@ function App() {
               shipX={state.shipX}
             />
 
-            {state.status === 'levelUp' && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <LevelUpBanner label={LEVELS[Math.min(state.levelIndex + 1, LEVELS.length - 1)].label} />
-              </div>
+            {state.status === 'levelBriefing' && (
+              <LevelBriefing
+                level={currentLevel}
+                onBegin={() => dispatch({ type: 'BEGIN_LEVEL' })}
+              />
             )}
 
             {state.status === 'gameOver' && (

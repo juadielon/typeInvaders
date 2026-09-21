@@ -40,7 +40,7 @@ export type Action =
   | { type: 'TICK'; dt: number; now: number }
   | { type: 'SPAWN' }
   | { type: 'KEY_PRESS'; key: string }
-  | { type: 'ADVANCE_LEVEL' }
+  | { type: 'BEGIN_LEVEL' }
   | { type: 'RESET' }
 
 let idCounter = 0
@@ -113,8 +113,15 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case 'START_GAME':
       return {
         ...createInitialState(),
-        status: 'playing',
+        status: 'levelBriefing',
         startedAt: performance.now(),
+      }
+
+    case 'BEGIN_LEVEL':
+      if (state.status !== 'levelBriefing') return state
+      return {
+        ...state,
+        status: 'playing',
         mothershipNextCheckAt: performance.now() + randomMothershipCheckDelay(),
       }
 
@@ -280,10 +287,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
           explosions: [...state.explosions, explosion],
           shipX: target.x,
           score,
-          kills,
           correctKeystrokes,
           totalKeystrokes,
-          status: isLastLevel ? 'gameOver' : 'levelUp',
+          levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
+          kills: isLastLevel ? kills : 0,
+          status: isLastLevel ? 'gameOver' : 'levelBriefing',
           victory: isLastLevel,
         }
       }
@@ -301,20 +309,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
     }
 
-    case 'ADVANCE_LEVEL': {
-      if (state.status !== 'levelUp') return state
-      return {
-        ...state,
-        levelIndex: state.levelIndex + 1,
-        aliens: [],
-        lasers: [],
-        kills: 0,
-        status: 'playing',
-      }
-    }
-
     default:
       return state
   }
 }
-
