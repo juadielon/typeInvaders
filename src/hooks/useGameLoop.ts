@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { GameStatus, LevelConfig } from '../types/game'
 
-export const ALIEN_LANE_HEIGHT = 420
+export const ALIEN_LANE_HEIGHT = 500
 export const MOTHERSHIP_LANE_HEIGHT = 56
 export const PLAYFIELD_WIDTH = 760
 export const PLAYFIELD_HEIGHT = ALIEN_LANE_HEIGHT + MOTHERSHIP_LANE_HEIGHT

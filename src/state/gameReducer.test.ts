@@ -182,7 +182,7 @@ describe('gameReducer', () => {
     expect(state.explosions).toHaveLength(0)
   })
 
-  it('does not spawn a mothership while the shield is above the threshold', () => {
+  it('does not spawn a mothership while the shield is full', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
     state = { ...state, shieldHp: 100, mothershipNextCheckAt: 0 }
 
@@ -191,9 +191,9 @@ describe('gameReducer', () => {
     expect(state.mothership).toBeNull()
   })
 
-  it('spawns a mothership once the shield drops below the threshold and a check is due', () => {
+  it('spawns a mothership once the shield has taken any damage and a check is due', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
-    state = { ...state, shieldHp: 40, mothershipNextCheckAt: 0 }
+    state = { ...state, shieldHp: 99, mothershipNextCheckAt: 0 }
 
     state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1 })
 

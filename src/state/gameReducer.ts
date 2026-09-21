@@ -21,9 +21,9 @@ const HIT_DAMAGE = 20
 const LASER_LIFETIME_MS = 250
 const EXPLOSION_LIFETIME_MS = 300
 
-// The mothership only shows up once shields are hurting, and only now and
-// then, so it reads as a rare rescue opportunity rather than a routine target.
-const MOTHERSHIP_SHIELD_THRESHOLD = 50
+// The mothership only shows up once the shield has taken any damage, and only
+// now and then, so it reads as a rare rescue opportunity rather than a routine target.
+const MOTHERSHIP_SHIELD_THRESHOLD = 100
 const MOTHERSHIP_SHIELD_RESTORE = 30
 const MOTHERSHIP_SCORE_BONUS = 50
 const MOTHERSHIP_SPEED = 90
