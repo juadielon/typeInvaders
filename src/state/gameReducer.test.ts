@@ -131,17 +131,27 @@ describe('gameReducer', () => {
     expect(state.correctKeystrokes).toBe(0)
   })
 
-  it('triggers levelUp after reaching the level kill target', () => {
+  it('triggers levelUp after reaching the level kill target and clears remaining aliens', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
     state = {
       ...state,
       kills: LEVELS[0].targetKills - 1,
-      aliens: [testAlien()],
+      aliens: [testAlien(), testAlien({ id: 'a2', char: 'x', x: 200, y: 20 })],
     }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
 
     expect(state.status).toBe('levelUp')
+    expect(state.aliens).toHaveLength(0)
+  })
+
+  it('stops spawning aliens once enough are already in play to clear the level', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, kills: LEVELS[0].targetKills - 1, aliens: [testAlien()] }
+
+    state = gameReducer(state, { type: 'SPAWN' })
+
+    expect(state.aliens).toHaveLength(1)
   })
 
   it('advances to the next level and resets the per-level kill counter', () => {

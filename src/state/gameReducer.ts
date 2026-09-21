@@ -125,6 +125,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.status !== 'playing') return state
       if (state.aliens.length >= MAX_ALIENS) return state
       const level = LEVELS[state.levelIndex]
+      // Stop feeding in new aliens once enough are already in play (destroyed
+      // or on screen) to clear the level, so the screen empties out naturally
+      // instead of levelling up with a wall of aliens still descending.
+      if (state.kills + state.aliens.length >= level.targetKills) return state
       const alien: Alien = {
         id: nextId('alien'),
         char: randomChar(level.allowedKeys),
@@ -269,7 +273,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
         const isLastLevel = state.levelIndex >= LEVELS.length - 1
         return {
           ...state,
-          aliens,
+          // Any aliens still descending are cleared immediately so the level
+          // transition doesn't leave stragglers visible on screen.
+          aliens: [],
           lasers: [...state.lasers, laser],
           explosions: [...state.explosions, explosion],
           shipX: target.x,
