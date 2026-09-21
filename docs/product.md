@@ -20,6 +20,8 @@ The game must be enjoyable without assuming they already type quickly.
 - Reward accurate, timely input without punishing an occasional mistake.
 - Make the most urgent matching alien the target so typing feels fair and
   predictable.
+- Use new threats to teach new keyboard habits, such as Spacebar shielding
+  when later levels introduce incoming plasma bolts.
 - Increase pressure slowly as players gain familiarity.
 - Keep feedback readable and avoid visual clutter that competes with the
   typing task.

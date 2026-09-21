@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes type-invader-wiggle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+@keyframes type-invader-limbs {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-12deg);
+  }
+
+  50% {
+    transform: translateY(3px) rotate(12deg);
+  }
+}
+
+.type-invader-alien {
+  animation: type-invader-wiggle 700ms steps(2, end) infinite;
+}
+
+.type-invader-arm,
+.type-invader-leg {
+  animation: type-invader-limbs 700ms steps(2, end) infinite;
+  transform-origin: top center;
+}

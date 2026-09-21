@@ -18,13 +18,16 @@ affects the feature's behaviour or scope.
 
 1. Expand the lesson path beyond the initial home-row key set while keeping
    each lesson approachable for beginners.
-2. Add a lesson selection and replay experience so players can practise a
+2. Introduce alien plasma bolts in later levels, with a "Press [SPACE] to
+   Shield!" prompt that teaches thumb discipline and breaks up repeated
+   letter-key practice.
+3. Add a lesson selection and replay experience so players can practise a
    particular set of keys.
-3. Improve accessibility with reduced-motion support, clearer focus states,
+4. Improve accessibility with reduced-motion support, clearer focus states,
    and options for colour and text size.
-4. Add optional sound effects with a visible mute control.
-5. Save local progress and lesson results so players can resume practice.
-6. Design responsive controls before adding phone or tablet support.
+5. Add optional sound effects with a visible mute control.
+6. Save local progress and lesson results so players can resume practice.
+7. Design responsive controls before adding phone or tablet support.
 
 ## Open decisions
 
@@ -32,6 +35,8 @@ affects the feature's behaviour or scope.
   while accuracy is tracked?
 - How should players unlock or choose lessons: a fixed sequence, free
   selection, or both?
+- Should Spacebar shields consume a limited resource, rely purely on timing,
+  or use both?
 - Should saved progress stay in the browser only, or eventually use an
   account-based service?
 - What is the right session length and difficulty curve for complete
