@@ -8,10 +8,16 @@ export type HandSide = 'left' | 'right'
 
 export type Finger = 'pinky' | 'ring' | 'middle' | 'index' | 'thumb'
 
+export const ALIEN_VARIANTS = ['scout', 'brute', 'trickster'] as const
+
+export type AlienVariant = (typeof ALIEN_VARIANTS)[number]
+
 export interface Alien {
   id: string
   /** Single lowercase character this alien must be "shot" with. */
   char: string
+  /** Visual alien type; gameplay rules stay tied to the character. */
+  variant: AlienVariant
   /** Horizontal position in px from the left of the playfield. */
   x: number
   /** Vertical position in px from the top of the playfield. */

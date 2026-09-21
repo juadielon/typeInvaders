@@ -1,5 +1,5 @@
 import { LEVELS } from '../data/levels'
-import type { Alien, GameState, Laser } from '../types/game'
+import { ALIEN_VARIANTS, type Alien, type AlienVariant, type GameState, type Laser } from '../types/game'
 import { ALIEN_SIZE, MAX_ALIENS, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
 
 const HIT_DAMAGE = 20
@@ -40,6 +40,10 @@ function randomChar(allowedKeys: string[]): string {
   return allowedKeys[Math.floor(Math.random() * allowedKeys.length)]
 }
 
+function randomVariant(): AlienVariant {
+  return ALIEN_VARIANTS[Math.floor(Math.random() * ALIEN_VARIANTS.length)]
+}
+
 function randomX(): number {
   const margin = ALIEN_SIZE
   return margin + Math.random() * (PLAYFIELD_WIDTH - margin * 2)
@@ -64,6 +68,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const alien: Alien = {
         id: nextId('alien'),
         char: randomChar(level.allowedKeys),
+        variant: randomVariant(),
         x: randomX(),
         y: -ALIEN_SIZE,
       }

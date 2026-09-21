@@ -1,7 +1,19 @@
 import { describe, expect, it, vi } from 'vitest'
 import { LEVELS } from '../data/levels'
 import { ALIEN_SIZE, SHIP_Y } from '../hooks/useGameLoop'
+import { ALIEN_VARIANTS, type Alien } from '../types/game'
 import { createInitialState, gameReducer } from './gameReducer'
+
+function testAlien(overrides: Partial<Alien> = {}): Alien {
+  return {
+    id: 'a1',
+    char: 'f',
+    variant: 'scout',
+    x: 10,
+    y: 50,
+    ...overrides,
+  }
+}
 
 describe('gameReducer', () => {
   it('starts a fresh game in the playing status with a full shield', () => {
@@ -18,6 +30,7 @@ describe('gameReducer', () => {
 
     expect(next.aliens).toHaveLength(1)
     expect(LEVELS[0].allowedKeys).toContain(next.aliens[0].char)
+    expect(ALIEN_VARIANTS).toContain(next.aliens[0].variant)
     randomSpy.mockRestore()
   })
 
@@ -43,7 +56,7 @@ describe('gameReducer', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
     state = {
       ...state,
-      aliens: [{ id: 'a1', char: 'f', x: 100, y: SHIP_Y - ALIEN_SIZE }],
+      aliens: [testAlien({ x: 100, y: SHIP_Y - ALIEN_SIZE })],
     }
 
     state = gameReducer(state, { type: 'TICK', dt: 1, now: performance.now() })
@@ -57,7 +70,7 @@ describe('gameReducer', () => {
     state = {
       ...state,
       shieldHp: 20,
-      aliens: [{ id: 'a1', char: 'f', x: 100, y: SHIP_Y - ALIEN_SIZE }],
+      aliens: [testAlien({ x: 100, y: SHIP_Y - ALIEN_SIZE })],
     }
 
     state = gameReducer(state, { type: 'TICK', dt: 1, now: performance.now() })
@@ -72,8 +85,8 @@ describe('gameReducer', () => {
     state = {
       ...state,
       aliens: [
-        { id: 'a1', char: 'f', x: 10, y: 50 },
-        { id: 'a2', char: 'f', x: 20, y: 150 }, // closer to the ship
+        testAlien({ id: 'a1', x: 10, y: 50 }),
+        testAlien({ id: 'a2', x: 20, y: 150 }), // closer to the ship
       ],
     }
 
@@ -93,7 +106,7 @@ describe('gameReducer', () => {
 
   it('registers a misfire without affecting shield HP when no alien matches', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
-    state = { ...state, aliens: [{ id: 'a1', char: 'f', x: 10, y: 50 }] }
+    state = { ...state, aliens: [testAlien()] }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'j' })
 
@@ -108,7 +121,7 @@ describe('gameReducer', () => {
     state = {
       ...state,
       kills: LEVELS[0].targetKills - 1,
-      aliens: [{ id: 'a1', char: 'f', x: 10, y: 50 }],
+      aliens: [testAlien()],
     }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
@@ -135,7 +148,7 @@ describe('gameReducer', () => {
       ...state,
       levelIndex: lastIndex,
       kills: LEVELS[lastIndex].targetKills - 1,
-      aliens: [{ id: 'a1', char: key, x: 10, y: 50 }],
+      aliens: [testAlien({ char: key })],
     }
 
     state = gameReducer(state, { type: 'KEY_PRESS', key })
