@@ -14,19 +14,19 @@ const alienStyles = {
   scout: {
     arm: 'bg-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.8)]',
     body: 'inset-x-1 top-1 bottom-2 rounded-t-xl rounded-b-md border-emerald-300 bg-emerald-900/80 shadow-[0_0_10px_rgba(52,211,153,0.55)]',
-    eyes: 'left-2 top-1.5 h-2 w-2 rounded-full bg-emerald-100 shadow-[12px_0_0_#d1fae5]',
+    eyes: 'left-2 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[12px_0_0_#10b981]',
     label: 'bottom-0.5 text-emerald-100',
   },
   brute: {
     arm: 'bg-amber-300 shadow-[0_0_6px_rgba(252,211,77,0.8)]',
     body: 'inset-x-0.5 top-2 bottom-2 rounded-md border-amber-300 bg-amber-900/80 shadow-[0_0_10px_rgba(252,211,77,0.55)]',
-    eyes: 'left-1.5 top-1.5 h-2 w-2 rounded-sm bg-amber-100 shadow-[14px_0_0_#fef3c7]',
+    eyes: 'left-2 top-1 h-1.5 w-1.5 rounded-sm bg-amber-500 shadow-[12px_0_0_#f59e0b]',
     label: 'bottom-0.5 text-amber-100',
   },
   trickster: {
     arm: 'bg-fuchsia-300 shadow-[0_0_6px_rgba(240,171,252,0.8)]',
     body: 'inset-x-2 top-0.5 bottom-2 rounded-full border-fuchsia-300 bg-fuchsia-900/80 shadow-[0_0_10px_rgba(240,171,252,0.55)]',
-    eyes: 'left-2 top-1.5 h-2 w-2 rounded-full bg-fuchsia-100 shadow-[12px_0_0_#fae8ff]',
+    eyes: 'left-2 top-1 h-1.5 w-1.5 rounded-full bg-fuchsia-500 shadow-[12px_0_0_#d946ef]',
     label: 'bottom-0.5 text-fuchsia-100',
   },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
