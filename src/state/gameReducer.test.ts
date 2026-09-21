@@ -114,6 +114,8 @@ describe('gameReducer', () => {
     expect(state.lasers[0].fromY).toBe(SHIP_Y)
     expect(state.explosions).toHaveLength(1)
     expect(state.explosions[0].x).toBe(20)
+    // The beam must stop exactly where the explosion occurs, not overshoot past it.
+    expect(state.lasers[0].toY).toBe(state.explosions[0].y)
   })
 
   it('registers a misfire without affecting shield HP when no alien matches', () => {

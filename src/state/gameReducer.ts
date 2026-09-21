@@ -242,14 +242,15 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
 
       const target = state.aliens[targetIndex]
+      const impactY = target.y + ALIEN_SIZE / 2
       const laser: Laser = {
         id: nextId('laser'),
         x: target.x,
         fromY: SHIP_Y,
-        toY: target.y,
+        toY: impactY,
         createdAt: now,
       }
-      const explosion = explosionAt(target.x, target.y + ALIEN_SIZE / 2, now)
+      const explosion = explosionAt(target.x, impactY, now)
 
       const aliens = state.aliens.filter((_, index) => index !== targetIndex)
       const kills = state.kills + 1
