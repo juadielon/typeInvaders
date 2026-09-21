@@ -12,9 +12,9 @@ describe('fingerLabel', () => {
     expect(fingerLabel('z')).toBe('')
   })
 
-  it('includes the four standard typing rows, beginning with numbers', () => {
-    expect(KEYBOARD_ROWS).toHaveLength(4)
-    expect(KEYBOARD_ROWS[0]).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'])
-    expect(KEYBOARD_ROWS[3]).toEqual(['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'])
+  it('includes the three letter rows without the advanced number row', () => {
+    expect(KEYBOARD_ROWS).toHaveLength(3)
+    expect(KEYBOARD_ROWS[0]).toEqual(['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'])
+    expect(KEYBOARD_ROWS[2]).toEqual(['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'])
   })
 })

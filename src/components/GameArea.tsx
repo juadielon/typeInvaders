@@ -14,20 +14,20 @@ const alienStyles = {
   scout: {
     arm: 'bg-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.8)]',
     body: 'inset-x-1 top-1 bottom-2 rounded-t-xl rounded-b-md border-emerald-300 bg-emerald-900/80 shadow-[0_0_10px_rgba(52,211,153,0.55)]',
-    eyes: 'left-2 top-2 h-1.5 w-1.5 rounded-full bg-slate-950 shadow-[12px_0_0_#020617]',
-    label: 'bottom-2 text-emerald-100',
+    eyes: 'left-2 top-1.5 h-2 w-2 rounded-full bg-emerald-100 shadow-[12px_0_0_#d1fae5]',
+    label: 'bottom-0.5 text-emerald-100',
   },
   brute: {
     arm: 'bg-amber-300 shadow-[0_0_6px_rgba(252,211,77,0.8)]',
     body: 'inset-x-0.5 top-2 bottom-2 rounded-md border-amber-300 bg-amber-900/80 shadow-[0_0_10px_rgba(252,211,77,0.55)]',
-    eyes: 'left-2 top-2 h-2 w-2 rounded-sm bg-slate-950 shadow-[14px_0_0_#020617]',
-    label: 'bottom-1.5 text-amber-100',
+    eyes: 'left-1.5 top-1.5 h-2 w-2 rounded-sm bg-amber-100 shadow-[14px_0_0_#fef3c7]',
+    label: 'bottom-0.5 text-amber-100',
   },
   trickster: {
     arm: 'bg-fuchsia-300 shadow-[0_0_6px_rgba(240,171,252,0.8)]',
     body: 'inset-x-2 top-0.5 bottom-2 rounded-full border-fuchsia-300 bg-fuchsia-900/80 shadow-[0_0_10px_rgba(240,171,252,0.55)]',
-    eyes: 'left-[15px] top-2 h-2 w-2 rounded-full bg-slate-950',
-    label: 'bottom-2 text-fuchsia-100',
+    eyes: 'left-2 top-1.5 h-2 w-2 rounded-full bg-fuchsia-100 shadow-[12px_0_0_#fae8ff]',
+    label: 'bottom-0.5 text-fuchsia-100',
   },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
 
@@ -88,7 +88,7 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
             )}
             <div className={`absolute ${mothershipStyles[mothership.variant].accent}`} />
             <div
-              className={`absolute inset-0 flex items-center justify-center font-mono text-xs font-black uppercase ${mothershipStyles[mothership.variant].label}`}
+              className={`absolute inset-0 z-10 flex items-center justify-center font-mono text-lg font-black uppercase drop-shadow-[0_1px_2px_rgba(2,6,23,1)] ${mothershipStyles[mothership.variant].label}`}
             >
               {mothership.char}
             </div>
@@ -113,7 +113,7 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
               <span className={`type-invader-arm absolute right-0 top-3 h-3 w-1.5 rounded-full ${style.arm}`} />
               <div className={`absolute border-2 ${style.body}`}>
                 <div className={`absolute ${style.eyes}`} />
-                <div className={`absolute inset-x-0 text-center font-mono text-base font-black uppercase leading-none ${style.label}`}>
+                <div className={`absolute inset-x-0 text-center font-mono text-sm font-black uppercase leading-none ${style.label}`}>
                   {alien.char}
                 </div>
               </div>

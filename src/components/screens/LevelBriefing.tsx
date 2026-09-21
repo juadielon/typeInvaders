@@ -13,9 +13,13 @@ const HOME_POSITION_GUIDE = [
 
 function movementInstruction(key: string): string {
   const finger = fingerLabel(key)
-  return key === 'f' || key === 'j'
-    ? `Keep your ${finger.toLowerCase()} on ${key.toUpperCase()}.`
-    : `Move your ${finger.toLowerCase()} from its home key to ${key.toUpperCase()}, then return home.`
+  if (key === 'g') {
+    return 'Reach your left index sideways from F to G, press G, then return it to F.'
+  }
+  if (key === 'h') {
+    return 'Reach your right index sideways from J to H, press H, then return it to J.'
+  }
+  return `Keep your ${finger.toLowerCase()} resting on ${key.toUpperCase()} and press it in place.`
 }
 
 /** Pauses the action so learners can prepare their hands for each level. */
@@ -24,14 +28,20 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
     <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90 p-4">
       <section
         aria-labelledby="level-briefing-title"
-        className="w-full max-w-2xl rounded-lg border border-emerald-400/70 bg-slate-900 p-6 text-slate-100 shadow-xl"
+        className="max-h-full w-full max-w-2xl overflow-y-auto rounded-lg border border-emerald-400/70 bg-slate-900 p-6 text-slate-100 shadow-xl"
       >
         <p className="text-sm font-semibold uppercase tracking-widest text-emerald-300">
           Prepare for {level.label}
         </p>
         <h2 id="level-briefing-title" className="mt-2 text-2xl font-bold">
-          Place your fingers on the home row
+          Place your fingers on the Home Row
         </h2>
+
+        <p className="mt-3 text-sm text-slate-300">
+          The <strong className="text-slate-100">Home Row</strong> is the middle letter row of
+          the keyboard: <span className="font-mono text-emerald-300">A S D F G H J K L ;</span>.
+          The raised bumps on F and J help you find the correct position without looking down.
+        </p>
 
         <ul className="mt-4 space-y-2 text-sm text-slate-300">
           {HOME_POSITION_GUIDE.map((instruction) => (
@@ -52,7 +62,7 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
         </div>
 
         <div className="mt-5">
-          <h3 className="font-semibold text-amber-300">Finger movements for this level</h3>
+          <h3 className="font-semibold text-amber-300">How to press this level's keys</h3>
           <ul className="mt-2 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
             {level.allowedKeys.map((key) => (
               <li key={key} className="rounded bg-slate-800 px-3 py-2">
