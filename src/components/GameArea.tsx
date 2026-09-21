@@ -80,9 +80,15 @@ export function GameArea({ aliens, lasers, shipX }: GameAreaProps) {
 
       {/* The ship lines up with each target before firing. */}
       <div
-        className="absolute -translate-x-1/2 border-x-[16px] border-b-[24px] border-x-transparent border-b-sky-400 transition-[left] duration-150 ease-out"
+        className="absolute h-8 w-12 -translate-x-1/2 transition-[left] duration-150 ease-out"
         style={{ left: shipX, top: SHIP_Y }}
-      />
+      >
+        <div className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 rounded-t-full border-2 border-sky-200 bg-sky-900/80 shadow-[0_0_8px_rgba(125,211,252,0.8)]" />
+        <div className="absolute left-1/2 top-2 h-4 w-9 -translate-x-1/2 rounded-t-xl rounded-b-md border-2 border-sky-300 bg-sky-800/80 shadow-[0_0_12px_rgba(56,189,248,0.65)]" />
+        <div className="absolute left-0 top-4 h-3 w-4 rounded-l-full border-2 border-sky-300 bg-sky-900/80 shadow-[0_0_8px_rgba(56,189,248,0.55)]" />
+        <div className="absolute right-0 top-4 h-3 w-4 rounded-r-full border-2 border-sky-300 bg-sky-900/80 shadow-[0_0_8px_rgba(56,189,248,0.55)]" />
+        <div className="absolute left-1/2 top-5 h-2 w-2 -translate-x-1/2 rounded-full bg-sky-200 shadow-[0_0_8px_2px_rgba(125,211,252,0.8)]" />
+      </div>
     </div>
   )
 }
