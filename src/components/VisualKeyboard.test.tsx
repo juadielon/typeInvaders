@@ -3,6 +3,14 @@ import { describe, expect, it } from 'vitest'
 import { VisualKeyboard } from './VisualKeyboard'
 
 describe('VisualKeyboard', () => {
+  it('uses the strong highlight for the closest alien and lighter highlights for the others', () => {
+    render(<VisualKeyboard activeKeys={['j', 'f', 'd']} primaryKey="j" />)
+
+    expect(screen.getByText('j')).toHaveClass('bg-amber-400')
+    expect(screen.getByText('f')).toHaveClass('bg-amber-200')
+    expect(screen.getByText('d')).toHaveClass('bg-amber-200')
+  })
+
   it('highlights the spacebar only while a plasma bolt is inbound', () => {
     const { rerender } = render(<VisualKeyboard activeKeys={['f']} spaceActive={false} />)
 

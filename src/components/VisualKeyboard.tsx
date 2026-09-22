@@ -3,6 +3,8 @@ import { KEYBOARD_ROWS, fingerLabel } from '../utils/keyboardLayout'
 interface VisualKeyboardProps {
   /** Keys currently present among on-screen aliens; highlighted for the player. */
   activeKeys: string[]
+  /** Key carried by the alien closest to the spaceship. */
+  primaryKey?: string
   /** True while a plasma bolt is inbound and the Spacebar should be highlighted. */
   spaceActive?: boolean
 }
@@ -12,7 +14,11 @@ interface VisualKeyboardProps {
  * highlighted, plus a finger/hand hint. This is a read-only overlay —
  * clicking it does nothing; only the physical keyboard drives gameplay.
  */
-export function VisualKeyboard({ activeKeys, spaceActive = false }: VisualKeyboardProps) {
+export function VisualKeyboard({
+  activeKeys,
+  primaryKey,
+  spaceActive = false,
+}: VisualKeyboardProps) {
   const activeSet = new Set(activeKeys)
   const hints = activeKeys
     .map((key) => `${key.toUpperCase()} → ${fingerLabel(key)}`)
@@ -24,14 +30,17 @@ export function VisualKeyboard({ activeKeys, spaceActive = false }: VisualKeyboa
         <div key={rowIndex} className="flex gap-1.5">
           {row.map((key) => {
             const isActive = activeSet.has(key)
+            const isPrimary = key === primaryKey
             const isHomeRow = rowIndex === 1
             return (
               <div
                 key={key}
                 className={[
                   'flex h-9 w-9 items-center justify-center rounded border font-mono text-sm uppercase transition-colors',
-                  isActive
+                  isPrimary
                     ? 'border-amber-400 bg-amber-400 text-slate-900 shadow-[0_0_10px_rgba(251,191,36,0.8)]'
+                    : isActive
+                      ? 'border-amber-300 bg-amber-200 text-amber-950 shadow-[0_0_6px_rgba(253,230,138,0.45)]'
                     : isHomeRow
                       ? 'border-slate-500 bg-slate-800 text-slate-200'
                       : 'border-slate-700 bg-slate-800/50 text-slate-500',

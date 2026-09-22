@@ -43,8 +43,10 @@ Node.js/npm installation on your machine is required.
   on-screen alien matching that key, with a small explosion on a hit.
 - The Visual Keyboard overlay below the playfield highlights the currently
   relevant key(s) and shows a hint such as "F → Left Index" or
-  "J → Right Index". It is a reference only — gameplay only responds to
-  your physical keyboard.
+  "J → Right Index". The alien closest to the spaceship determines the next
+  key and keeps the strong amber highlight; other available letters use a
+  lighter amber background. It is a reference only — gameplay only responds
+  to your physical keyboard.
 - Letting an alien reach the bottom costs 10 Shield HP. Your Shield starts
   at 100 HP; reaching 0 ends the game.
 - Whenever your Shield has taken any damage, a rescuable "mothership" may

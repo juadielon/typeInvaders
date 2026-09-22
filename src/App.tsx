@@ -10,6 +10,7 @@ import { StartScreen } from './components/screens/StartScreen'
 import { LessonSelect } from './components/screens/LessonSelect'
 import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
+import { getAlienKeyPriority } from './utils/alienTargets'
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState)
@@ -33,8 +34,8 @@ function App() {
       ? 100
       : Math.round((state.correctKeystrokes / state.totalKeystrokes) * 100)
 
-  const activeKeys = useMemo(
-    () => Array.from(new Set(state.aliens.map((alien) => alien.char))),
+  const { activeKeys, primaryKey } = useMemo(
+    () => getAlienKeyPriority(state.aliens),
     [state.aliens],
   )
 
@@ -95,7 +96,11 @@ function App() {
             )}
           </div>
 
-          <VisualKeyboard activeKeys={activeKeys} spaceActive={state.plasmaBolts.length > 0} />
+          <VisualKeyboard
+            activeKeys={activeKeys}
+            primaryKey={primaryKey}
+            spaceActive={state.plasmaBolts.length > 0}
+          />
         </>
       )}
     </div>
