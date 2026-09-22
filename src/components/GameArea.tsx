@@ -54,7 +54,7 @@ const alienStyles = {
     arm: 'bg-lime-300 shadow-[0_0_7px_rgba(190,242,100,0.85)]',
     body: 'inset-x-1 top-1 bottom-2 rounded-[45%] border-lime-300 bg-lime-900/80 shadow-[0_0_11px_rgba(190,242,100,0.6)]',
     eyes: 'rounded-full bg-white shadow-[0_0_3px_white]',
-    label: 'bottom-0 z-30 mx-1 rounded-sm bg-slate-950/95 py-0.5 text-white shadow-[0_0_4px_rgba(255,255,255,0.7)]',
+    label: 'bottom-0 z-30 text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.9)]',
   },
   noodle: {
     arm: 'bg-orange-300 shadow-[0_0_7px_rgba(253,186,116,0.85)]',

@@ -21,7 +21,8 @@ describe('GameArea alien labels', () => {
       />,
     )
 
-    expect(screen.getByText('r')).toHaveClass('z-30', 'bg-slate-950/95', 'text-white')
-    expect(screen.getByText('f')).not.toHaveClass('z-30', 'bg-slate-950/95')
+    expect(screen.getByText('r')).toHaveClass('z-30', 'text-white')
+    expect(screen.getByText('r')).not.toHaveClass('bg-slate-950/95')
+    expect(screen.getByText('f')).not.toHaveClass('z-30')
   })
 })
