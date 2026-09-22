@@ -38,7 +38,6 @@ The MVP includes:
   see when the level will end.
 - A brief hold at the end of a level so the final shot and explosion play out
   before the briefing or victory screen appears.
-
 - Plasma bolts home towards the spaceship, create an impact explosion, and
   visibly deteriorate the ship as its shield weakens.
 - Plasma defence prompts for Spacebar practice: Trickster and Warden aliens
@@ -59,8 +58,14 @@ The MVP includes:
   increase WPM, and the value is not saved. Because the MVP practises individual
   letters rather than complete words, this is an estimated practice WPM; word and
   phrase lessons can later calculate it from completed text and spaces.
-- A visual keyboard that identifies the relevant key and finger.
-- Unit tests for the game reducer, keyboard mapping, and start screen.
+- A visual keyboard that identifies the relevant key and finger. The alien
+  closest to the spaceship receives the strong amber "type next"
+  keyboard highlight. Other visible alien letters remain available with a
+  lighter amber background, and duplicate letters are collapsed.
+- Targeted unit and component tests covering reducer rules, lesson pacing,
+  keyboard input and mapping, closest-alien priority, alien readability and
+  key user-interface states.
+- ESLint 9 with TypeScript, React Hooks and Vite refresh rules.
 - A Docker-only development workflow.
 
 ## Deliberate MVP exclusions
@@ -81,6 +86,8 @@ The MVP includes:
 | Pause the game when the browser tab is hidden | Players should not lose shields because their browser was in the background. |
 | Hold a cleared level for a moment before transitioning | The final shot and explosion should be seen, so a level never appears to end before the player's last keystroke landed. |
 | Spacebar plasma defence | Firing at an incoming missile adds a small reflex exercise, and now counts toward accuracy/WPM like a letter key. |
+| Closest-alien keyboard priority | Strong and secondary keyboard highlights teach the player which visible threat should be handled next without hiding other available letters. |
+| ESLint 9 flat configuration | TypeScript and React quality checks run consistently inside the Docker workflow. |
 | Tests for game-logic changes | Behavioural changes should be protected by targeted unit tests before they are merged. |
 
 ## Where the rules live
