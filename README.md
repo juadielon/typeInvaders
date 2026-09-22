@@ -129,7 +129,7 @@ A quick reference to every rule the game currently applies.
 | Missed bolt | Removes the bolt and costs 8 Shield HP. |
 | Missile path | Curves towards the spaceship's current position. |
 | Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
-| Shield bubble | Remains visible around the ship and absorbs the missile impact as Shield damage.
+| Shield bubble | Only appears once a plasma bolt is inbound, and absorbs the impact as Shield damage. |
 | Timing | A block is accepted only while the bolt is in the defence window. |
 | Tab switching | The game loop pauses while the browser tab is hidden. |
 ### Scoring statistics

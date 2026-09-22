@@ -236,17 +236,19 @@ export function GameArea({
         </div>
       ))}
 
-      {/* The shield bubble absorbs plasma impacts and weakens as Shield HP falls. */}
-      <div
-        aria-label={`Ship shield ${shieldHp}%`}
-        className={`pointer-events-none absolute h-16 w-20 -translate-x-1/2 rounded-full border-2 transition-all duration-300 ${shieldHp > 60 ? 'border-sky-300/70 shadow-[0_0_16px_4px_rgba(56,189,248,0.35)]' : shieldHp > 30 ? 'border-amber-300/80 shadow-[0_0_14px_3px_rgba(251,191,36,0.4)]' : 'border-red-400/90 shadow-[0_0_14px_3px_rgba(248,113,113,0.5)]'}`}
-        style={{
-          left: shipX,
-          top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y - 14,
-          opacity: Math.max(0.35, shieldHp / 100),
-          transform: `translateX(-50%) scale(${0.82 + shieldHp / 500})`,
-        }}
-      />
+      {/* The shield only activates while a plasma bolt is inbound, and absorbs the impact by weakening with Shield HP. */}
+      {plasmaBolts.length > 0 && (
+        <div
+          aria-label={`Ship shield ${shieldHp}%`}
+          className={`pointer-events-none absolute h-16 w-20 -translate-x-1/2 rounded-full border-2 transition-all duration-300 ${shieldHp > 60 ? 'border-sky-300/70 shadow-[0_0_16px_4px_rgba(56,189,248,0.35)]' : shieldHp > 30 ? 'border-amber-300/80 shadow-[0_0_14px_3px_rgba(251,191,36,0.4)]' : 'border-red-400/90 shadow-[0_0_14px_3px_rgba(248,113,113,0.5)]'}`}
+          style={{
+            left: shipX,
+            top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y - 14,
+            opacity: Math.max(0.35, shieldHp / 100),
+            transform: `translateX(-50%) scale(${0.82 + shieldHp / 500})`,
+          }}
+        />
+      )}
 
       {/* The ship lines up with each target before firing. Damage appears as the shield weakens. */}
       <div

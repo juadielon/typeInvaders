@@ -37,8 +37,9 @@ The MVP includes:
   before the briefing or victory screen appears.
 
 - Plasma bolts home towards the spaceship, create an impact explosion, and
-  visibly deteriorate the ship as its shield weakens. A visible shield bubble
-  communicates that the shield absorbs missile damage.
+  visibly deteriorate the ship as its shield weakens. A shield bubble only
+  appears once a bolt is inbound, communicating that the shield activates on
+  demand rather than sitting on permanently.
 - Plasma defence prompts for Spacebar practice: Trickster and Warden aliens
   can fire bolts, which learners block in a timing window or absorb as a
   small Shield loss.- Descending single-letter aliens with a new species introduced each level
