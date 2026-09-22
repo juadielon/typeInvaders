@@ -101,12 +101,12 @@ export interface LevelConfig {
   minSpawnIntervalMs: number
   /** Milliseconds spent easing from the warm-up cadence to the fastest cadence. */
   spawnRampDurationMs: number
-  /** Alien descent speed in pixels per second. */
+  /** Fastest alien descent speed reached near the end of the level, in pixels per second. */
   descentSpeed: number
   /** Number of aliens that must be destroyed to clear this level. */
   targetKills: number
-  /** Alien species introduced by this level; earlier species keep appearing. */
-  newAlien: AlienVariant
+  /** Alien species introduced by this level; omitted once all species have appeared. */
+  newAlien?: AlienVariant
 }
 
 export interface GameState {

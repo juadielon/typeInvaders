@@ -3,14 +3,15 @@
 **Type Invaders** is a Space Invaders–style arcade game that doubles as a
 touch-typing tutor for complete beginners. Alien "invaders" — in a few
 different visual varieties — descend from the top of the screen, each
-labelled with a single Home Row letter. The player destroys aliens by typing
+labelled with a single letter. The player destroys aliens by typing
 the correct letter on their physical keyboard; the on-screen ship glides to
 the closest matching alien and fires the shot from its own position. A
 Visual Keyboard overlay highlights the target key and the correct
-hand/finger to use, and a simple level system gradually introduces more keys
-as the player improves. A rescuable "mothership" occasionally drifts across
-a lane above the aliens whenever your Shield has taken damage — destroying
-it restores some Shield HP and a score bonus.
+hand/finger to use, and a 15-level lesson plan gradually introduces every
+letter on the Home, Top and Bottom Rows as the player improves. A rescuable
+"mothership" occasionally drifts across a lane above the aliens whenever
+your Shield has taken damage — destroying it restores some Shield HP and a
+score bonus.
 
 It is built with **React + TypeScript**, bundled with **Vite**, and styled
 with **Tailwind CSS**. The entire toolchain runs inside **Docker** — no
@@ -32,8 +33,8 @@ Node.js/npm installation on your machine is required.
 
 ## How the game works
 
-- Aliens descend from the top of the playfield, each labelled with a Home
-  Row letter (Level 1 starts with `F` and `J` only). They come in several
+- Aliens descend from the top of the playfield, each labelled with a letter
+  (Level 1 starts with `F` and `J` only). They come in several
   visual species (Scout, Brute, Trickster, Lurker and Warden), which are
   purely cosmetic — the letter is all that matters for gameplay.
 - Type the letter shown on an alien to destroy it with a laser — the ship
@@ -50,15 +51,15 @@ Node.js/npm installation on your machine is required.
   the level's practice letters — destroy it to restore some Shield HP and
   earn a score bonus. It doesn't count toward a level's kill target, so it's
   a bonus rather than a requirement.
-- Starting a game opens a lesson selector so you can choose any current home-row
-  mission. The selected lesson then shows its finger-position briefing before
-  play begins.
+- Starting a game opens a lesson selector so you can choose any current
+  mission, from the Home Row through the Top and Bottom Rows. The selected
+  lesson then shows its finger-position briefing before play begins.
 - Clearing the required number of aliens in a level advances you to the
   next level, which unlocks additional keys and increases difficulty
   (longer practice targets, a gentle opening spawn cadence that becomes
   faster during the level, and faster descent); the screen is cleared of aliens before
   the next level begins. A briefing then pauses the game until you choose
-  to continue. It shows the correct home-row hand positions, each key's
+  to continue. It shows the correct hand positions, each key's
   finger movement, and the new level's objective.
 - A lesson progress bar in the status bar shows how many aliens you have
   cleared and how many remain before the level ends, so a longer lesson
@@ -143,17 +144,37 @@ A quick reference to every rule the game currently applies.
 
 ## Level progression
 
-Each level unlocks two more Home Row keys, introduces a new alien species,
-raises the practice target, and ends at a faster spawn cadence than the one
-before it. Earlier species keep appearing, so the fleet grows as you progress.
+Each level unlocks two more keys, raises the practice target, and ends at a
+faster spawn cadence than the one before it. Every level opens at the same
+gentle 2200 ms cadence, so a longer, later lesson never feels harder to
+start than an earlier one. Alien descent also begins at the same gentle
+speed in every level. The pressure instead builds from a longer ramp, a
+faster minimum cadence and a faster final descent speed as the lesson goes
+on. Levels 1-5 cover the Home Row, levels 6-10 add the Top Row and levels
+11-15 add the Bottom Row, completing every letter on the keyboard. Alien
+species stop being
+introduced once all five have appeared at Level 5; later levels keep
+reusing the full roster, since the species is cosmetic. Earlier species
+keep appearing, so the fleet grows as you progress through the Home Row.
 
 | Level | Keys | New alien | Aliens to clear | Opening spawn | Fastest spawn |
 | --- | --- | --- | --- | --- | --- |
 | 1 | F J | Scout | 42 | 2200 ms | 800 ms |
-| 2 | + D K | Brute | 50 | 2000 ms | 720 ms |
-| 3 | + A ; | Trickster | 58 | 1900 ms | 660 ms |
-| 4 | + S L | Lurker | 66 | 1800 ms | 600 ms |
-| 5 | + G H | Warden | 74 | 1700 ms | 540 ms |
+| 2 | + D K | Brute | 50 | 2200 ms | 720 ms |
+| 3 | + A ; | Trickster | 58 | 2200 ms | 660 ms |
+| 4 | + S L | Lurker | 66 | 2200 ms | 600 ms |
+| 5 | + G H | Warden | 74 | 2200 ms | 540 ms |
+| 6 | + R U | - | 80 | 2200 ms | 515 ms |
+| 7 | + E I | - | 86 | 2200 ms | 490 ms |
+| 8 | + Q P | - | 92 | 2200 ms | 465 ms |
+| 9 | + W O | - | 98 | 2200 ms | 440 ms |
+| 10 | + T Y | - | 104 | 2200 ms | 415 ms |
+| 11 | + V M | - | 110 | 2200 ms | 390 ms |
+| 12 | + C , | - | 116 | 2200 ms | 365 ms |
+| 13 | + Z / | - | 122 | 2200 ms | 340 ms |
+| 14 | + X . | - | 128 | 2200 ms | 315 ms |
+| 15 | + B N | - | 134 | 2200 ms | 290 ms |
+
 
 The spawn rate eases from the opening cadence to the fastest cadence over the
 course of the level, so the pressure builds while you settle into the new keys.

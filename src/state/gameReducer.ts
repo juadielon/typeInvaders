@@ -12,6 +12,7 @@ import {
 } from '../types/game'
 import {
   ALIEN_SIZE,
+  getAlienDescentSpeed,
   MAX_ALIENS,
   MOTHERSHIP_LANE_HEIGHT,
   MOTHERSHIP_WIDTH,
@@ -230,7 +231,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
       if (state.status !== 'playing') return state
       const level = LEVELS[state.levelIndex]
-      const dyPx = level.descentSpeed * action.dt
+      const descentSpeed = getAlienDescentSpeed(level, action.now - state.levelStartedAt)
+      const dyPx = descentSpeed * action.dt
 
       let shieldHp = state.shieldHp
       const survivors: Alien[] = []

@@ -17,10 +17,11 @@ affects the feature's behaviour or scope.
   (multiple visual shapes, appears once the Shield has taken damage).
 - The screen clears of remaining aliens before a level-up transition.
 - Lesson selection and replay, so players choose the level they practise.
-- Longer lessons with a gentle opening spawn cadence that ramps to a
-  noticeably faster final wave.
+- Longer lessons with the same gentle opening spawn cadence and alien descent
+  speed, ramping to a noticeably faster final wave.
 - A lesson progress bar showing cleared and remaining aliens.
-- A new alien species introduced on each level, stacking with earlier ones.
+- Five alien species introduced across the Home Row levels, then reused as the
+  Top and Bottom Row lessons complete the keyboard.
 - A short hold at the end of a level so the final shot and explosion are seen.
 - A documented rule reference in the README.
 - Unit tests for the core rules and selected UI behaviour.
@@ -35,7 +36,8 @@ new skill with previously learned keys. Levels should begin with a gentle
 spawn cadence, then increase alien frequency as the lesson continues so the
 player gets warm-up time followed by meaningful practice. The exact number of
 levels and target kills in each module can change as play-testing reveals the
-right difficulty curve.
+right difficulty curve. Alien descent follows the same pattern: every lesson
+starts at the same speed, while later lessons reach a faster end speed.
 
 1. **Launch pad: F and J** - Find the raised bumps, place both index fingers,
    and practise alternating the two anchor keys. Keep the pace gentle and

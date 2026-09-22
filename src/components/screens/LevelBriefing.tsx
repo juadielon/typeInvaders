@@ -1,20 +1,41 @@
 import { ALIEN_VARIANT_LABELS, type LevelConfig } from '../../types/game'
-import { fingerLabel } from '../../utils/keyboardLayout'
+import { KEYBOARD_ROWS, fingerLabel } from '../../utils/keyboardLayout'
 
 interface LevelBriefingProps {
   level: LevelConfig
   onBegin: () => void
 }
 
+const HOME_ROW = KEYBOARD_ROWS[1]
+
+/** The Home Row key in the same finger column as `key`, used to describe reaches. */
+function homeRowAnchorFor(key: string): string | undefined {
+  const rowIndex = KEYBOARD_ROWS.findIndex((row) => row.includes(key))
+  if (rowIndex === -1) return undefined
+  const columnIndex = KEYBOARD_ROWS[rowIndex].indexOf(key)
+  return HOME_ROW[columnIndex]
+}
+
 function movementInstruction(key: string): string {
   const finger = fingerLabel(key)
-  if (key === 'g') {
-    return 'Reach your left index sideways from F to G, press G, then return it to F.'
+  const rowIndex = KEYBOARD_ROWS.findIndex((row) => row.includes(key))
+
+  if (rowIndex === 1) {
+    if (key === 'g') {
+      return 'Reach your left index sideways from F to G, press G, then return it to F.'
+    }
+    if (key === 'h') {
+      return 'Reach your right index sideways from J to H, press H, then return it to J.'
+    }
+    return `Keep your ${finger.toLowerCase()} resting on ${key.toUpperCase()} and press it in place.`
   }
-  if (key === 'h') {
-    return 'Reach your right index sideways from J to H, press H, then return it to J.'
+
+  const anchor = homeRowAnchorFor(key)
+  const direction = rowIndex === 0 ? 'up' : 'down'
+  if (!anchor) {
+    return `Reach your ${finger.toLowerCase()} ${direction} to ${key.toUpperCase()}, press it, then return to the Home Row.`
   }
-  return `Keep your ${finger.toLowerCase()} resting on ${key.toUpperCase()} and press it in place.`
+  return `Reach your ${finger.toLowerCase()} ${direction} from ${anchor.toUpperCase()} to ${key.toUpperCase()}, press it, then return to ${anchor.toUpperCase()}.`
 }
 
 /** Pauses the action so learners can prepare their hands for each level. */
@@ -62,11 +83,13 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
             and speed up as the lesson goes on, and the lesson bar at the top shows how many
             aliens are left before the level ends.
           </p>
-          <p className="mt-1.5 text-sm text-slate-300">
-            New this level:{' '}
-            <strong className="text-emerald-300">{ALIEN_VARIANT_LABELS[level.newAlien]}</strong>{' '}
-            aliens join the fleet alongside the species you have already faced.
-          </p>
+          {level.newAlien && (
+            <p className="mt-1.5 text-sm text-slate-300">
+              New this level:{' '}
+              <strong className="text-emerald-300">{ALIEN_VARIANT_LABELS[level.newAlien]}</strong>{' '}
+              aliens join the fleet alongside the species you have already faced.
+            </p>
+          )}
         </div>
 
         <div className="mt-3">
