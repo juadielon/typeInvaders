@@ -53,7 +53,7 @@ export function useGameLoop(
   }, [])
 
   useEffect(() => {
-    if (status !== 'playing') {
+    if (status !== 'playing' && status !== 'levelComplete') {
       lastFrameRef.current = null
       return
     }
@@ -73,7 +73,9 @@ export function useGameLoop(
 
       const spawnInterval = getSpawnInterval(level, now - levelStartedAt)
 
-      if (now - lastSpawnRef.current >= spawnInterval) {
+      // A cleared level still ticks so the final shot animates out, but no new
+      // aliens should arrive during that hold.
+      if (status === 'playing' && now - lastSpawnRef.current >= spawnInterval) {
         lastSpawnRef.current = now
         dispatch({ type: 'SPAWN' })
       }

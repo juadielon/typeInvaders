@@ -21,6 +21,12 @@ import {
 const HIT_DAMAGE = 10
 const LASER_LIFETIME_MS = 250
 const EXPLOSION_LIFETIME_MS = 300
+/**
+ * How long the playfield is held after the final alien of a level dies. Without
+ * it the level would end on the same action that fires the shot, so the last
+ * laser and explosion would never be drawn.
+ */
+export const LEVEL_CLEAR_DELAY_MS = 650
 
 // The mothership only shows up once the shield has taken any damage, and only
 // now and then, so it reads as a rare rescue opportunity rather than a routine target.
@@ -67,6 +73,7 @@ export function createInitialState(): GameState {
     mothership: null,
     mothershipNextCheckAt: 0,
     levelStartedAt: 0,
+    levelCompletedAt: 0,
   }
 }
 
@@ -161,6 +168,33 @@ export function gameReducer(state: GameState, action: Action): GameState {
     }
 
     case 'TICK': {
+      const lasers = state.lasers.filter(
+        (laser) => action.now - laser.createdAt < LASER_LIFETIME_MS,
+      )
+      const explosions = state.explosions.filter(
+        (explosion) => action.now - explosion.createdAt < EXPLOSION_LIFETIME_MS,
+      )
+
+      // A cleared level keeps animating the final shot before it hands over to
+      // the next briefing or the victory screen.
+      if (state.status === 'levelComplete') {
+        if (action.now - state.levelCompletedAt < LEVEL_CLEAR_DELAY_MS) {
+          return { ...state, lasers, explosions }
+        }
+
+        const isLastLevel = state.levelIndex >= LEVELS.length - 1
+        return {
+          ...state,
+          lasers,
+          explosions,
+          levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
+          kills: isLastLevel ? state.kills : 0,
+          status: isLastLevel ? 'gameOver' : 'levelBriefing',
+          victory: isLastLevel,
+          levelCompletedAt: 0,
+        }
+      }
+
       if (state.status !== 'playing') return state
       const level = LEVELS[state.levelIndex]
       const dyPx = level.descentSpeed * action.dt
@@ -175,13 +209,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
           survivors.push({ ...alien, y })
         }
       }
-
-      const lasers = state.lasers.filter(
-        (laser) => action.now - laser.createdAt < LASER_LIFETIME_MS,
-      )
-      const explosions = state.explosions.filter(
-        (explosion) => action.now - explosion.createdAt < EXPLOSION_LIFETIME_MS,
-      )
 
       if (shieldHp <= 0) {
         return {
@@ -291,7 +318,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const level = LEVELS[state.levelIndex]
 
       if (kills >= level.targetKills) {
-        const isLastLevel = state.levelIndex >= LEVELS.length - 1
         return {
           ...state,
           // Any aliens still descending are cleared immediately so the level
@@ -301,12 +327,14 @@ export function gameReducer(state: GameState, action: Action): GameState {
           explosions: [...state.explosions, explosion],
           shipX: target.x,
           score,
+          kills,
           correctKeystrokes,
           totalKeystrokes,
-          levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
-          kills: isLastLevel ? kills : 0,
-          status: isLastLevel ? 'gameOver' : 'levelBriefing',
-          victory: isLastLevel,
+          mothership: null,
+          // Hold the playfield so this final shot and explosion are seen; the
+          // TICK handler moves on to the briefing or the victory screen.
+          status: 'levelComplete',
+          levelCompletedAt: now,
         }
       }
 

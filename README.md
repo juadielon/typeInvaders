@@ -19,6 +19,8 @@ Node.js/npm installation on your machine is required.
 ## Table of contents
 
 - [How the game works](#how-the-game-works)
+- [Game rules](#game-rules)
+- [Level progression](#level-progression)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Running the game](#running-the-game)
@@ -31,9 +33,9 @@ Node.js/npm installation on your machine is required.
 ## How the game works
 
 - Aliens descend from the top of the playfield, each labelled with a Home
-  Row letter (Level 1 starts with `F` and `J` only). They come in a few
-  visual varieties (scout, brute, trickster), which are purely cosmetic —
-  the letter is all that matters for gameplay.
+  Row letter (Level 1 starts with `F` and `J` only). They come in several
+  visual species (Scout, Brute, Trickster, Lurker and Warden), which are
+  purely cosmetic — the letter is all that matters for gameplay.
 - Type the letter shown on an alien to destroy it with a laser — the ship
   glides to and fires from the position of the lowest (most urgent)
   on-screen alien matching that key, with a small explosion on a hit.
@@ -71,6 +73,75 @@ Node.js/npm installation on your machine is required.
   Since the MVP practises individual letters, it is a practice estimate rather
   than a completed-word speed; future word and phrase lessons can use completed
   text and spaces for a more natural calculation.
+
+## Game rules
+
+A quick reference to every rule the game currently applies.
+
+### Shooting
+
+| Rule | Detail |
+| --- | --- |
+| Destroying an alien | Press the letter shown on the alien. |
+| Which alien is hit | The lowest (most urgent) alien carrying that letter. |
+| Score per alien | 10 points. |
+| Wrong key | Counts as a misfire against accuracy, but costs no Shield HP. |
+| Input source | Only the physical keyboard; the Visual Keyboard is a reference. |
+
+### Shields and losing
+
+| Rule | Detail |
+| --- | --- |
+| Starting Shield | 100 HP. |
+| Alien reaching your ship | Costs 10 Shield HP and removes that alien. |
+| Game over | Shield HP reaching 0. |
+
+### Mothership bonus
+
+| Rule | Detail |
+| --- | --- |
+| When it appears | Only once your Shield has taken damage, and only occasionally. |
+| How to destroy it | Type the letter it carries, when no descending alien matches. |
+| Reward | 50 points and 30 Shield HP restored (capped at 100). |
+| Progression | Does not count toward the level's kill target. |
+
+### Lessons and levels
+
+| Rule | Detail |
+| --- | --- |
+| Starting a game | Choose any lesson from the lesson selector. |
+| Before each level | A briefing pauses the game until you choose to continue. |
+| Replaying a lesson | Resets score, Shield, kills and the playfield. |
+| Clearing a level | Destroy the level's target number of aliens. |
+| Spawn pacing | Starts gently and speeds up as the level progresses. |
+| Progress indicator | The lesson bar shows cleared and remaining aliens. |
+| End-of-level pause | The playfield is held briefly so the final shot is visible. |
+| Winning | Clearing the final level ends the game in victory. |
+
+### Scoring statistics
+
+| Rule | Detail |
+| --- | --- |
+| Accuracy | `correctKeystrokes / totalKeystrokes`, shown as a percentage. |
+| WPM | `correctKeystrokes / 5 / elapsedMinutes`, measured from the start of the game. |
+| Persistence | Neither is saved between sessions in this MVP. |
+
+## Level progression
+
+Each level unlocks two more Home Row keys, introduces a new alien species,
+raises the practice target, and ends at a faster spawn cadence than the one
+before it. Earlier species keep appearing, so the fleet grows as you progress.
+
+| Level | Keys | New alien | Aliens to clear | Opening spawn | Fastest spawn |
+| --- | --- | --- | --- | --- | --- |
+| 1 | F J | Scout | 42 | 2200 ms | 800 ms |
+| 2 | + D K | Brute | 50 | 2000 ms | 720 ms |
+| 3 | + A ; | Trickster | 58 | 1900 ms | 660 ms |
+| 4 | + S L | Lurker | 66 | 1800 ms | 600 ms |
+| 5 | + G H | Warden | 74 | 1700 ms | 540 ms |
+
+The spawn rate eases from the opening cadence to the fastest cadence over the
+course of the level, so the pressure builds while you settle into the new keys.
 
 ## Prerequisites
 

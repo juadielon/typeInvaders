@@ -2,7 +2,13 @@
  * Core type definitions for Type Invaders.
  */
 
-export type GameStatus = 'idle' | 'lessonSelect' | 'levelBriefing' | 'playing' | 'gameOver'
+export type GameStatus =
+  | 'idle'
+  | 'lessonSelect'
+  | 'levelBriefing'
+  | 'playing'
+  | 'levelComplete'
+  | 'gameOver'
 
 export type HandSide = 'left' | 'right'
 
@@ -108,6 +114,11 @@ export interface GameState {
   startedAt: number
   /** Timestamp (ms) the current level started, used for spawn pacing. */
   levelStartedAt: number
+  /**
+   * Timestamp (ms) the final alien of a level was destroyed. Used to hold the
+   * playfield briefly so the last shot and explosion finish playing.
+   */
+  levelCompletedAt: number
   /** The roaming mothership, or null when none is currently on screen. */
   mothership: Mothership | null
   /** Timestamp (ms) of the next roll to decide whether a mothership appears. */
