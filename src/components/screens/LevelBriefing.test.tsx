@@ -34,16 +34,20 @@ describe('LevelBriefing', () => {
     expect(screen.queryByText(/species from earlier missions/i)).not.toBeInTheDocument()
   })
 
-  it('distinguishes lesson keys from the commas separating them', () => {
+  it('colours only alphabetic mission keys', () => {
     render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
 
     const keyList = screen.getByLabelText(/lesson keys:/i)
-    const separators = keyList.querySelectorAll('.text-slate-500')
-    const keys = keyList.querySelectorAll('.text-emerald-300')
+    const highlightedKeys = keyList.querySelectorAll('.text-emerald-300')
+    const commaKey = Array.from(keyList.querySelectorAll('.font-mono')).find(
+      (key) => key.textContent === ',',
+    )
 
-    expect(separators.length).toBe(LEVELS[11].allowedKeys.length - 1)
-    expect(keys.length).toBe(LEVELS[11].allowedKeys.length)
-    expect(Array.from(keys).some((key) => key.textContent === ',')).toBe(true)
+    expect(highlightedKeys.length).toBe(
+      LEVELS[11].allowedKeys.filter((key) => /^[a-z]$/.test(key)).length,
+    )
+    expect(commaKey).not.toHaveClass('text-emerald-300')
+    expect(keyList.querySelector('.text-slate-500')).not.toBeInTheDocument()
   })
 
   it('explains reaching up to the Top Row and introduces its new alien', () => {
