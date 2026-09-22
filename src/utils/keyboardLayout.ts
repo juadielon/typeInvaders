@@ -17,10 +17,11 @@ export const KEY_FINGER_MAP: Record<string, KeyFingerInfo> = {
   ';': { hand: 'right', finger: 'pinky' },
 }
 
-/** Rows of the QWERTY keyboard rendered by VisualKeyboard, top to bottom. */
+/** Letter rows rendered by VisualKeyboard, top to bottom. */
 export const KEYBOARD_ROWS: string[][] = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';'],
+  ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
 ]
 
 export function fingerLabel(key: string): string {

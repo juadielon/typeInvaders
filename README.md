@@ -51,7 +51,9 @@ Node.js/npm installation on your machine is required.
 - Clearing the required number of aliens in a level advances you to the
   next level, which unlocks additional keys and increases difficulty
   (faster spawns, faster descent); the screen is cleared of aliens before
-  the next level begins.
+  the next level begins. A briefing then pauses the game until you choose
+  to continue. It shows the correct home-row hand positions, each key's
+  finger movement, and the new level's objective.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
   but are not saved between sessions in this MVP.
 

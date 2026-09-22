@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fingerLabel } from './keyboardLayout'
+import { KEYBOARD_ROWS, fingerLabel } from './keyboardLayout'
 
 describe('fingerLabel', () => {
   it('returns the hand and finger for known Home Row keys', () => {
@@ -10,5 +10,11 @@ describe('fingerLabel', () => {
 
   it('returns an empty string for keys with no finger mapping', () => {
     expect(fingerLabel('z')).toBe('')
+  })
+
+  it('includes the three letter rows without the advanced number row', () => {
+    expect(KEYBOARD_ROWS).toHaveLength(3)
+    expect(KEYBOARD_ROWS[0]).toEqual(['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'])
+    expect(KEYBOARD_ROWS[2]).toEqual(['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'])
   })
 })

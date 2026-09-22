@@ -22,7 +22,8 @@ affects the feature's behaviour or scope.
 ## Next priorities
 
 1. Expand the lesson path beyond the initial home-row key set while keeping
-   each lesson approachable for beginners.
+   each lesson approachable for beginners. Introduce the number row only
+   in advanced levels, after learners are comfortable with the letter rows.
 2. Introduce alien plasma bolts in later levels, with a "Press [SPACE] to
    Shield!" prompt that teaches thumb discipline and breaks up repeated
    letter-key practice.

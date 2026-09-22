@@ -34,6 +34,25 @@
   transform-origin: top center;
 }
 
+@keyframes type-invader-antennae {
+  0%,
+  100% {
+    transform: rotate(-12deg);
+  }
+
+  50% {
+    transform: rotate(12deg);
+  }
+}
+
+.type-invader-antenna {
+  animation: type-invader-antennae 700ms ease-in-out infinite alternate;
+}
+
+.type-invader-antenna:nth-child(2) {
+  animation-direction: alternate-reverse;
+}
+
 @keyframes type-invader-explosion {
   0% {
     transform: scale(0.4);
