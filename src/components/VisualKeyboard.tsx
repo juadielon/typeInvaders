@@ -7,6 +7,8 @@ interface VisualKeyboardProps {
   primaryKey?: string
   /** True while a plasma bolt is inbound and the Spacebar should be highlighted. */
   spaceActive?: boolean
+  /** Whether to show concise key-to-finger guidance beneath the Spacebar. */
+  showHints?: boolean
 }
 
 /**
@@ -18,6 +20,7 @@ export function VisualKeyboard({
   activeKeys,
   primaryKey,
   spaceActive = false,
+  showHints = true,
 }: VisualKeyboardProps) {
   const activeSet = new Set(activeKeys)
   const hints = activeKeys
@@ -63,9 +66,11 @@ export function VisualKeyboard({
       >
         space
       </div>
-      <div className="h-5 text-xs text-slate-400">
-        {hints.length > 0 ? hints.join('   |   ') : 'Watch for highlighted keys above'}
-      </div>
+      {showHints && (
+        <div className="h-5 text-xs text-slate-400">
+          {hints.length > 0 ? hints.join('   |   ') : 'Watch for highlighted keys above'}
+        </div>
+      )}
     </div>
   )
 }

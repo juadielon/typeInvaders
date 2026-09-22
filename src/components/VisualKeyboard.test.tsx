@@ -3,6 +3,13 @@ import { describe, expect, it } from 'vitest'
 import { VisualKeyboard } from './VisualKeyboard'
 
 describe('VisualKeyboard', () => {
+  it('can hide redundant finger guidance during a mission briefing', () => {
+    render(<VisualKeyboard activeKeys={['f', 'j']} showHints={false} />)
+
+    expect(screen.queryByText(/f → left index/i)).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Spacebar')).toBeInTheDocument()
+  })
+
   it('shows finger guidance below the Spacebar', () => {
     render(<VisualKeyboard activeKeys={['f', 'j']} />)
 

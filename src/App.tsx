@@ -100,6 +100,7 @@ function App() {
             activeKeys={activeKeys}
             primaryKey={primaryKey}
             spaceActive={state.plasmaBolts.length > 0}
+            showHints={state.status !== 'levelBriefing'}
           />
         </>
       )}
