@@ -62,6 +62,22 @@ difficulty curve.
 12. **Pilot certification** - Mix all learned letters, numbers, and Spacebar
     defence in short missions. Reward accuracy, consistency, and improvement
     with personal bests rather than requiring a high typing speed.
+13. **Pattern patrols** - Introduce common letter patterns such as `th`, `he`,
+    `in`, `er`, `re`, `an`, and `ing`. Let players clear recognisable formations
+    by typing each pattern accurately, building rhythm without requiring full
+    words yet.
+14. **Word supply run** - Progress from short, high-frequency words such as
+    `the`, `and`, `you`, `is`, `to`, and `can` into slightly longer everyday
+    words. Present each word as a short alien convoy so players practise
+    continuous movement across several keys.
+15. **Phrase missions** - Add useful beginner phrases such as `good job`,
+    `well done`, `go go go`, and `type with care`. Teach the Spacebar as part
+    of normal typing, with spaces creating a new target wave or a small combo
+    reward.
+16. **Comms challenge** - Combine common patterns, words, and short phrases
+    in themed messages from the ship. Keep messages brief, repeat them with
+    small variations, and measure accuracy and consistency before increasing
+    speed.
 
 ## Next priorities
 
