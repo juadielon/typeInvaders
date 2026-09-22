@@ -58,6 +58,8 @@ export interface PlasmaBolt {
   y: number
   /** Timestamp used for feedback and animation bookkeeping. */
   createdAt: number
+  /** Variant of the alien that fired this bolt, used to tint the missile. */
+  sourceVariant: AlienVariant
 }
 
 export type ShieldFeedback = 'ready' | 'blocked' | 'missed'
@@ -140,6 +142,9 @@ export interface GameState {
   mothershipNextCheckAt: number
   /** Timestamp (ms) when the next plasma bolt may be emitted. */
   nextPlasmaCheckAt: number
+  /** Feedback shown when the player destroys an alien that wasn't the closest one to the ship. */
+  targetWarning: 'outOfOrder' | null
+  targetWarningUntil: number
 }
 
 export interface KeyFingerInfo {

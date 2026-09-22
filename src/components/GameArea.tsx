@@ -44,6 +44,25 @@ const alienStyles = {
   },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
 
+/** Alien variants that can launch plasma bolts, matching the reducer's launcher list. */
+type PlasmaLauncherVariant = 'trickster' | 'warden'
+
+/** Tints the plasma missile to match the alien variant that fired it. */
+const plasmaStyles: Record<PlasmaLauncherVariant, Record<'body' | 'text' | 'flame' | 'fin', string>> = {
+  trickster: {
+    body: 'border-fuchsia-200 bg-fuchsia-900/80 shadow-[0_0_10px_3px_rgba(240,171,252,0.85)]',
+    text: 'text-fuchsia-100',
+    flame: 'from-fuchsia-400/80',
+    fin: 'bg-fuchsia-300',
+  },
+  warden: {
+    body: 'border-rose-200 bg-rose-900/80 shadow-[0_0_10px_3px_rgba(253,164,175,0.85)]',
+    text: 'text-rose-100',
+    flame: 'from-rose-400/80',
+    fin: 'bg-rose-300',
+  },
+}
+
 const mothershipStyles = {
   saucer: {
     hull: 'rounded-full border-violet-300 bg-violet-900/80 shadow-[0_0_12px_rgba(196,181,253,0.7)]',
@@ -71,6 +90,7 @@ interface GameAreaProps {
   shieldHp: number
   mothership: Mothership | null
   shipX: number
+  targetWarning: 'outOfOrder' | null
 }
 
 /** Renders the playfield: descending aliens, laser hit animations, and the player ship. */
@@ -83,6 +103,7 @@ export function GameArea({
   shieldHp,
   mothership,
   shipX,
+  targetWarning,
 }: GameAreaProps) {
   return (
     <div
@@ -180,14 +201,31 @@ export function GameArea({
 
       {plasmaBolts.map((bolt) => {
         const isBlockable = bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW
+        const style = plasmaStyles[bolt.sourceVariant as PlasmaLauncherVariant] ?? plasmaStyles.warden
         return (
           <div
             key={bolt.id}
             aria-label={isBlockable ? 'Press Space to block plasma' : 'Incoming plasma bolt'}
-            className={`absolute flex h-6 w-16 -translate-x-1/2 items-center justify-center rounded-full border border-orange-200 bg-orange-900/80 font-mono text-[10px] font-black uppercase text-orange-100 shadow-[0_0_10px_3px_rgba(251,146,60,0.85)] ${isBlockable ? 'animate-pulse' : ''}`}
+            className="absolute -translate-x-1/2"
             style={{ left: bolt.x, top: MOTHERSHIP_LANE_HEIGHT + bolt.y }}
           >
-            space
+            {/* Thruster flame trails opposite the direction of travel, at the tail end near the fins. */}
+            <div
+              className={`absolute left-1/2 -top-4 h-4 w-1 -translate-x-1/2 rounded-full bg-gradient-to-t ${style.flame} to-transparent ${isBlockable ? 'animate-pulse' : ''}`}
+            />
+            {/* Small fins at the tail, opposite the nose, so the bolt reads as a missile. */}
+            <span className={`absolute -top-0.5 left-0 h-2 w-1 -translate-x-1/2 -skew-y-12 ${style.fin}`} />
+            <span className={`absolute -top-0.5 right-0 h-2 w-1 translate-x-1/2 skew-y-12 ${style.fin}`} />
+            <div
+              className={`type-invader-missile relative flex h-14 w-5 flex-col items-center justify-center gap-px border font-mono text-[7px] font-black uppercase leading-none ${style.body} ${isBlockable ? 'animate-pulse' : ''}`}
+              style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 82%, 50% 100%, 0% 82%)' }}
+            >
+              {['s', 'p', 'a', 'c', 'e'].map((letter, index) => (
+                <span key={index} className={style.text}>
+                  {letter}
+                </span>
+              ))}
+            </div>
           </div>
         )
       })}
@@ -195,6 +233,11 @@ export function GameArea({
       {shieldFeedback === 'blocked' && (
         <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-emerald-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-emerald-200 shadow-lg">
           Shield block!
+        </div>
+      )}
+      {targetWarning === 'outOfOrder' && (
+        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-amber-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-amber-200 shadow-lg">
+          Target the lowest alien first!
         </div>
       )}
       {shieldFeedback === 'missed' && (

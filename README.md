@@ -85,6 +85,7 @@ A quick reference to every rule the game currently applies.
 | Destroying an alien | Press the letter shown on the alien. |
 | Which alien is hit | The lowest (most urgent) alien carrying that letter. |
 | Score per alien | 10 points. |
+| Priority penalty | Destroying an alien while a closer one is still descending costs 5 Shield HP, so you can't dodge the most urgent threat by picking an easier letter. |
 | Wrong key | Counts as a misfire against accuracy, but costs no Shield HP. |
 | Input source | Only the physical keyboard; the Visual Keyboard is a reference. |
 

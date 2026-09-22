@@ -72,6 +72,7 @@ function App() {
               shieldHp={state.shieldHp}
               mothership={state.mothership}
               shipX={state.shipX}
+              targetWarning={state.targetWarning}
             />
 
             {state.status === 'levelBriefing' && (

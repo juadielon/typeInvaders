@@ -27,6 +27,9 @@ import {
 const HIT_DAMAGE = 10
 const LASER_LIFETIME_MS = 250
 const EXPLOSION_LIFETIME_MS = 300
+/** Shield HP cost for destroying an alien that wasn't the closest one to the ship. */
+const PRIORITY_PENALTY = 5
+const TARGET_WARNING_DURATION_MS = 900
 /**
  * How long the playfield is held after the final alien of a level dies. Without
  * it the level would end on the same action that fires the shot, so the last
@@ -85,6 +88,8 @@ export function createInitialState(): GameState {
     levelStartedAt: 0,
     levelCompletedAt: 0,
     nextPlasmaCheckAt: 0,
+    targetWarning: null,
+    targetWarningUntil: 0,
   }
 }
 
@@ -132,7 +137,13 @@ function spawnMothership(allowedKeys: string[]): Mothership {
 }
 
 function spawnPlasmaBolt(alien: Alien, now: number): PlasmaBolt {
-  return { id: nextId('plasma'), x: alien.x, y: alien.y + ALIEN_SIZE / 2, createdAt: now }
+  return {
+    id: nextId('plasma'),
+    x: alien.x,
+    y: alien.y + ALIEN_SIZE / 2,
+    createdAt: now,
+    sourceVariant: alien.variant,
+  }
 }
 
 function explosionAt(x: number, y: number, now: number): Explosion {
@@ -248,6 +259,12 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shieldFeedback = null
         shieldFeedbackUntil = 0
       }
+      let targetWarning = state.targetWarning
+      let targetWarningUntil = state.targetWarningUntil
+      if (targetWarningUntil > 0 && action.now >= targetWarningUntil) {
+        targetWarning = null
+        targetWarningUntil = 0
+      }
       if (missedBolt) {
         plasmaBolts = plasmaBolts.filter((bolt) => bolt.id !== missedBolt.id)
         shieldHp = Math.max(0, shieldHp - PLASMA_BOLT_DAMAGE)
@@ -318,6 +335,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shieldHp,
         shieldFeedback,
         shieldFeedbackUntil,
+        targetWarning,
+        targetWarningUntil,
         nextPlasmaCheckAt,
         mothership,
         mothershipNextCheckAt,
@@ -381,11 +400,41 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
       const explosion = explosionAt(target.x, impactY, now)
 
+      // The player must react to the alien closest to the ship first. Destroying
+      // any other alien while a closer one is still descending costs a small
+      // Shield penalty, so learners can't dodge the priority alien by picking
+      // whichever letter is easiest for them.
+      const closestY = Math.max(...state.aliens.map((alien) => alien.y))
+      const isOutOfOrder = target.y < closestY
+      const shieldHp = isOutOfOrder ? Math.max(0, state.shieldHp - PRIORITY_PENALTY) : state.shieldHp
+      const targetWarning = isOutOfOrder ? 'outOfOrder' : null
+      const targetWarningUntil = isOutOfOrder ? now + TARGET_WARNING_DURATION_MS : 0
+
       const aliens = state.aliens.filter((_, index) => index !== targetIndex)
       const kills = state.kills + 1
       const score = state.score + 10
       const correctKeystrokes = state.correctKeystrokes + 1
       const level = LEVELS[state.levelIndex]
+
+      if (shieldHp <= 0) {
+        return {
+          ...state,
+          aliens: [],
+          lasers: [...state.lasers, laser],
+          explosions: [...state.explosions, explosion],
+          shipX: target.x,
+          score,
+          kills,
+          correctKeystrokes,
+          totalKeystrokes,
+          shieldHp: 0,
+          targetWarning,
+          targetWarningUntil,
+          plasmaBolts: [],
+          status: 'gameOver',
+          mothership: null,
+        }
+      }
 
       if (kills >= level.targetKills) {
         return {
@@ -400,6 +449,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
           kills,
           correctKeystrokes,
           totalKeystrokes,
+          shieldHp,
+          targetWarning: null,
+          targetWarningUntil: 0,
           mothership: null,
           plasmaBolts: [],
           shieldFeedback: null,
@@ -421,6 +473,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
         kills,
         correctKeystrokes,
         totalKeystrokes,
+        shieldHp,
+        targetWarning,
+        targetWarningUntil,
       }
     }
 
