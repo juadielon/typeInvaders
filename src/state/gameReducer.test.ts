@@ -321,15 +321,19 @@ describe('gameReducer', () => {
     expect(state.lasers).toHaveLength(1)
     expect(state.explosions).toHaveLength(1)
     expect(state.shipX).toBe(20)
+    expect(state.correctKeystrokes).toBe(1)
+    expect(state.totalKeystrokes).toBe(1)
   })
 
-  it('ignores Spacebar when no plasma missile is inbound', () => {
+  it('counts an empty Spacebar press as a misfire against accuracy', () => {
     let state = beginGame()
     state = { ...state, plasmaBolts: [] }
 
-    const after = gameReducer(state, { type: 'SPACE_PRESS' })
+    state = gameReducer(state, { type: 'SPACE_PRESS' })
 
-    expect(after).toEqual(state)
+    expect(state.plasmaBolts).toHaveLength(0)
+    expect(state.correctKeystrokes).toBe(0)
+    expect(state.totalKeystrokes).toBe(1)
   })
 
   it('homes plasma towards the spaceship as it moves', () => {

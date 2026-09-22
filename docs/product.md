@@ -77,7 +77,7 @@ The MVP includes:
 | Pure reducer for game state | Rules such as scoring, targeting, damage, and level progression are easier to test and change safely. |
 | Pause the game when the browser tab is hidden | Players should not lose shields because their browser was in the background. |
 | Hold a cleared level for a moment before transitioning | The final shot and explosion should be seen, so a level never appears to end before the player's last keystroke landed. |
-| Spacebar plasma defence | Firing at an incoming missile adds a small reflex exercise without replacing letter practice. |
+| Spacebar plasma defence | Firing at an incoming missile adds a small reflex exercise, and now counts toward accuracy/WPM like a letter key. |
 | Tests for game-logic changes | Behavioural changes should be protected by targeted unit tests before they are merged. |
 
 ## Where the rules live
