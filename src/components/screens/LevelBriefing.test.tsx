@@ -24,4 +24,19 @@ describe('LevelBriefing', () => {
     expect(screen.getByText(/left index sideways from f to g/i)).toBeInTheDocument()
     expect(screen.getByText(/right index sideways from j to h/i)).toBeInTheDocument()
   })
+
+  it('explains reaching up to the Top Row and omits the new-alien callout once every species has appeared', () => {
+    render(<LevelBriefing level={LEVELS[5]} onBegin={vi.fn()} />)
+
+    expect(screen.getByText(/reach your left index up from f to r/i)).toBeInTheDocument()
+    expect(screen.getByText(/reach your right index up from j to u/i)).toBeInTheDocument()
+    expect(screen.queryByText(/new this level/i)).not.toBeInTheDocument()
+  })
+
+  it('explains reaching down to the Bottom Row', () => {
+    render(<LevelBriefing level={LEVELS[10]} onBegin={vi.fn()} />)
+
+    expect(screen.getByText(/reach your left index down from f to v/i)).toBeInTheDocument()
+    expect(screen.getByText(/reach your right index down from j to m/i)).toBeInTheDocument()
+  })
 })

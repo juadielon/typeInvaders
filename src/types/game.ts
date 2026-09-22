@@ -105,8 +105,8 @@ export interface LevelConfig {
   descentSpeed: number
   /** Number of aliens that must be destroyed to clear this level. */
   targetKills: number
-  /** Alien species introduced by this level; earlier species keep appearing. */
-  newAlien: AlienVariant
+  /** Alien species introduced by this level; omitted once all species have appeared. */
+  newAlien?: AlienVariant
 }
 
 export interface GameState {

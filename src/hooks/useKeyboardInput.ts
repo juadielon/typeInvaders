@@ -4,7 +4,8 @@ import type { GameStatus } from '../types/game'
 /**
  * Listens for physical keydown events while the game is playing.
  * Ignores repeats (holding a key down shouldn't fire twice) and anything
- * that isn't a plain letter or semicolon, so modifier/function keys don't
+ * that isn't a plain letter or one of the punctuation keys used by the
+ * Bottom Row lessons (`;`, `,`, `.`, `/`), so modifier/function keys don't
  * count as a shot.
  */
 export function useKeyboardInput(
@@ -27,7 +28,7 @@ export function useKeyboardInput(
 
       const key = event.key.toLowerCase()
       if (key.length !== 1) return
-      if (!/^[a-z;]$/.test(key)) return
+      if (!/^[a-z;,./]$/.test(key)) return
 
       onKey(key)
     }

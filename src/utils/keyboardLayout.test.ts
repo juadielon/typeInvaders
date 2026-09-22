@@ -9,7 +9,14 @@ describe('fingerLabel', () => {
   })
 
   it('returns an empty string for keys with no finger mapping', () => {
-    expect(fingerLabel('z')).toBe('')
+    expect(fingerLabel('1')).toBe('')
+  })
+
+  it('returns the hand and finger for Top and Bottom Row keys', () => {
+    expect(fingerLabel('r')).toBe('Left Index')
+    expect(fingerLabel('u')).toBe('Right Index')
+    expect(fingerLabel('v')).toBe('Left Index')
+    expect(fingerLabel('m')).toBe('Right Index')
   })
 
   it('includes the three letter rows without the advanced number row', () => {

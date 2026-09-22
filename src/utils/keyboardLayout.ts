@@ -1,10 +1,12 @@
 import type { KeyFingerInfo } from '../types/game'
 
 /**
- * Maps each home-row (and near-home-row) key to the hand/finger that should
- * be used to type it, for the Visual Keyboard instructor hints.
+ * Maps every letter/punctuation key across the Home, Top and Bottom rows to
+ * the hand/finger that should be used to type it, for the Visual Keyboard
+ * instructor hints.
  */
 export const KEY_FINGER_MAP: Record<string, KeyFingerInfo> = {
+  // Home row.
   a: { hand: 'left', finger: 'pinky' },
   s: { hand: 'left', finger: 'ring' },
   d: { hand: 'left', finger: 'middle' },
@@ -15,6 +17,28 @@ export const KEY_FINGER_MAP: Record<string, KeyFingerInfo> = {
   k: { hand: 'right', finger: 'middle' },
   l: { hand: 'right', finger: 'ring' },
   ';': { hand: 'right', finger: 'pinky' },
+  // Top row.
+  q: { hand: 'left', finger: 'pinky' },
+  w: { hand: 'left', finger: 'ring' },
+  e: { hand: 'left', finger: 'middle' },
+  r: { hand: 'left', finger: 'index' },
+  t: { hand: 'left', finger: 'index' },
+  y: { hand: 'right', finger: 'index' },
+  u: { hand: 'right', finger: 'index' },
+  i: { hand: 'right', finger: 'middle' },
+  o: { hand: 'right', finger: 'ring' },
+  p: { hand: 'right', finger: 'pinky' },
+  // Bottom row.
+  z: { hand: 'left', finger: 'pinky' },
+  x: { hand: 'left', finger: 'ring' },
+  c: { hand: 'left', finger: 'middle' },
+  v: { hand: 'left', finger: 'index' },
+  b: { hand: 'left', finger: 'index' },
+  n: { hand: 'right', finger: 'index' },
+  m: { hand: 'right', finger: 'index' },
+  ',': { hand: 'right', finger: 'middle' },
+  '.': { hand: 'right', finger: 'ring' },
+  '/': { hand: 'right', finger: 'pinky' },
 }
 
 /** Letter rows rendered by VisualKeyboard, top to bottom. */
