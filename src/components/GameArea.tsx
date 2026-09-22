@@ -123,7 +123,10 @@ function AlienAccessories({ variant }: { variant: AlienVariant }) {
   switch (variant) {
     case 'giggler':
       return (
-        <span className="absolute left-1/2 top-4 z-20 h-2 w-4 -translate-x-1/2 rounded-b-full border-b-2 border-lime-200" />
+        <span
+          aria-hidden="true"
+          className="type-invader-giggler-smile absolute left-1/2 top-3 z-20 h-1.5 w-3 -translate-x-1/2 rounded-b-full border-b-2 border-lime-200"
+        />
       )
     case 'noodle':
       return (
