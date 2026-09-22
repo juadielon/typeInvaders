@@ -20,8 +20,8 @@ The game must be enjoyable without assuming they already type quickly.
 - Reward accurate, timely input without punishing an occasional mistake.
 - Make the most urgent matching alien the target so typing feels fair and
   predictable.
-- Use new threats to teach new keyboard habits, such as Spacebar shielding
-  when later levels introduce incoming plasma bolts.
+- Use new threats to teach new keyboard habits, such as Spacebar laser
+  practice when later levels introduce incoming plasma missiles.
 - Increase pressure slowly as players gain familiarity.
 - Keep feedback readable and avoid visual clutter that competes with the
   typing task.
@@ -37,14 +37,12 @@ The MVP includes:
   before the briefing or victory screen appears.
 
 - Plasma bolts home towards the spaceship, create an impact explosion, and
-  visibly deteriorate the ship as its shield weakens. A shield bubble only
-  appears once a bolt is inbound, communicating that the shield activates on
-  demand rather than sitting on permanently.
+  visibly deteriorate the ship as its shield weakens.
 - Plasma defence prompts for Spacebar practice: Trickster and Warden aliens
   can fire bolts labelled "space" (matching the letter labels on other
   aliens), which highlight the Spacebar on the on-screen keyboard while
-  inbound. Learners block them in a timing window or absorb a small Shield
-  loss.- Descending single-letter aliens with a new species introduced each level
+  inbound. Learners fire the ship's laser at the missile, just like shooting
+  a lettered alien, or absorb a small Shield loss if it reaches the ship.- Descending single-letter aliens with a new species introduced each level
   (Scout, Brute, Trickster, Lurker and Warden), a ship that
   glides to and fires from its target, laser feedback with a hit
   explosion, scoring, shields, and game-over and victory states.
@@ -79,7 +77,7 @@ The MVP includes:
 | Pure reducer for game state | Rules such as scoring, targeting, damage, and level progression are easier to test and change safely. |
 | Pause the game when the browser tab is hidden | Players should not lose shields because their browser was in the background. |
 | Hold a cleared level for a moment before transitioning | The final shot and explosion should be seen, so a level never appears to end before the player's last keystroke landed. |
-| Spacebar plasma defence | A small timing-based thumb exercise adds variety without replacing letter practice. |
+| Spacebar plasma defence | Firing at an incoming missile adds a small reflex exercise without replacing letter practice. |
 | Tests for game-logic changes | Behavioural changes should be protected by targeted unit tests before they are merged. |
 
 ## Where the rules live

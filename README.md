@@ -126,13 +126,11 @@ A quick reference to every rule the game currently applies.
 | Who fires | Trickster and Warden aliens. |
 | Bolt label | Each plasma bolt is labelled "space", just as aliens are labelled with their letter. |
 | Defence prompt | The Spacebar highlights on the on-screen keyboard while a bolt is inbound. |
-| Block key | Physical Spacebar. The on-screen keyboard highlight is instructional only. |
-| Successful block | Removes the bolt and awards 5 points. |
-| Missed bolt | Removes the bolt and costs 8 Shield HP. |
+| Fire key | Physical Spacebar. The on-screen keyboard highlight is instructional only. |
+| Successful shot | Fires a laser at the inbound bolt, destroying it and awarding 5 points. |
+| Missed bolt | Reaching the ship removes the bolt and costs 8 Shield HP. |
 | Missile path | Curves towards the spaceship's current position. |
 | Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
-| Shield bubble | Only appears once a plasma bolt is inbound, and absorbs the impact as Shield damage. |
-| Timing | A block is accepted only while the bolt is in the defence window. |
 | Tab switching | The game loop pauses while the browser tab is hidden. |
 ### Scoring statistics
 

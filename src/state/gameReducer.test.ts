@@ -291,7 +291,7 @@ describe('gameReducer', () => {
     expect(afterClear).toEqual(state)
   })
 
-  it('launches plasma from a dangerous alien and shows the Spacebar prompt', () => {
+  it('launches plasma from a dangerous alien', () => {
     let state = beginGame()
     state = {
       ...state,
@@ -303,10 +303,9 @@ describe('gameReducer', () => {
 
     expect(state.plasmaBolts).toHaveLength(1)
     expect(state.plasmaBolts[0].x).toBe(10)
-    expect(state.shieldFeedback).toBe('ready')
   })
 
-  it('blocks an approaching plasma bolt with Spacebar without losing Shield HP', () => {
+  it('fires a laser at an approaching plasma missile with Spacebar, destroying it without losing Shield HP', () => {
     let state = beginGame()
     state = {
       ...state,
@@ -319,7 +318,18 @@ describe('gameReducer', () => {
     expect(state.plasmaBolts).toHaveLength(0)
     expect(state.shieldHp).toBe(70)
     expect(state.score).toBe(5)
-    expect(state.shieldFeedback).toBe('blocked')
+    expect(state.lasers).toHaveLength(1)
+    expect(state.explosions).toHaveLength(1)
+    expect(state.shipX).toBe(20)
+  })
+
+  it('ignores Spacebar when no plasma missile is inbound', () => {
+    let state = beginGame()
+    state = { ...state, plasmaBolts: [] }
+
+    const after = gameReducer(state, { type: 'SPACE_PRESS' })
+
+    expect(after).toEqual(state)
   })
 
   it('homes plasma towards the spaceship as it moves', () => {

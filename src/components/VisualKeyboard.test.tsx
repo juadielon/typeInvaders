@@ -7,10 +7,10 @@ describe('VisualKeyboard', () => {
     const { rerender } = render(<VisualKeyboard activeKeys={['f']} spaceActive={false} />)
 
     expect(screen.getByLabelText('Spacebar')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Press Space to block plasma')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Press Space to fire at the plasma missile')).not.toBeInTheDocument()
 
     rerender(<VisualKeyboard activeKeys={['f']} spaceActive={true} />)
 
-    expect(screen.getByLabelText('Press Space to block plasma')).toBeInTheDocument()
+    expect(screen.getByLabelText('Press Space to fire at the plasma missile')).toBeInTheDocument()
   })
 })

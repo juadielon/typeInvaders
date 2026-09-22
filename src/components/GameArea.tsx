@@ -200,24 +200,24 @@ export function GameArea({
       })}
 
       {plasmaBolts.map((bolt) => {
-        const isBlockable = bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW
+        const isUrgent = bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW
         const style = plasmaStyles[bolt.sourceVariant as PlasmaLauncherVariant] ?? plasmaStyles.warden
         return (
           <div
             key={bolt.id}
-            aria-label={isBlockable ? 'Press Space to block plasma' : 'Incoming plasma bolt'}
+            aria-label="Incoming plasma missile, press Space to fire at it"
             className="absolute -translate-x-1/2"
             style={{ left: bolt.x, top: MOTHERSHIP_LANE_HEIGHT + bolt.y }}
           >
             {/* Thruster flame trails opposite the direction of travel, at the tail end near the fins. */}
             <div
-              className={`absolute left-1/2 -top-4 h-4 w-1 -translate-x-1/2 rounded-full bg-gradient-to-t ${style.flame} to-transparent ${isBlockable ? 'animate-pulse' : ''}`}
+              className={`absolute left-1/2 -top-4 h-4 w-1 -translate-x-1/2 rounded-full bg-gradient-to-t ${style.flame} to-transparent ${isUrgent ? 'animate-pulse' : ''}`}
             />
             {/* Small fins at the tail, opposite the nose, so the bolt reads as a missile. */}
             <span className={`absolute -top-0.5 left-0 h-2 w-1 -translate-x-1/2 -skew-y-12 ${style.fin}`} />
             <span className={`absolute -top-0.5 right-0 h-2 w-1 translate-x-1/2 skew-y-12 ${style.fin}`} />
             <div
-              className={`type-invader-missile relative flex h-14 w-5 flex-col items-center justify-center gap-px border font-mono text-[7px] font-black uppercase leading-none ${style.body} ${isBlockable ? 'animate-pulse' : ''}`}
+              className={`type-invader-missile relative flex h-14 w-5 flex-col items-center justify-center gap-px border font-mono text-[7px] font-black uppercase leading-none ${style.body} ${isUrgent ? 'animate-pulse' : ''}`}
               style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 82%, 50% 100%, 0% 82%)' }}
             >
               {['s', 'p', 'a', 'c', 'e'].map((letter, index) => (
@@ -230,11 +230,6 @@ export function GameArea({
         )
       })}
 
-      {shieldFeedback === 'blocked' && (
-        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-emerald-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-emerald-200 shadow-lg">
-          Shield block!
-        </div>
-      )}
       {targetWarning === 'outOfOrder' && (
         <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-amber-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-amber-200 shadow-lg">
           Target the lowest alien first!
@@ -276,21 +271,7 @@ export function GameArea({
         </div>
       ))}
 
-      {/* The shield only activates while a plasma bolt is inbound, and absorbs the impact by weakening with Shield HP. */}
-      {plasmaBolts.length > 0 && (
-        <div
-          aria-label={`Ship shield ${shieldHp}%`}
-          className={`pointer-events-none absolute h-16 w-20 -translate-x-1/2 rounded-full border-2 transition-all duration-300 ${shieldHp > 60 ? 'border-sky-300/70 shadow-[0_0_16px_4px_rgba(56,189,248,0.35)]' : shieldHp > 30 ? 'border-amber-300/80 shadow-[0_0_14px_3px_rgba(251,191,36,0.4)]' : 'border-red-400/90 shadow-[0_0_14px_3px_rgba(248,113,113,0.5)]'}`}
-          style={{
-            left: shipX,
-            top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y - 14,
-            opacity: Math.max(0.35, shieldHp / 100),
-            transform: `translateX(-50%) scale(${0.82 + shieldHp / 500})`,
-          }}
-        />
-      )}
-
-      {/* The ship lines up with each target before firing. Damage appears as the shield weakens. */}
+      {/* The ship lines up with each target before firing. Damage appears as Shield HP falls. */}
       <div
         className="absolute h-8 w-12 -translate-x-1/2 transition-[left] duration-150 ease-out"
         style={{ left: shipX, top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y }}

@@ -47,7 +47,7 @@ export function VisualKeyboard({ activeKeys, spaceActive = false }: VisualKeyboa
         {hints.length > 0 ? hints.join('   |   ') : 'Watch for highlighted keys above'}
       </div>
       <div
-        aria-label={spaceActive ? 'Press Space to block plasma' : 'Spacebar'}
+        aria-label={spaceActive ? 'Press Space to fire at the plasma missile' : 'Spacebar'}
         className={[
           'flex h-9 w-40 items-center justify-center rounded border font-mono text-sm uppercase transition-colors',
           spaceActive

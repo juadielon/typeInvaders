@@ -19,7 +19,6 @@ import {
   SHIP_Y,
   PLASMA_BOLT_DAMAGE,
   PLASMA_BOLT_SPEED,
-  PLASMA_BLOCK_WINDOW,
   PLASMA_MAX_CHECK_DELAY_MS,
   PLASMA_MIN_CHECK_DELAY_MS,
 } from '../hooks/useGameLoop'
@@ -273,10 +272,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shieldFeedbackUntil = action.now + 900
       }
 
-      if (plasmaBolts.some((bolt) => bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW) && shieldFeedback === null) {
-        shieldFeedback = 'ready'
-      }
-
       if (action.now >= nextPlasmaCheckAt) {
         const launchers = survivors.filter(
           (alien) => alien.variant === 'trickster' || alien.variant === 'warden',
@@ -284,8 +279,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
         if (launchers.length > 0 && plasmaBolts.length === 0) {
           const launcher = launchers[Math.floor(Math.random() * launchers.length)]
           plasmaBolts = [...plasmaBolts, spawnPlasmaBolt(launcher, action.now)]
-          shieldFeedback = 'ready'
-          shieldFeedbackUntil = 0
         }
         nextPlasmaCheckAt = action.now + randomPlasmaCheckDelay()
       }
@@ -482,14 +475,26 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case 'SPACE_PRESS': {
       if (state.status !== 'playing') return state
       const now = performance.now()
-      const boltIndex = state.plasmaBolts.findIndex((bolt) => bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW)
-      if (boltIndex === -1) return state
+      const bolt = state.plasmaBolts[0]
+      if (!bolt) return state
+
+      // Firing at the plasma missile works exactly like shooting a lettered
+      // alien: the ship glides to the target, fires a laser, and it explodes.
+      const laser: Laser = {
+        id: nextId('laser'),
+        x: bolt.x,
+        fromY: SHIP_Y,
+        toY: bolt.y,
+        createdAt: now,
+      }
+      const explosion = explosionAt(bolt.x, bolt.y, now)
 
       return {
         ...state,
-        plasmaBolts: state.plasmaBolts.filter((_, index) => index !== boltIndex),
-        shieldFeedback: 'blocked',
-        shieldFeedbackUntil: now + 700,
+        plasmaBolts: state.plasmaBolts.filter((b) => b.id !== bolt.id),
+        lasers: [...state.lasers, laser],
+        explosions: [...state.explosions, explosion],
+        shipX: bolt.x,
         score: state.score + 5,
       }
     }

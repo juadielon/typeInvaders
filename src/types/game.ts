@@ -62,7 +62,7 @@ export interface PlasmaBolt {
   sourceVariant: AlienVariant
 }
 
-export type ShieldFeedback = 'ready' | 'blocked' | 'missed'
+export type ShieldFeedback = 'missed'
 
 export interface Explosion {
   id: string
