@@ -238,7 +238,7 @@ describe('gameReducer', () => {
     expect(state.correctKeystrokes).toBe(0)
   })
 
-  it('opens the next level briefing after reaching the kill target and clears remaining aliens', () => {
+  it('opens mission results after reaching the kill target and clears remaining aliens', () => {
     let state = beginGame()
     state = {
       ...state,
@@ -262,9 +262,63 @@ describe('gameReducer', () => {
       now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS + 1,
     })
 
+    expect(state.status).toBe('levelResults')
+    expect(state.levelIndex).toBe(0)
+    expect(state.kills).toBe(LEVELS[0].targetKills)
+  })
+
+  it('retries a completed mission with fresh gameplay progress', () => {
+    const state = gameReducer(
+      {
+        ...createInitialState(),
+        status: 'levelResults',
+        levelIndex: 2,
+        score: 240,
+        shieldHp: 55,
+        kills: LEVELS[2].targetKills,
+      },
+      { type: 'RETRY_LEVEL' },
+    )
+
     expect(state.status).toBe('levelBriefing')
-    expect(state.levelIndex).toBe(1)
+    expect(state.levelIndex).toBe(2)
+    expect(state.score).toBe(0)
+    expect(state.shieldHp).toBe(100)
     expect(state.kills).toBe(0)
+  })
+
+  it('continues from mission results to the next briefing', () => {
+    const state = gameReducer(
+      {
+        ...createInitialState(),
+        status: 'levelResults',
+        levelIndex: 2,
+        kills: LEVELS[2].targetKills,
+      },
+      { type: 'CONTINUE_LEVEL' },
+    )
+
+    expect(state.status).toBe('levelBriefing')
+    expect(state.levelIndex).toBe(3)
+    expect(state.kills).toBe(0)
+  })
+
+  it('retries the current mission after game over', () => {
+    const state = gameReducer(
+      {
+        ...createInitialState(),
+        status: 'gameOver',
+        levelIndex: 4,
+        shieldHp: 0,
+        score: 180,
+      },
+      { type: 'RETRY_LEVEL' },
+    )
+
+    expect(state.status).toBe('levelBriefing')
+    expect(state.levelIndex).toBe(4)
+    expect(state.shieldHp).toBe(100)
+    expect(state.score).toBe(0)
   })
 
   it('keeps showing the final shot before the level transition completes', () => {
@@ -418,6 +472,11 @@ describe('gameReducer', () => {
       dt: 0.016,
       now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS + 1,
     })
+
+    expect(state.status).toBe('levelResults')
+    expect(state.victory).toBe(false)
+
+    state = gameReducer(state, { type: 'CONTINUE_LEVEL' })
 
     expect(state.status).toBe('gameOver')
     expect(state.victory).toBe(true)

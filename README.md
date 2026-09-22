@@ -60,13 +60,16 @@ Node.js/npm installation on your machine is required.
   lesson then shows its finger-position briefing before play begins. During
   the briefing, the on-screen keyboard highlights every key used in that
   lesson so you can find them before the aliens arrive.
-- Clearing the required number of aliens in a level advances you to the
-  next level, which unlocks additional keys and increases difficulty
+- Clearing the required number of aliens opens a mission-results screen.
+  You can retry the mission for more practice or continue to the next
+  level, which unlocks additional keys and increases difficulty
   (longer practice targets, a gentle opening spawn cadence that becomes
   faster during the level, and faster descent); the screen is cleared of aliens before
   the next level begins. A briefing then pauses the game until you choose
   to continue. It shows the correct hand positions, each key's
   finger movement, and the new level's objective.
+- If your Shield reaches 0%, the game-over screen lets you retry the same
+  mission immediately or return to the lesson selector.
 - A lesson progress bar in the status bar shows how many aliens you have
   cleared and how many remain before the level ends, so a longer lesson
   never feels open-ended.
@@ -119,14 +122,14 @@ A quick reference to every rule the game currently applies.
 | --- | --- |
 | Starting a game | Choose any lesson from the lesson selector. |
 | Before each level | A briefing pauses the game until you choose to continue. |
-| Replaying a lesson | Resets score, Shield, kills and the playfield. |
+| Replaying a lesson | Available after completing a mission or reaching game over; resets score, Shield, kills and the playfield. |
 | Clearing a level | Destroy the level's target number of aliens. |
 | Spawn pacing | Starts gently and speeds up as the level progresses. |
 | Alien descent | Starts at the same gentle speed in every level, then ramps towards the level's faster final speed. |
 | Keyboard priority | The closest alien's key uses the strong amber highlight; other visible letters use lighter amber. |
 | Progress indicator | The lesson bar shows cleared and remaining aliens. |
-| End-of-level pause | The playfield is held briefly so the final shot is visible. |
-| Winning | Clearing the final level ends the game in victory. |
+| End-of-level pause | The playfield is held briefly so the final shot is visible, then offers Retry Mission before continuing. |
+| Winning | Clearing the final level offers a retry before finishing the curriculum in victory. |
 
 ### Plasma defence
 

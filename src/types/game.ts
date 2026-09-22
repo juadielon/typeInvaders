@@ -8,6 +8,7 @@ export type GameStatus =
   | 'levelBriefing'
   | 'playing'
   | 'levelComplete'
+  | 'levelResults'
   | 'gameOver'
 
 export type HandSide = 'left' | 'right'

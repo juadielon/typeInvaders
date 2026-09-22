@@ -40,7 +40,8 @@ The MVP includes:
 - A lesson progress bar showing cleared and remaining aliens, so learners can
   see when the level will end.
 - A brief hold at the end of a level so the final shot and explosion play out
-  before the briefing or victory screen appears.
+  before a results screen offers a retry or the next mission. Game over also
+  offers an immediate retry of the current mission.
 - Plasma bolts home towards the spaceship, create an impact explosion, and
   visibly deteriorate the ship as its shield weakens.
 - Plasma defence prompts for Spacebar practice: Trickster and Warden aliens
@@ -90,6 +91,7 @@ The MVP includes:
 | Pure reducer for game state | Rules such as scoring, targeting, damage, and level progression are easier to test and change safely. |
 | Pause the game when the browser tab is hidden | Players should not lose shields because their browser was in the background. |
 | Hold a cleared level for a moment before transitioning | The final shot and explosion should be seen, so a level never appears to end before the player's last keystroke landed. |
+| Offer retry at every mission outcome | Learners should be able to repeat the same keys immediately after completing a mission or reaching game over, without navigating back through lesson selection. |
 | Spacebar plasma defence | Firing at an incoming missile adds a small reflex exercise, and now counts toward accuracy/WPM like a letter key. |
 | Closest-alien keyboard priority | Strong and secondary keyboard highlights teach the player which visible threat should be handled next without hiding other available letters. |
 | ESLint 9 flat configuration | TypeScript and React quality checks run consistently inside the Docker workflow. |
