@@ -70,7 +70,7 @@ const alienStyles = {
   },
   moustachio: {
     arm: 'bg-sky-300 shadow-[0_0_7px_rgba(125,211,252,0.85)]',
-    body: 'inset-x-0.5 top-1 bottom-2 rounded-t-full rounded-b-lg border-sky-300 bg-sky-950/80 shadow-[0_0_11px_rgba(125,211,252,0.6)]',
+    body: 'inset-x-0.5 top-0 bottom-1 rounded-t-full rounded-b-lg border-sky-300 bg-sky-950/80 shadow-[0_0_11px_rgba(125,211,252,0.6)]',
     eyes: 'rounded-full bg-sky-100',
     label: 'bottom-0.5 text-sky-100',
   },
