@@ -194,7 +194,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const alien: Alien = {
         id: nextId('alien'),
         char: randomChar(level.allowedKeys),
-        variant: randomVariant(state.levelIndex),
+        variant:
+          state.kills === 0 && state.aliens.length === 0
+            ? level.newAlien
+            : randomVariant(state.levelIndex),
         x: randomX(),
         y: -ALIEN_SIZE,
       }

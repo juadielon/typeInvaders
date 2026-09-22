@@ -45,10 +45,10 @@ The MVP includes:
   can fire bolts labelled "space" (matching the letter labels on other
   aliens), which highlight the Spacebar on the on-screen keyboard while
   inbound. Learners fire the ship's laser at the missile, just like shooting
-  a lettered alien, or absorb a small Shield loss if it reaches the ship.- Descending single-letter aliens with a new species introduced each level
-  (Scout, Brute, Trickster, Lurker and Warden), a ship that
-  glides to and fires from its target, laser feedback with a hit
-  explosion, scoring, shields, and game-over and victory states.
+  a lettered alien, or absorb a small Shield loss if it reaches the ship.
+- Descending single-letter aliens with one new visual species introduced in
+  every mission. Later species become increasingly playful, while remaining
+  cosmetic so typing rules stay consistent.
 - A rescuable mothership that appears occasionally once the Shield has
   taken damage, rewarding a correct keystroke with restored Shield HP and
   bonus score without counting toward level progression.

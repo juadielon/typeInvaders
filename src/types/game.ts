@@ -14,7 +14,23 @@ export type HandSide = 'left' | 'right'
 
 export type Finger = 'pinky' | 'ring' | 'middle' | 'index' | 'thumb'
 
-export const ALIEN_VARIANTS = ['scout', 'brute', 'trickster', 'lurker', 'warden'] as const
+export const ALIEN_VARIANTS = [
+  'scout',
+  'brute',
+  'trickster',
+  'lurker',
+  'warden',
+  'giggler',
+  'noodle',
+  'disco',
+  'moustachio',
+  'propeller',
+  'jellybean',
+  'cyclops',
+  'crabster',
+  'toaster',
+  'partyKing',
+] as const
 
 export type AlienVariant = (typeof ALIEN_VARIANTS)[number]
 
@@ -25,6 +41,16 @@ export const ALIEN_VARIANT_LABELS: Record<AlienVariant, string> = {
   trickster: 'Trickster',
   lurker: 'Lurker',
   warden: 'Warden',
+  giggler: 'The Giggler',
+  noodle: 'Noodle Doodle',
+  disco: 'Disco Blob',
+  moustachio: 'Moustachio',
+  propeller: 'Propellerhead',
+  jellybean: 'Jellybean',
+  cyclops: 'Wobbly Cyclops',
+  crabster: 'Crabster',
+  toaster: 'Cosmic Toaster',
+  partyKing: 'Party King',
 }
 
 export interface Alien {
@@ -105,8 +131,8 @@ export interface LevelConfig {
   descentSpeed: number
   /** Number of aliens that must be destroyed to clear this level. */
   targetKills: number
-  /** Alien species introduced by this level; omitted once all species have appeared. */
-  newAlien?: AlienVariant
+  /** Alien species introduced by this level. */
+  newAlien: AlienVariant
 }
 
 export interface GameState {

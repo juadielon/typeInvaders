@@ -20,8 +20,8 @@ affects the feature's behaviour or scope.
 - Longer lessons with the same gentle opening spawn cadence and alien descent
   speed, ramping to a noticeably faster final wave.
 - A lesson progress bar showing cleared and remaining aliens.
-- Five alien species introduced across the Home Row levels, then reused as the
-  Top and Bottom Row lessons complete the keyboard.
+- One new alien species introduced in every mission, with later species
+  becoming increasingly silly while remaining cosmetic.
 - A short hold at the end of a level so the final shot and explosion are seen.
 - A documented rule reference in the README.
 - Unit tests for the core rules and selected UI behaviour.
@@ -93,17 +93,14 @@ starts at the same speed, while later lessons reach a faster end speed.
 
 ## Next priorities
 
-1. Expand the lesson path beyond the initial home-row key set while keeping
-   each lesson approachable for beginners. The pacing model is settled: longer
-   practice targets with a gentle opening cadence that ramps to a faster final
-   wave, and a new alien species introduced on each level.
-2. Expand the new plasma-defence module with more bolt patterns and timing`r`n   variations while keeping the Spacebar prompt clear for beginners.
-3. Improve accessibility with reduced-motion support, clearer focus states,
+1. Expand the plasma-defence module with more bolt patterns and timing
+   variations while keeping the Spacebar prompt clear for beginners.
+2. Improve accessibility with reduced-motion support, clearer focus states,
    and options for colour and text size.
-4. Add optional sound effects with a visible mute control.
-5. Save optional lesson results and personal bests without making session
+3. Add optional sound effects with a visible mute control.
+4. Save optional lesson results and personal bests without making session
    resumption the primary progression model.
-6. Design responsive controls before adding phone or tablet support.
+5. Design responsive controls before adding phone or tablet support.
 
 ## Open decisions
 

@@ -83,13 +83,11 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
             and speed up as the lesson goes on, and the lesson bar at the top shows how many
             aliens are left before the level ends.
           </p>
-          {level.newAlien && (
-            <p className="mt-1.5 text-sm text-slate-300">
-              New this level:{' '}
-              <strong className="text-emerald-300">{ALIEN_VARIANT_LABELS[level.newAlien]}</strong>{' '}
-              aliens join the fleet alongside the species you have already faced.
-            </p>
-          )}
+          <p className="mt-1.5 text-sm text-slate-300">
+            New this level:{' '}
+            <strong className="text-emerald-300">{ALIEN_VARIANT_LABELS[level.newAlien]}</strong>{' '}
+            aliens join the fleet alongside the species you have already faced.
+          </p>
         </div>
 
         <div className="mt-3">

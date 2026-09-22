@@ -53,6 +53,91 @@
   animation-direction: alternate-reverse;
 }
 
+@keyframes type-invader-noodle {
+  0%,
+  100% {
+    transform: rotate(-5deg) scaleY(1);
+  }
+
+  50% {
+    transform: rotate(5deg) scaleY(1.08);
+  }
+}
+
+.type-invader-noodle {
+  animation: type-invader-noodle 550ms ease-in-out infinite;
+}
+
+@keyframes type-invader-disco {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.type-invader-disco {
+  animation: type-invader-wiggle 350ms steps(2, end) infinite,
+    type-invader-disco 1400ms linear infinite;
+}
+
+@keyframes type-invader-jellybean {
+  0%,
+  100% {
+    transform: rotate(-7deg) scale(0.96, 1.05);
+  }
+
+  50% {
+    transform: rotate(7deg) scale(1.05, 0.96);
+  }
+}
+
+.type-invader-jellybean {
+  animation: type-invader-jellybean 650ms ease-in-out infinite;
+}
+
+@keyframes type-invader-propeller {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+.type-invader-propeller {
+  animation: type-invader-propeller 300ms linear infinite;
+}
+
+@keyframes type-invader-cyclops-eye {
+  0%,
+  100% {
+    transform: translateX(-2px);
+  }
+
+  50% {
+    transform: translateX(2px);
+  }
+}
+
+.type-invader-cyclops-eye {
+  animation: type-invader-cyclops-eye 900ms ease-in-out infinite;
+}
+
+@keyframes type-invader-party-king {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+
+  50% {
+    transform: translateY(-3px) rotate(4deg);
+  }
+}
+
+.type-invader-party-king {
+  animation: type-invader-party-king 420ms ease-in-out infinite;
+}
+
 @keyframes type-invader-explosion {
   0% {
     transform: scale(0.4);
