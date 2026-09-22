@@ -57,7 +57,9 @@ Node.js/npm installation on your machine is required.
   a bonus rather than a requirement.
 - Starting a game opens a lesson selector so you can choose any current
   mission, from the Home Row through the Top and Bottom Rows. The selected
-  lesson then shows its finger-position briefing before play begins.
+  lesson then shows its finger-position briefing before play begins. During
+  the briefing, the on-screen keyboard highlights every key used in that
+  lesson so you can find them before the aliens arrive.
 - Clearing the required number of aliens in a level advances you to the
   next level, which unlocks additional keys and increases difficulty
   (longer practice targets, a gentle opening spawn cadence that becomes

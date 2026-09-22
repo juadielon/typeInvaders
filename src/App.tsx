@@ -10,7 +10,7 @@ import { StartScreen } from './components/screens/StartScreen'
 import { LessonSelect } from './components/screens/LessonSelect'
 import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
-import { getAlienKeyPriority } from './utils/alienTargets'
+import { getKeyboardHighlights } from './utils/alienTargets'
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState)
@@ -35,8 +35,8 @@ function App() {
       : Math.round((state.correctKeystrokes / state.totalKeystrokes) * 100)
 
   const { activeKeys, primaryKey } = useMemo(
-    () => getAlienKeyPriority(state.aliens),
-    [state.aliens],
+    () => getKeyboardHighlights(state.status, currentLevel.allowedKeys, state.aliens),
+    [currentLevel.allowedKeys, state.aliens, state.status],
   )
 
   return (
