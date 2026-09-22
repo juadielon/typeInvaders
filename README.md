@@ -1,8 +1,8 @@
 # Type Invaders
 
 **Type Invaders** is a Space Invaders–style arcade game that doubles as a
-touch-typing tutor for complete beginners. Alien "invaders" — in a few
-different visual varieties — descend from the top of the screen, each
+touch-typing tutor for complete beginners. Alien "invaders" — with one
+new visual species introduced in every mission — descend from the top of the screen, each
 labelled with a single letter. The player destroys aliens by typing
 the correct letter on their physical keyboard; the on-screen ship glides to
 the closest matching alien and fires the shot from its own position. A
@@ -26,6 +26,7 @@ Node.js/npm installation on your machine is required.
 - [Installation](#installation)
 - [Running the game](#running-the-game)
 - [Running the tests](#running-the-tests)
+- [Running the linter](#running-the-linter)
 - [Adding a dependency](#adding-a-dependency)
 - [Production build preview](#production-build-preview)
 - [Project structure](#project-structure)
@@ -119,6 +120,8 @@ A quick reference to every rule the game currently applies.
 | Replaying a lesson | Resets score, Shield, kills and the playfield. |
 | Clearing a level | Destroy the level's target number of aliens. |
 | Spawn pacing | Starts gently and speeds up as the level progresses. |
+| Alien descent | Starts at the same gentle speed in every level, then ramps towards the level's faster final speed. |
+| Keyboard priority | The closest alien's key uses the strong amber highlight; other visible letters use lighter amber. |
 | Progress indicator | The lesson bar shows cleared and remaining aliens. |
 | End-of-level pause | The playfield is held briefly so the final shot is visible. |
 | Winning | Clearing the final level ends the game in victory. |
@@ -233,6 +236,12 @@ Run tests in watch mode while developing:
 docker compose run --rm dev npm run test:watch
 ```
 
+Run ESLint:
+
+```PowerShell/Bash
+docker compose run --rm dev npm run lint
+```
+
 Install a dependency inside the container:
 
 ```PowerShell/Bash
@@ -270,9 +279,18 @@ For a watch-mode loop while developing:
 docker compose run --rm dev npm run test:watch
 ```
 
-Test coverage currently focuses on the core game logic (`gameReducer`),
-keyboard/finger mapping utilities, and a component smoke test — the parts
-most valuable to verify as the game evolves.
+Test coverage includes the reducer and level rules, keyboard input and finger
+mapping, closest-alien target priority, and selected UI behaviour including
+alien labels, keyboard highlights, briefings, lesson selection and the HUD.
+
+## Running the linter
+
+ESLint 9 checks the TypeScript and React source using the flat configuration
+in `eslint.config.js`:
+
+```powershell
+docker compose run --rm dev npm run lint
+```
 
 ## Adding a dependency
 
@@ -299,6 +317,7 @@ build.
 type-invaders/
 ├── Dockerfile              # Multi-stage build: deps -> dev -> build -> prod
 ├── docker-compose.yml       # Dev (Vite) and prod (nginx) services
+├── eslint.config.js         # ESLint 9 TypeScript and React rules
 ├── docs/
 │   ├── product.md           # Product vision, scope, and technical decisions
 │   └── roadmap.md           # Completed work, upcoming priorities, open questions
@@ -311,7 +330,9 @@ type-invaders/
 │   ├── hooks/
 │   │   ├── useGameLoop.ts      # requestAnimationFrame + delta-time loop
 │   │   └── useKeyboardInput.ts # Global keydown capture & dedupe
-│   ├── utils/keyboardLayout.ts # Key → hand/finger lookup table
+│   ├── utils/
+│   │   ├── alienTargets.ts     # Closest-alien keyboard priority
+│   │   └── keyboardLayout.ts   # Key → hand/finger lookup table
 │   └── components/
 │       ├── GameArea.tsx         # Aliens, lasers, player ship
 │       ├── VisualKeyboard.tsx   # On-screen keyboard with hints
