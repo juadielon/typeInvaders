@@ -34,7 +34,7 @@ describe('LevelBriefing', () => {
     expect(screen.queryByText(/species from earlier missions/i)).not.toBeInTheDocument()
   })
 
-  it('colours only alphabetic mission keys', () => {
+  it('keeps comma keys and separators in the normal text colour', () => {
     render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
 
     const keyList = screen.getByLabelText(/lesson keys:/i)
@@ -44,10 +44,20 @@ describe('LevelBriefing', () => {
     )
 
     expect(highlightedKeys.length).toBe(
-      LEVELS[11].allowedKeys.filter((key) => /^[a-z]$/.test(key)).length,
+      LEVELS[11].allowedKeys.filter((key) => /^[a-z;]$/.test(key)).length,
     )
     expect(commaKey).not.toHaveClass('text-emerald-300')
     expect(keyList.querySelector('.text-slate-500')).not.toBeInTheDocument()
+  })
+
+  it('highlights the semicolon mission key', () => {
+    render(<LevelBriefing level={LEVELS[2]} onBegin={vi.fn()} />)
+
+    const semicolonKey = Array.from(
+      screen.getByLabelText(/lesson keys:/i).querySelectorAll('.font-mono'),
+    ).find((key) => key.textContent === ';')
+
+    expect(semicolonKey).toHaveClass('text-emerald-300')
   })
 
   it('explains reaching up to the Top Row and introduces its new alien', () => {
