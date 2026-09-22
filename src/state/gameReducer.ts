@@ -57,6 +57,8 @@ export type Action =
   | { type: 'KEY_PRESS'; key: string }
   | { type: 'SPACE_PRESS' }
   | { type: 'BEGIN_LEVEL' }
+  | { type: 'RETRY_LEVEL' }
+  | { type: 'CONTINUE_LEVEL' }
   | { type: 'RESET' }
 
 let idCounter = 0
@@ -180,6 +182,29 @@ export function gameReducer(state: GameState, action: Action): GameState {
         nextPlasmaCheckAt: performance.now() + randomPlasmaCheckDelay(),
       }
 
+    case 'RETRY_LEVEL':
+      if (state.status !== 'levelResults' && state.status !== 'gameOver') return state
+      return {
+        ...createInitialState(),
+        levelIndex: state.levelIndex,
+        status: 'levelBriefing',
+        startedAt: performance.now(),
+      }
+
+    case 'CONTINUE_LEVEL': {
+      if (state.status !== 'levelResults') return state
+      const isLastLevel = state.levelIndex >= LEVELS.length - 1
+      return {
+        ...state,
+        levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
+        kills: isLastLevel ? state.kills : 0,
+        status: isLastLevel ? 'gameOver' : 'levelBriefing',
+        victory: isLastLevel,
+        levelStartedAt: 0,
+        levelCompletedAt: 0,
+      }
+    }
+
     case 'RESET':
       return createInitialState()
 
@@ -212,22 +237,18 @@ export function gameReducer(state: GameState, action: Action): GameState {
         (explosion) => action.now - explosion.createdAt < EXPLOSION_LIFETIME_MS,
       )
 
-      // A cleared level keeps animating the final shot before it hands over to
-      // the next briefing or the victory screen.
+      // A cleared level keeps animating the final shot before showing the
+      // results screen, where the learner chooses whether to retry or continue.
       if (state.status === 'levelComplete') {
         if (action.now - state.levelCompletedAt < LEVEL_CLEAR_DELAY_MS) {
           return { ...state, lasers, explosions }
         }
 
-        const isLastLevel = state.levelIndex >= LEVELS.length - 1
         return {
           ...state,
           lasers,
           explosions,
-          levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
-          kills: isLastLevel ? state.kills : 0,
-          status: isLastLevel ? 'gameOver' : 'levelBriefing',
-          victory: isLastLevel,
+          status: 'levelResults',
           levelCompletedAt: 0,
         }
       }
@@ -455,7 +476,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           shieldFeedback: null,
           shieldFeedbackUntil: 0,
           // Hold the playfield so this final shot and explosion are seen; the
-          // TICK handler moves on to the briefing or the victory screen.
+          // TICK handler then opens the mission results.
           status: 'levelComplete',
           levelCompletedAt: now,
         }

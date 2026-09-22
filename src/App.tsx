@@ -10,6 +10,7 @@ import { StartScreen } from './components/screens/StartScreen'
 import { LessonSelect } from './components/screens/LessonSelect'
 import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
+import { MissionCompleteScreen } from './components/screens/MissionCompleteScreen'
 import { getKeyboardHighlights } from './utils/alienTargets'
 
 function App() {
@@ -90,7 +91,22 @@ function App() {
                   score={state.score}
                   wpm={Math.max(wpm, 0)}
                   accuracy={accuracy}
-                  onRestart={() => dispatch({ type: 'RESET' })}
+                  onRetry={() => dispatch({ type: 'RETRY_LEVEL' })}
+                  onChooseMission={() => dispatch({ type: 'START_GAME' })}
+                />
+              </div>
+            )}
+
+            {state.status === 'levelResults' && (
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80">
+                <MissionCompleteScreen
+                  levelNumber={state.levelIndex + 1}
+                  isLastLevel={state.levelIndex === LEVELS.length - 1}
+                  score={state.score}
+                  wpm={Math.max(wpm, 0)}
+                  accuracy={accuracy}
+                  onRetry={() => dispatch({ type: 'RETRY_LEVEL' })}
+                  onContinue={() => dispatch({ type: 'CONTINUE_LEVEL' })}
                 />
               </div>
             )}
