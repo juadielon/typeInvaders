@@ -34,5 +34,6 @@ describe('GameArea alien labels', () => {
     expect(screen.getByText('w').parentElement).toHaveClass('top-0', 'bottom-1')
     expect(document.querySelector('.type-invader-cyclops-sclera')).toHaveClass('h-3', 'w-3')
     expect(document.querySelector('.type-invader-cyclops-eye')).toHaveClass('h-1.5', 'w-1.5')
+    expect(screen.getByText('c')).toHaveClass('bottom-0')
   })
 })

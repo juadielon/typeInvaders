@@ -90,7 +90,7 @@ const alienStyles = {
     arm: 'bg-teal-300 shadow-[0_0_7px_rgba(94,234,212,0.85)]',
     body: 'inset-x-1 top-1 bottom-1 rounded-[40%] border-teal-300 bg-teal-950/80 shadow-[0_0_12px_rgba(94,234,212,0.65)]',
     eyes: 'rounded-full bg-teal-100',
-    label: 'bottom-1 text-teal-100',
+    label: 'bottom-0 text-teal-100',
   },
   crabster: {
     arm: 'bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.9)]',
