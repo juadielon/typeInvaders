@@ -150,6 +150,8 @@ export interface GameState {
   shieldHp: number
   score: number
   kills: number
+  /** Whether this mission has already produced its guaranteed introductory alien. */
+  hasSpawnedIntroAlien: boolean
   correctKeystrokes: number
   totalKeystrokes: number
   /** True when the player cleared all levels rather than losing all HP. */

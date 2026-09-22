@@ -81,6 +81,7 @@ export function createInitialState(): GameState {
     shieldHp: 100,
     score: 0,
     kills: 0,
+    hasSpawnedIntroAlien: false,
     correctKeystrokes: 0,
     totalKeystrokes: 0,
     victory: false,
@@ -198,6 +199,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         ...state,
         levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
         kills: isLastLevel ? state.kills : 0,
+        hasSpawnedIntroAlien: isLastLevel ? state.hasSpawnedIntroAlien : false,
         status: isLastLevel ? 'gameOver' : 'levelBriefing',
         victory: isLastLevel,
         levelStartedAt: 0,
@@ -219,14 +221,15 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const alien: Alien = {
         id: nextId('alien'),
         char: randomChar(level.allowedKeys),
-        variant:
-          state.kills === 0 && state.aliens.length === 0
-            ? level.newAlien
-            : randomVariant(state.levelIndex),
+        variant: state.hasSpawnedIntroAlien ? randomVariant(state.levelIndex) : level.newAlien,
         x: randomX(),
         y: -ALIEN_SIZE,
       }
-      return { ...state, aliens: [...state.aliens, alien] }
+      return {
+        ...state,
+        aliens: [...state.aliens, alien],
+        hasSpawnedIntroAlien: true,
+      }
     }
 
     case 'TICK': {

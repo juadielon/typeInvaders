@@ -49,9 +49,11 @@ The MVP includes:
   aliens), which highlight the Spacebar on the on-screen keyboard while
   inbound. Learners fire the ship's laser at the missile, just like shooting
   a lettered alien, or absorb a small Shield loss if it reaches the ship.
-- Descending single-letter aliens with one new visual species introduced in
-  every mission. Later species become increasingly playful, while remaining
-  cosmetic so typing rules stay consistent.
+- Descending single-key aliens with one new visual species introduced in
+  every mission. The first spawn guarantees that mission's new species, then
+  later spawns use the cumulative unlocked roster regardless of whether the
+  first alien was destroyed or reached the ship. Later species become
+  increasingly playful, while remaining cosmetic so typing rules stay consistent.
 - A rescuable mothership that appears occasionally once the Shield has
   taken damage, rewarding a correct keystroke with restored Shield HP and
   bonus score without counting toward level progression.
