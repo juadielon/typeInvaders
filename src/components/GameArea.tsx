@@ -146,9 +146,12 @@ function AlienAccessories({ variant }: { variant: AlienVariant }) {
       )
     case 'moustachio':
       return (
-        <span className="absolute left-1/2 top-3.5 z-20 flex -translate-x-1/2">
-          <span className="h-2 w-3 -rotate-12 rounded-bl-full rounded-tr-full bg-slate-950" />
-          <span className="h-2 w-3 rotate-12 rounded-br-full rounded-tl-full bg-slate-950" />
+        <span
+          aria-hidden="true"
+          className="type-invader-moustache absolute left-1/2 top-2.5 z-20 flex -translate-x-1/2"
+        >
+          <span className="h-1.5 w-2.5 -rotate-12 rounded-bl-full rounded-tr-full bg-slate-950" />
+          <span className="h-1.5 w-2.5 rotate-12 rounded-br-full rounded-tl-full bg-slate-950" />
         </span>
       )
     case 'propeller':
