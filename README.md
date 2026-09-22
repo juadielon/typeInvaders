@@ -78,32 +78,45 @@ cd typeInvaders
 docker compose build dev
 ```
 
-## PowerShell and Bash
+## Command-line instructions
 
-The commands in this README use Docker Compose and work the same way in
-PowerShell on Windows and Bash on macOS, Linux, or Windows WSL. The examples
-are labelled `powershell` for Windows copy-and-paste, but Bash users can run
-the same commands from a Bash terminal:
+The following commands can be run from either PowerShell or Bash.
 
-```bash
+Clone the repository and build the development image:
+
+```PowerShell/Bash
 git clone https://github.com/juadielon/typeInvaders.git
 cd typeInvaders
 docker compose build dev
+```
+
+Start the Vite development server:
+
+```PowerShell/Bash
 docker compose up --build
 ```
 
-To stop the game from Bash, press `Ctrl+C` if it is running in the foreground,
-then run:
+Stop the running containers:
 
-```bash
+```PowerShell/Bash
 docker compose down
 ```
 
-The test and dependency commands also use identical Bash syntax:
+Run the unit tests:
 
-```bash
+```PowerShell/Bash
 docker compose run --rm dev npm test
+```
+
+Run tests in watch mode while developing:
+
+```PowerShell/Bash
 docker compose run --rm dev npm run test:watch
+```
+
+Install a dependency inside the container:
+
+```PowerShell/Bash
 docker compose run --rm dev npm install <package-name>
 ```
 ## Running the game
