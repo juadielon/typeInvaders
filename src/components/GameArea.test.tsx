@@ -3,10 +3,13 @@ import { describe, expect, it } from 'vitest'
 import { GameArea } from './GameArea'
 
 describe('GameArea alien labels', () => {
-  it('renders a consistent high-contrast character badge above alien decorations', () => {
+  it('adds contrast only to the Level 6 Giggler character', () => {
     render(
       <GameArea
-        aliens={[{ id: 'giggler-1', char: 'r', variant: 'giggler', x: 100, y: 50 }]}
+        aliens={[
+          { id: 'giggler-1', char: 'r', variant: 'giggler', x: 100, y: 50 },
+          { id: 'scout-1', char: 'f', variant: 'scout', x: 200, y: 50 },
+        ]}
         lasers={[]}
         explosions={[]}
         plasmaBolts={[]}
@@ -18,8 +21,7 @@ describe('GameArea alien labels', () => {
       />,
     )
 
-    const badge = screen.getByLabelText('Type R')
-    expect(badge).toHaveTextContent('r')
-    expect(badge).toHaveClass('z-30', 'bg-slate-950', 'text-white')
+    expect(screen.getByText('r')).toHaveClass('z-30', 'bg-slate-950/95', 'text-white')
+    expect(screen.getByText('f')).not.toHaveClass('z-30', 'bg-slate-950/95')
   })
 })
