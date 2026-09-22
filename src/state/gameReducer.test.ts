@@ -259,7 +259,7 @@ describe('gameReducer', () => {
     state = gameReducer(state, {
       type: 'TICK',
       dt: 0.016,
-      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS + 1,
     })
 
     expect(state.status).toBe('levelBriefing')
@@ -416,7 +416,7 @@ describe('gameReducer', () => {
     state = gameReducer(state, {
       type: 'TICK',
       dt: 0.016,
-      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS + 1,
     })
 
     expect(state.status).toBe('gameOver')

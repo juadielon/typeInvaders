@@ -1,4 +1,4 @@
-import type { Alien } from '../types/game'
+import type { Alien, GameStatus } from '../types/game'
 
 export interface AlienKeyPriority {
   activeKeys: string[]
@@ -20,4 +20,17 @@ export function getAlienKeyPriority(aliens: Alien[]): AlienKeyPriority {
     activeKeys: primaryKey ? [primaryKey, ...otherKeys] : otherKeys,
     primaryKey,
   }
+}
+
+/** Shows the full lesson key set during briefings, then live alien priority during play. */
+export function getKeyboardHighlights(
+  status: GameStatus,
+  lessonKeys: string[],
+  aliens: Alien[],
+): AlienKeyPriority {
+  if (status === 'levelBriefing') {
+    return { activeKeys: lessonKeys, primaryKey: undefined }
+  }
+
+  return getAlienKeyPriority(aliens)
 }

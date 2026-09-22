@@ -7,14 +7,23 @@ export function StartScreen({ onStart }: StartScreenProps) {
     <div className="flex flex-col items-center gap-6 rounded-lg border border-slate-700 bg-slate-900/80 p-10 text-center text-slate-200">
       <h1 className="text-3xl font-bold text-emerald-300">Type Invaders</h1>
       <p className="max-w-md text-sm text-slate-400">
-        Aliens are descending! Type the letter shown on an alien to destroy it
-        with your Home Row keys. Keep your Shield HP above 0 and clear each
-        level to unlock new keys.
+        Aliens are descending towards your spaceship. Each alien shows a
+        letter: press that letter on your physical keyboard to fire at it.
       </p>
       <ul className="max-w-md list-disc space-y-1 pl-5 text-left text-xs text-slate-400">
-        <li>Rest your fingers on the Home Row: A S D F &nbsp; J K L ;</li>
-        <li>Watch the keyboard overlay below the playfield for hints.</li>
-        <li>An alien reaching the bottom costs you 10 Shield HP.</li>
+        <li>
+          Begin with F and J on the <strong className="text-slate-200">Home Row</strong>,
+          the middle letter row of your keyboard.
+        </li>
+        <li>
+          Watch the on-screen keyboard: the strongest amber key is the next letter to press,
+          and its hint shows which finger to use.
+        </li>
+        <li>
+          Your <strong className="text-slate-200">Shield</strong> is the spaceship's protection
+          meter. It starts at 100%; an alien reaching the ship removes 10%, and the game ends
+          at 0%.
+        </li>
       </ul>
       <button
         onClick={onStart}

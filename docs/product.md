@@ -16,6 +16,9 @@ The game must be enjoyable without assuming they already type quickly.
 ## Learning and gameplay principles
 
 - Start with a small, useful key set and introduce new keys gradually.
+- Define typing terms such as Home Row and game terms such as Shield before
+  asking a first-time player to act on them. Prefer plain language and
+  percentages over unexplained abbreviations.
 - Show the correct key, hand, and finger at the point they are needed.
 - Reward accurate, timely input without punishing an occasional mistake.
 - Make the most urgent matching alien the target so typing feels fair and
@@ -62,6 +65,8 @@ The MVP includes:
   closest to the spaceship receives the strong amber "type next"
   keyboard highlight. Other visible alien letters remain available with a
   lighter amber background, and duplicate letters are collapsed.
+- During a mission briefing, the visual keyboard highlights the full lesson
+  key set equally so learners can locate every key before play begins.
 - Targeted unit and component tests covering reducer rules, lesson pacing,
   keyboard input and mapping, closest-alien priority, alien readability and
   key user-interface states.

@@ -25,6 +25,39 @@ describe('LevelBriefing', () => {
     expect(screen.getByText(/right index sideways from j to h/i)).toBeInTheDocument()
   })
 
+  it('describes the first mission without referring to earlier aliens', () => {
+    render(<LevelBriefing level={LEVELS[0]} onBegin={vi.fn()} />)
+
+    expect(screen.getByText(/goal is to destroy 42 aliens/i)).toBeInTheDocument()
+    expect(screen.getByLabelText('Lesson keys: F, J')).toBeInTheDocument()
+    expect(screen.getByText(/your first alien species is the/i)).toBeInTheDocument()
+    expect(screen.queryByText(/species from earlier missions/i)).not.toBeInTheDocument()
+  })
+
+  it('highlights the comma mission key but not the commas separating keys', () => {
+    render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
+
+    const keyList = screen.getByLabelText(/lesson keys:/i)
+    const highlightedKeys = keyList.querySelectorAll('.text-emerald-300')
+    const commaKey = Array.from(keyList.querySelectorAll('.font-mono')).find(
+      (key) => key.textContent === ',',
+    )
+
+    expect(highlightedKeys.length).toBe(LEVELS[11].allowedKeys.length)
+    expect(commaKey).toHaveClass('text-emerald-300')
+    expect(keyList.querySelector('.text-slate-500')).not.toBeInTheDocument()
+  })
+
+  it('highlights the semicolon mission key', () => {
+    render(<LevelBriefing level={LEVELS[2]} onBegin={vi.fn()} />)
+
+    const semicolonKey = Array.from(
+      screen.getByLabelText(/lesson keys:/i).querySelectorAll('.font-mono'),
+    ).find((key) => key.textContent === ';')
+
+    expect(semicolonKey).toHaveClass('text-emerald-300')
+  })
+
   it('explains reaching up to the Top Row and introduces its new alien', () => {
     render(<LevelBriefing level={LEVELS[5]} onBegin={vi.fn()} />)
 
