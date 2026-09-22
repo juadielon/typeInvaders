@@ -52,9 +52,6 @@ export function VisualKeyboard({
           })}
         </div>
       ))}
-      <div className="mt-1 h-5 text-xs text-slate-400">
-        {hints.length > 0 ? hints.join('   |   ') : 'Watch for highlighted keys above'}
-      </div>
       <div
         aria-label={spaceActive ? 'Press Space to fire at the plasma missile' : 'Spacebar'}
         className={[
@@ -65,6 +62,9 @@ export function VisualKeyboard({
         ].join(' ')}
       >
         space
+      </div>
+      <div className="h-5 text-xs text-slate-400">
+        {hints.length > 0 ? hints.join('   |   ') : 'Watch for highlighted keys above'}
       </div>
     </div>
   )

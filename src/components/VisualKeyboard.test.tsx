@@ -3,6 +3,17 @@ import { describe, expect, it } from 'vitest'
 import { VisualKeyboard } from './VisualKeyboard'
 
 describe('VisualKeyboard', () => {
+  it('shows finger guidance below the Spacebar', () => {
+    render(<VisualKeyboard activeKeys={['f', 'j']} />)
+
+    const spacebar = screen.getByLabelText('Spacebar')
+    const guidance = screen.getByText(/f → left index.*j → right index/i)
+
+    expect(
+      spacebar.compareDocumentPosition(guidance) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
+  })
+
   it('highlights every lesson key equally when no next key is active yet', () => {
     render(<VisualKeyboard activeKeys={['f', 'j']} />)
 
