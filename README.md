@@ -129,6 +129,7 @@ A quick reference to every rule the game currently applies.
 | Fire key | Physical Spacebar. The on-screen keyboard highlight is instructional only. |
 | Successful shot | Fires a laser at the inbound bolt, destroying it and awarding 5 points. |
 | Missed bolt | Reaching the ship removes the bolt and costs 8 Shield HP. |
+| Accuracy and WPM | Counts toward accuracy and WPM the same as a letter key: a successful shot is a correct keystroke, and pressing Space with no missile inbound is a misfire. A missile that reaches the ship unshot only costs Shield HP; it isn't a keystroke, so it doesn't affect accuracy. |
 | Missile path | Curves towards the spaceship's current position. |
 | Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
 | Tab switching | The game loop pauses while the browser tab is hidden. |

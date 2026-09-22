@@ -476,7 +476,13 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.status !== 'playing') return state
       const now = performance.now()
       const bolt = state.plasmaBolts[0]
-      if (!bolt) return state
+      const totalKeystrokes = state.totalKeystrokes + 1
+
+      if (!bolt) {
+        // Misfire: pressing Space with no inbound missile counts against
+        // accuracy, just like pressing a letter with no matching alien.
+        return { ...state, totalKeystrokes }
+      }
 
       // Firing at the plasma missile works exactly like shooting a lettered
       // alien: the ship glides to the target, fires a laser, and it explodes.
@@ -496,6 +502,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
         explosions: [...state.explosions, explosion],
         shipX: bolt.x,
         score: state.score + 5,
+        correctKeystrokes: state.correctKeystrokes + 1,
+        totalKeystrokes,
       }
     }
     default:
