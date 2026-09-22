@@ -43,6 +43,19 @@ describe('mission alien introduction', () => {
     expect(state.aliens[0].variant).not.toBe(LEVELS[levelIndex].newAlien)
   })
 
+it('resets introductory-alien tracking when selecting a mission', () => {
+    const state = gameReducer(
+      {
+        ...createInitialState(),
+        status: 'lessonSelect',
+        hasSpawnedIntroAlien: true,
+      },
+      { type: 'SELECT_LEVEL', levelIndex: 4 },
+    )
+
+    expect(state.hasSpawnedIntroAlien).toBe(false)
+  })
+
   it('resets introductory-alien tracking when retrying a mission', () => {
     const state = gameReducer(
       {
