@@ -48,6 +48,19 @@ describe('gameReducer', () => {
     expect(state.levelIndex).toBe(2)
   })
 
+  it('resets gameplay progress when selecting a lesson to replay', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, score: 120, shieldHp: 40, kills: 8 }
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 1 })
+
+    expect(state.status).toBe('levelBriefing')
+    expect(state.levelIndex).toBe(1)
+    expect(state.score).toBe(0)
+    expect(state.shieldHp).toBe(100)
+    expect(state.kills).toBe(0)
+    expect(state.levelStartedAt).toBe(0)
+  })
+
   it('ignores invalid lesson selections', () => {
     const state = gameReducer(createInitialState(), { type: 'START_GAME' })
 

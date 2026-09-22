@@ -53,7 +53,8 @@ Node.js/npm installation on your machine is required.
   play begins.
 - Clearing the required number of aliens in a level advances you to the
   next level, which unlocks additional keys and increases difficulty
-  (faster spawns, faster descent); the screen is cleared of aliens before
+  (longer practice targets, a gentle opening spawn cadence that becomes
+  faster during the level, and faster descent); the screen is cleared of aliens before
   the next level begins. A briefing then pauses the game until you choose
   to continue. It shows the correct home-row hand positions, each key's
   finger movement, and the new level's objective.

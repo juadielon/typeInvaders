@@ -16,7 +16,7 @@ function App() {
 
   const currentLevel = LEVELS[state.levelIndex]
 
-  useGameLoop(state.status, currentLevel, dispatch)
+  useGameLoop(state.status, currentLevel, state.levelStartedAt, dispatch)
 
   const handleKey = useCallback((key: string) => {
     dispatch({ type: 'KEY_PRESS', key })

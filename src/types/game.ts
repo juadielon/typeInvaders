@@ -66,8 +66,12 @@ export interface LevelConfig {
   label: string
   /** Characters that may appear on aliens during this level. */
   allowedKeys: string[]
-  /** Milliseconds between alien spawns. */
+  /** Initial milliseconds between alien spawns during the warm-up. */
   spawnIntervalMs: number
+  /** Fastest spawn interval reached near the end of the level. */
+  minSpawnIntervalMs: number
+  /** Milliseconds spent easing from the warm-up cadence to the fastest cadence. */
+  spawnRampDurationMs: number
   /** Alien descent speed in pixels per second. */
   descentSpeed: number
   /** Number of aliens that must be destroyed to clear this level. */
@@ -89,8 +93,10 @@ export interface GameState {
   totalKeystrokes: number
   /** True when the player cleared all levels rather than losing all HP. */
   victory: boolean
-  /** Timestamp (ms) the current level/game started, used for WPM calc. */
+  /** Timestamp (ms) the current game started, used for WPM calc. */
   startedAt: number
+  /** Timestamp (ms) the current level started, used for spawn pacing. */
+  levelStartedAt: number
   /** The roaming mothership, or null when none is currently on screen. */
   mothership: Mothership | null
   /** Timestamp (ms) of the next roll to decide whether a mothership appears. */

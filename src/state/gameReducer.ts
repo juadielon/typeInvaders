@@ -67,6 +67,7 @@ export function createInitialState(): GameState {
     startedAt: 0,
     mothership: null,
     mothershipNextCheckAt: 0,
+    levelStartedAt: 0,
   }
 }
 
@@ -116,15 +117,17 @@ export function gameReducer(state: GameState, action: Action): GameState {
         ...createInitialState(),
         status: 'lessonSelect',
         startedAt: performance.now(),
+        levelStartedAt: 0,
       }
 
     case 'SELECT_LEVEL':
       if (state.status !== 'lessonSelect') return state
       if (action.levelIndex < 0 || action.levelIndex >= LEVELS.length) return state
       return {
-        ...state,
+        ...createInitialState(),
         levelIndex: action.levelIndex,
         status: 'levelBriefing',
+        startedAt: state.startedAt,
       }
 
     case 'BEGIN_LEVEL':
@@ -132,6 +135,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       return {
         ...state,
         status: 'playing',
+        levelStartedAt: performance.now(),
         mothershipNextCheckAt: performance.now() + randomMothershipCheckDelay(),
       }
 
