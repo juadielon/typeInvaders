@@ -16,6 +16,13 @@ affects the feature's behaviour or scope.
 - A brief hit explosion effect and a rescuable mothership bonus mechanic
   (multiple visual shapes, appears once the Shield has taken damage).
 - The screen clears of remaining aliens before a level-up transition.
+- Lesson selection and replay, so players choose the level they practise.
+- Longer lessons with a gentle opening spawn cadence that ramps to a
+  noticeably faster final wave.
+- A lesson progress bar showing cleared and remaining aliens.
+- A new alien species introduced on each level, stacking with earlier ones.
+- A short hold at the end of a level so the final shot and explosion are seen.
+- A documented rule reference in the README.
 - Unit tests for the core rules and selected UI behaviour.
 - Setup, play, test, and production-preview documentation.
 
@@ -85,21 +92,18 @@ right difficulty curve.
 ## Next priorities
 
 1. Expand the lesson path beyond the initial home-row key set while keeping
-   each lesson approachable for beginners. Make each level longer by raising
-   its practice target, and ramp alien frequency from a gentle opening to a
-   faster final wave rather than starting at full pressure.
+   each lesson approachable for beginners. The pacing model is settled: longer
+   practice targets with a gentle opening cadence that ramps to a faster final
+   wave, and a new alien species introduced on each level.
 2. Introduce alien plasma bolts in later levels, with a "Press [SPACE] to
    Shield!" prompt that teaches thumb discipline and breaks up repeated
    letter-key practice.
-3. Add a lesson selection and replay experience so players can choose the
-   level they want to practise, rather than being forced to resume from the
-   last session or always start at Level 1.
-4. Improve accessibility with reduced-motion support, clearer focus states,
+3. Improve accessibility with reduced-motion support, clearer focus states,
    and options for colour and text size.
-5. Add optional sound effects with a visible mute control.
-6. Save optional lesson results and personal bests without making session
+4. Add optional sound effects with a visible mute control.
+5. Save optional lesson results and personal bests without making session
    resumption the primary progression model.
-7. Design responsive controls before adding phone or tablet support.
+6. Design responsive controls before adding phone or tablet support.
 
 ## Open decisions
 

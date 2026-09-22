@@ -30,8 +30,13 @@ The game must be enjoyable without assuming they already type quickly.
 
 The MVP includes:
 
-- Home-row typing lessons across five progressively harder levels, with lesson selection and replay available before each briefing.
-- Descending single-letter aliens in a few cosmetic varieties, a ship that
+- Home-row typing lessons across five progressively harder levels, with lesson selection and replay available before each briefing. Each lesson starts with a gentle spawn cadence, builds to a noticeably faster cadence by the end, and requires a longer target before advancing.
+- A lesson progress bar showing cleared and remaining aliens, so learners can
+  see when the level will end.
+- A brief hold at the end of a level so the final shot and explosion play out
+  before the briefing or victory screen appears.
+- Descending single-letter aliens with a new species introduced each level
+  (Scout, Brute, Trickster, Lurker and Warden), a ship that
   glides to and fires from its target, laser feedback with a hit
   explosion, scoring, shields, and game-over and victory states.
 - A rescuable mothership that appears occasionally once the Shield has
@@ -52,7 +57,6 @@ The MVP includes:
 
 - Sound effects and music.
 - Persistent scores, progress, accounts, or leaderboards.
-- Lesson selection and replay controls beyond starting a new game.
 - Mobile and touch-screen input.
 - Accessibility settings beyond the current browser defaults.
 
@@ -65,7 +69,16 @@ The MVP includes:
 | Native global keyboard events | The game needs consistent physical-keyboard input regardless of focused UI elements. |
 | Pure reducer for game state | Rules such as scoring, targeting, damage, and level progression are easier to test and change safely. |
 | Pause the game when the browser tab is hidden | Players should not lose shields because their browser was in the background. |
+| Hold a cleared level for a moment before transitioning | The final shot and explosion should be seen, so a level never appears to end before the player's last keystroke landed. |
 | Tests for game-logic changes | Behavioural changes should be protected by targeted unit tests before they are merged. |
+
+## Where the rules live
+
+The complete set of gameplay rules, including scoring, shield damage, the
+mothership bonus, lesson pacing and the level progression table, is documented
+in the [Game rules](../README.md#game-rules) section of the README. Keep that
+table up to date whenever a rule changes in `src/state/gameReducer.ts` or
+`src/data/levels.ts`.
 
 ## Keeping this guide useful
 

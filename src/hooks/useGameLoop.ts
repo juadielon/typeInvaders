@@ -17,6 +17,11 @@ export type GameAction =
   | { type: 'TICK'; dt: number; now: number }
   | { type: 'SPAWN' }
 
+export function getSpawnInterval(level: LevelConfig, levelElapsedMs: number): number {
+  const rampProgress = Math.min(Math.max(levelElapsedMs, 0) / level.spawnRampDurationMs, 1)
+  return level.spawnIntervalMs + (level.minSpawnIntervalMs - level.spawnIntervalMs) * rampProgress
+}
+
 /**
  * Runs the game loop with requestAnimationFrame and delta-time, rather than
  * setInterval, so alien speed stays consistent no matter the screen's
@@ -27,6 +32,7 @@ export type GameAction =
 export function useGameLoop(
   status: GameStatus,
   level: LevelConfig,
+  levelStartedAt: number,
   dispatch: (action: GameAction) => void,
 ) {
   const rafRef = useRef<number | null>(null)
@@ -47,7 +53,7 @@ export function useGameLoop(
   }, [])
 
   useEffect(() => {
-    if (status !== 'playing') {
+    if (status !== 'playing' && status !== 'levelComplete') {
       lastFrameRef.current = null
       return
     }
@@ -65,7 +71,11 @@ export function useGameLoop(
       const dt = Math.min((now - last) / 1000, 0.1) // clamp to avoid big jumps
       lastFrameRef.current = now
 
-      if (now - lastSpawnRef.current >= level.spawnIntervalMs) {
+      const spawnInterval = getSpawnInterval(level, now - levelStartedAt)
+
+      // A cleared level still ticks so the final shot animates out, but no new
+      // aliens should arrive during that hold.
+      if (status === 'playing' && now - lastSpawnRef.current >= spawnInterval) {
         lastSpawnRef.current = now
         dispatch({ type: 'SPAWN' })
       }
@@ -80,5 +90,5 @@ export function useGameLoop(
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
     }
-  }, [status, level, dispatch])
+  }, [status, level, levelStartedAt, dispatch])
 }

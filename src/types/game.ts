@@ -2,15 +2,30 @@
  * Core type definitions for Type Invaders.
  */
 
-export type GameStatus = 'idle' | 'lessonSelect' | 'levelBriefing' | 'playing' | 'gameOver'
+export type GameStatus =
+  | 'idle'
+  | 'lessonSelect'
+  | 'levelBriefing'
+  | 'playing'
+  | 'levelComplete'
+  | 'gameOver'
 
 export type HandSide = 'left' | 'right'
 
 export type Finger = 'pinky' | 'ring' | 'middle' | 'index' | 'thumb'
 
-export const ALIEN_VARIANTS = ['scout', 'brute', 'trickster'] as const
+export const ALIEN_VARIANTS = ['scout', 'brute', 'trickster', 'lurker', 'warden'] as const
 
 export type AlienVariant = (typeof ALIEN_VARIANTS)[number]
+
+/** Friendly names shown in level briefings when a new alien joins the fight. */
+export const ALIEN_VARIANT_LABELS: Record<AlienVariant, string> = {
+  scout: 'Scout',
+  brute: 'Brute',
+  trickster: 'Trickster',
+  lurker: 'Lurker',
+  warden: 'Warden',
+}
 
 export interface Alien {
   id: string
@@ -66,12 +81,18 @@ export interface LevelConfig {
   label: string
   /** Characters that may appear on aliens during this level. */
   allowedKeys: string[]
-  /** Milliseconds between alien spawns. */
+  /** Initial milliseconds between alien spawns during the warm-up. */
   spawnIntervalMs: number
+  /** Fastest spawn interval reached near the end of the level. */
+  minSpawnIntervalMs: number
+  /** Milliseconds spent easing from the warm-up cadence to the fastest cadence. */
+  spawnRampDurationMs: number
   /** Alien descent speed in pixels per second. */
   descentSpeed: number
   /** Number of aliens that must be destroyed to clear this level. */
   targetKills: number
+  /** Alien species introduced by this level; earlier species keep appearing. */
+  newAlien: AlienVariant
 }
 
 export interface GameState {
@@ -89,8 +110,15 @@ export interface GameState {
   totalKeystrokes: number
   /** True when the player cleared all levels rather than losing all HP. */
   victory: boolean
-  /** Timestamp (ms) the current level/game started, used for WPM calc. */
+  /** Timestamp (ms) the current game started, used for WPM calc. */
   startedAt: number
+  /** Timestamp (ms) the current level started, used for spawn pacing. */
+  levelStartedAt: number
+  /**
+   * Timestamp (ms) the final alien of a level was destroyed. Used to hold the
+   * playfield briefly so the last shot and explosion finish playing.
+   */
+  levelCompletedAt: number
   /** The roaming mothership, or null when none is currently on screen. */
   mothership: Mothership | null
   /** Timestamp (ms) of the next roll to decide whether a mothership appears. */

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { LEVELS } from '../data/levels'
+import { LEVELS, variantsForLevel } from '../data/levels'
 import { ALIEN_SIZE, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
 import { ALIEN_VARIANTS, MOTHERSHIP_VARIANTS, type Alien, type Mothership } from '../types/game'
-import { createInitialState, gameReducer } from './gameReducer'
+import { createInitialState, gameReducer, LEVEL_CLEAR_DELAY_MS } from './gameReducer'
 
 function testAlien(overrides: Partial<Alien> = {}): Alien {
   return {
@@ -48,6 +48,19 @@ describe('gameReducer', () => {
     expect(state.levelIndex).toBe(2)
   })
 
+  it('resets gameplay progress when selecting a lesson to replay', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = { ...state, score: 120, shieldHp: 40, kills: 8 }
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 1 })
+
+    expect(state.status).toBe('levelBriefing')
+    expect(state.levelIndex).toBe(1)
+    expect(state.score).toBe(0)
+    expect(state.shieldHp).toBe(100)
+    expect(state.kills).toBe(0)
+    expect(state.levelStartedAt).toBe(0)
+  })
+
   it('ignores invalid lesson selections', () => {
     const state = gameReducer(createInitialState(), { type: 'START_GAME' })
 
@@ -63,6 +76,21 @@ describe('gameReducer', () => {
     expect(LEVELS[0].allowedKeys).toContain(next.aliens[0].char)
     expect(ALIEN_VARIANTS).toContain(next.aliens[0].variant)
     randomSpy.mockRestore()
+  })
+
+  it('only spawns alien species unlocked by the current level', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 0 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+
+    for (let i = 0; i < 5; i += 1) {
+      state = gameReducer(state, { type: 'SPAWN' })
+    }
+
+    expect(state.aliens.length).toBeGreaterThan(0)
+    state.aliens.forEach((alien) => {
+      expect(variantsForLevel(0)).toContain(alien.variant)
+    })
   })
 
   it('does not spawn aliens beyond the simultaneous cap', () => {
@@ -161,10 +189,47 @@ describe('gameReducer', () => {
 
     state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
 
+    // The level is held briefly so the final shot is visible.
+    expect(state.status).toBe('levelComplete')
+    expect(state.levelIndex).toBe(0)
+    expect(state.kills).toBe(LEVELS[0].targetKills)
+    expect(state.aliens).toHaveLength(0)
+    expect(state.lasers).toHaveLength(1)
+    expect(state.explosions).toHaveLength(1)
+
+    state = gameReducer(state, {
+      type: 'TICK',
+      dt: 0.016,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS,
+    })
+
     expect(state.status).toBe('levelBriefing')
     expect(state.levelIndex).toBe(1)
     expect(state.kills).toBe(0)
-    expect(state.aliens).toHaveLength(0)
+  })
+
+  it('keeps showing the final shot before the level transition completes', () => {
+    let state = beginGame()
+    state = { ...state, kills: LEVELS[0].targetKills - 1, aliens: [testAlien()] }
+
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
+    const completedAt = state.levelCompletedAt
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.016, now: completedAt + 16 })
+
+    expect(state.status).toBe('levelComplete')
+    expect(state.lasers).toHaveLength(1)
+    expect(state.explosions).toHaveLength(1)
+  })
+
+  it('ignores keystrokes while a cleared level is finishing its animation', () => {
+    let state = beginGame()
+    state = { ...state, kills: LEVELS[0].targetKills - 1, aliens: [testAlien()] }
+
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
+    const afterClear = gameReducer(state, { type: 'KEY_PRESS', key: 'f' })
+
+    expect(afterClear).toEqual(state)
   })
 
   it('stops spawning aliens once enough are already in play to clear the level', () => {
@@ -197,8 +262,18 @@ describe('gameReducer', () => {
 
     state = gameReducer(state, { type: 'KEY_PRESS', key })
 
+    expect(state.status).toBe('levelComplete')
+    expect(state.victory).toBe(false)
+
+    state = gameReducer(state, {
+      type: 'TICK',
+      dt: 0.016,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS,
+    })
+
     expect(state.status).toBe('gameOver')
     expect(state.victory).toBe(true)
+    expect(state.levelIndex).toBe(lastIndex)
   })
 
   it('clears an explosion once its brief lifetime has elapsed', () => {
