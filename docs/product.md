@@ -41,8 +41,10 @@ The MVP includes:
   appears once a bolt is inbound, communicating that the shield activates on
   demand rather than sitting on permanently.
 - Plasma defence prompts for Spacebar practice: Trickster and Warden aliens
-  can fire bolts, which learners block in a timing window or absorb as a
-  small Shield loss.- Descending single-letter aliens with a new species introduced each level
+  can fire bolts labelled "space" (matching the letter labels on other
+  aliens), which highlight the Spacebar on the on-screen keyboard while
+  inbound. Learners block them in a timing window or absorb a small Shield
+  loss.- Descending single-letter aliens with a new species introduced each level
   (Scout, Brute, Trickster, Lurker and Warden), a ship that
   glides to and fires from its target, laser feedback with a hit
   explosion, scoring, shields, and game-over and victory states.

@@ -123,8 +123,9 @@ A quick reference to every rule the game currently applies.
 | Rule | Detail |
 | --- | --- |
 | Who fires | Trickster and Warden aliens. |
-| Defence prompt | Appears when a bolt enters the lower defence window. |
-| Block key | Physical Spacebar. The on-screen prompt is instructional only. |
+| Bolt label | Each plasma bolt is labelled "space", just as aliens are labelled with their letter. |
+| Defence prompt | The Spacebar highlights on the on-screen keyboard while a bolt is inbound. |
+| Block key | Physical Spacebar. The on-screen keyboard highlight is instructional only. |
 | Successful block | Removes the bolt and awards 5 points. |
 | Missed bolt | Removes the bolt and costs 8 Shield HP. |
 | Missile path | Curves towards the spaceship's current position. |

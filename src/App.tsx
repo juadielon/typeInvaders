@@ -94,7 +94,7 @@ function App() {
             )}
           </div>
 
-          <VisualKeyboard activeKeys={activeKeys} />
+          <VisualKeyboard activeKeys={activeKeys} spaceActive={state.plasmaBolts.length > 0} />
         </>
       )}
     </div>

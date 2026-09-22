@@ -184,17 +184,14 @@ export function GameArea({
           <div
             key={bolt.id}
             aria-label={isBlockable ? 'Press Space to block plasma' : 'Incoming plasma bolt'}
-            className={`absolute h-5 w-2 -translate-x-1/2 rounded-full bg-orange-300 shadow-[0_0_10px_3px_rgba(251,146,60,0.85)] ${isBlockable ? 'animate-pulse' : ''}`}
+            className={`absolute flex h-6 w-16 -translate-x-1/2 items-center justify-center rounded-full border border-orange-200 bg-orange-900/80 font-mono text-[10px] font-black uppercase text-orange-100 shadow-[0_0_10px_3px_rgba(251,146,60,0.85)] ${isBlockable ? 'animate-pulse' : ''}`}
             style={{ left: bolt.x, top: MOTHERSHIP_LANE_HEIGHT + bolt.y }}
-          />
+          >
+            space
+          </div>
         )
       })}
 
-      {shieldFeedback === 'ready' && (
-        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-orange-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-orange-200 shadow-lg">
-          Press <span className="font-mono text-white">SPACE</span> to shield!
-        </div>
-      )}
       {shieldFeedback === 'blocked' && (
         <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-emerald-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-emerald-200 shadow-lg">
           Shield block!
