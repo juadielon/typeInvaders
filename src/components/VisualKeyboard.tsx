@@ -3,6 +3,8 @@ import { KEYBOARD_ROWS, fingerLabel } from '../utils/keyboardLayout'
 interface VisualKeyboardProps {
   /** Keys currently present among on-screen aliens; highlighted for the player. */
   activeKeys: string[]
+  /** True while a plasma bolt is inbound and the Spacebar should be highlighted. */
+  spaceActive?: boolean
 }
 
 /**
@@ -10,7 +12,7 @@ interface VisualKeyboardProps {
  * highlighted, plus a finger/hand hint. This is a read-only overlay —
  * clicking it does nothing; only the physical keyboard drives gameplay.
  */
-export function VisualKeyboard({ activeKeys }: VisualKeyboardProps) {
+export function VisualKeyboard({ activeKeys, spaceActive = false }: VisualKeyboardProps) {
   const activeSet = new Set(activeKeys)
   const hints = activeKeys
     .map((key) => `${key.toUpperCase()} → ${fingerLabel(key)}`)
@@ -43,6 +45,17 @@ export function VisualKeyboard({ activeKeys }: VisualKeyboardProps) {
       ))}
       <div className="mt-1 h-5 text-xs text-slate-400">
         {hints.length > 0 ? hints.join('   |   ') : 'Watch for highlighted keys above'}
+      </div>
+      <div
+        aria-label={spaceActive ? 'Press Space to fire at the plasma missile' : 'Spacebar'}
+        className={[
+          'flex h-9 w-40 items-center justify-center rounded border font-mono text-sm uppercase transition-colors',
+          spaceActive
+            ? 'border-orange-400 bg-orange-400 text-slate-900 shadow-[0_0_10px_rgba(251,146,60,0.8)] animate-pulse'
+            : 'border-slate-700 bg-slate-800/50 text-slate-500',
+        ].join(' ')}
+      >
+        space
       </div>
     </div>
   )

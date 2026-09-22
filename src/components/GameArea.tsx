@@ -1,4 +1,4 @@
-import type { Alien, Explosion, Laser, Mothership } from '../types/game'
+import type { Alien, Explosion, Laser, Mothership, PlasmaBolt, ShieldFeedback } from '../types/game'
 import {
   ALIEN_SIZE,
   MOTHERSHIP_HEIGHT,
@@ -8,6 +8,7 @@ import {
   PLAYFIELD_HEIGHT,
   PLAYFIELD_WIDTH,
   SHIP_Y,
+  PLASMA_BLOCK_WINDOW,
 } from '../hooks/useGameLoop'
 
 const alienStyles = {
@@ -43,6 +44,25 @@ const alienStyles = {
   },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
 
+/** Alien variants that can launch plasma bolts, matching the reducer's launcher list. */
+type PlasmaLauncherVariant = 'trickster' | 'warden'
+
+/** Tints the plasma missile to match the alien variant that fired it. */
+const plasmaStyles: Record<PlasmaLauncherVariant, Record<'body' | 'text' | 'flame' | 'fin', string>> = {
+  trickster: {
+    body: 'border-fuchsia-200 bg-fuchsia-900/80 shadow-[0_0_10px_3px_rgba(240,171,252,0.85)]',
+    text: 'text-fuchsia-100',
+    flame: 'from-fuchsia-400/80',
+    fin: 'bg-fuchsia-300',
+  },
+  warden: {
+    body: 'border-rose-200 bg-rose-900/80 shadow-[0_0_10px_3px_rgba(253,164,175,0.85)]',
+    text: 'text-rose-100',
+    flame: 'from-rose-400/80',
+    fin: 'bg-rose-300',
+  },
+}
+
 const mothershipStyles = {
   saucer: {
     hull: 'rounded-full border-violet-300 bg-violet-900/80 shadow-[0_0_12px_rgba(196,181,253,0.7)]',
@@ -65,12 +85,26 @@ interface GameAreaProps {
   aliens: Alien[]
   lasers: Laser[]
   explosions: Explosion[]
+  plasmaBolts: PlasmaBolt[]
+  shieldFeedback: ShieldFeedback | null
+  shieldHp: number
   mothership: Mothership | null
   shipX: number
+  targetWarning: 'outOfOrder' | null
 }
 
 /** Renders the playfield: descending aliens, laser hit animations, and the player ship. */
-export function GameArea({ aliens, lasers, explosions, mothership, shipX }: GameAreaProps) {
+export function GameArea({
+  aliens,
+  lasers,
+  explosions,
+  plasmaBolts,
+  shieldFeedback,
+  shieldHp,
+  mothership,
+  shipX,
+  targetWarning,
+}: GameAreaProps) {
   return (
     <div
       className="relative overflow-hidden rounded-lg border border-slate-700 bg-slate-950"
@@ -165,6 +199,47 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
         )
       })}
 
+      {plasmaBolts.map((bolt) => {
+        const isUrgent = bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW
+        const style = plasmaStyles[bolt.sourceVariant as PlasmaLauncherVariant] ?? plasmaStyles.warden
+        return (
+          <div
+            key={bolt.id}
+            aria-label="Incoming plasma missile, press Space to fire at it"
+            className="absolute -translate-x-1/2"
+            style={{ left: bolt.x, top: MOTHERSHIP_LANE_HEIGHT + bolt.y }}
+          >
+            {/* Thruster flame trails opposite the direction of travel, at the tail end near the fins. */}
+            <div
+              className={`absolute left-1/2 -top-4 h-4 w-1 -translate-x-1/2 rounded-full bg-gradient-to-t ${style.flame} to-transparent ${isUrgent ? 'animate-pulse' : ''}`}
+            />
+            {/* Small fins at the tail, opposite the nose, so the bolt reads as a missile. */}
+            <span className={`absolute -top-0.5 left-0 h-2 w-1 -translate-x-1/2 -skew-y-12 ${style.fin}`} />
+            <span className={`absolute -top-0.5 right-0 h-2 w-1 translate-x-1/2 skew-y-12 ${style.fin}`} />
+            <div
+              className={`type-invader-missile relative flex h-14 w-5 flex-col items-center justify-center gap-px border font-mono text-[7px] font-black uppercase leading-none ${style.body} ${isUrgent ? 'animate-pulse' : ''}`}
+              style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 82%, 50% 100%, 0% 82%)' }}
+            >
+              {['s', 'p', 'a', 'c', 'e'].map((letter, index) => (
+                <span key={index} className={style.text}>
+                  {letter}
+                </span>
+              ))}
+            </div>
+          </div>
+        )
+      })}
+
+      {targetWarning === 'outOfOrder' && (
+        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-amber-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-amber-200 shadow-lg">
+          Target the lowest alien first!
+        </div>
+      )}
+      {shieldFeedback === 'missed' && (
+        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-red-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-red-200 shadow-lg">
+          Plasma hit your shields!
+        </div>
+      )}
       {lasers.map((laser) => {
         const top = MOTHERSHIP_LANE_HEIGHT + Math.min(laser.fromY, laser.toY)
         const height = Math.abs(laser.fromY - laser.toY)
@@ -196,7 +271,7 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
         </div>
       ))}
 
-      {/* The ship lines up with each target before firing. */}
+      {/* The ship lines up with each target before firing. Damage appears as Shield HP falls. */}
       <div
         className="absolute h-8 w-12 -translate-x-1/2 transition-[left] duration-150 ease-out"
         style={{ left: shipX, top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y }}
@@ -206,6 +281,8 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
         <div className="absolute left-0 top-4 h-3 w-4 rounded-l-full border-2 border-sky-300 bg-sky-900/80 shadow-[0_0_8px_rgba(56,189,248,0.55)]" />
         <div className="absolute right-0 top-4 h-3 w-4 rounded-r-full border-2 border-sky-300 bg-sky-900/80 shadow-[0_0_8px_rgba(56,189,248,0.55)]" />
         <div className="absolute left-1/2 top-5 h-2 w-2 -translate-x-1/2 rounded-full bg-sky-200 shadow-[0_0_8px_2px_rgba(125,211,252,0.8)]" />
+        {shieldHp < 45 && <div className="absolute left-2 top-1 h-1 w-2 rotate-45 bg-red-300/80" />}
+        {shieldHp < 25 && <div className="absolute right-2 top-3 h-1 w-3 -rotate-45 bg-red-300/80" />}
       </div>
     </div>
   )

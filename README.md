@@ -85,6 +85,7 @@ A quick reference to every rule the game currently applies.
 | Destroying an alien | Press the letter shown on the alien. |
 | Which alien is hit | The lowest (most urgent) alien carrying that letter. |
 | Score per alien | 10 points. |
+| Priority penalty | Destroying an alien while a closer one is still descending costs 5 Shield HP, so you can't dodge the most urgent threat by picking an easier letter. |
 | Wrong key | Counts as a misfire against accuracy, but costs no Shield HP. |
 | Input source | Only the physical keyboard; the Visual Keyboard is a reference. |
 
@@ -118,6 +119,19 @@ A quick reference to every rule the game currently applies.
 | End-of-level pause | The playfield is held briefly so the final shot is visible. |
 | Winning | Clearing the final level ends the game in victory. |
 
+### Plasma defence
+
+| Rule | Detail |
+| --- | --- |
+| Who fires | Trickster and Warden aliens. |
+| Bolt label | Each plasma bolt is labelled "space", just as aliens are labelled with their letter. |
+| Defence prompt | The Spacebar highlights on the on-screen keyboard while a bolt is inbound. |
+| Fire key | Physical Spacebar. The on-screen keyboard highlight is instructional only. |
+| Successful shot | Fires a laser at the inbound bolt, destroying it and awarding 5 points. |
+| Missed bolt | Reaching the ship removes the bolt and costs 8 Shield HP. |
+| Missile path | Curves towards the spaceship's current position. |
+| Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
+| Tab switching | The game loop pauses while the browser tab is hidden. |
 ### Scoring statistics
 
 | Rule | Detail |
