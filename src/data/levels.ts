@@ -4,10 +4,11 @@ import type { AlienVariant, LevelConfig } from '../types/game'
  * Ordered level progression. Levels 1-5 cover the Home Row, levels 6-10 add
  * the Top Row and levels 11-15 add the Bottom Row, each pair of keys chosen
  * to mirror the same finger pattern as the Home Row lessons (index, middle,
- * pinky, ring, then the inner index reach). Difficulty increases every level
- * via spawn rate and descent speed. Spawns open gently and ramp towards the
- * level's fastest cadence, so the pressure builds while the learner settles
- * into the new keys.
+ * pinky, ring, then the inner index reach). Every level opens at the same
+ * gentle spawn cadence (`spawnIntervalMs`), so a later, longer lesson never
+ * feels harder to start than an earlier one. Difficulty instead grows via a
+ * faster end-of-level cadence (`minSpawnIntervalMs`), a longer ramp/level
+ * (`spawnRampDurationMs`/`targetKills`), and a faster alien descent speed.
  */
 export const LEVELS: LevelConfig[] = [
   {
@@ -25,7 +26,7 @@ export const LEVELS: LevelConfig[] = [
     id: 2,
     label: 'Level 2: + D & K',
     allowedKeys: ['f', 'j', 'd', 'k'],
-    spawnIntervalMs: 2000,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 720,
     spawnRampDurationMs: 34000,
     descentSpeed: 48,
@@ -36,7 +37,7 @@ export const LEVELS: LevelConfig[] = [
     id: 3,
     label: 'Level 3: + A & ;',
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';'],
-    spawnIntervalMs: 1900,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 660,
     spawnRampDurationMs: 38000,
     descentSpeed: 54,
@@ -47,7 +48,7 @@ export const LEVELS: LevelConfig[] = [
     id: 4,
     label: 'Level 4: + S & L',
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';', 's', 'l'],
-    spawnIntervalMs: 1800,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 600,
     spawnRampDurationMs: 42000,
     descentSpeed: 60,
@@ -58,7 +59,7 @@ export const LEVELS: LevelConfig[] = [
     id: 5,
     label: 'Level 5: + G & H',
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h'],
-    spawnIntervalMs: 1700,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 540,
     spawnRampDurationMs: 46000,
     descentSpeed: 68,
@@ -69,7 +70,7 @@ export const LEVELS: LevelConfig[] = [
     id: 6,
     label: 'Level 6: + R & U',
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u'],
-    spawnIntervalMs: 1670,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 515,
     spawnRampDurationMs: 49000,
     descentSpeed: 73,
@@ -79,7 +80,7 @@ export const LEVELS: LevelConfig[] = [
     id: 7,
     label: 'Level 7: + E & I',
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i'],
-    spawnIntervalMs: 1640,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 490,
     spawnRampDurationMs: 52000,
     descentSpeed: 78,
@@ -89,7 +90,7 @@ export const LEVELS: LevelConfig[] = [
     id: 8,
     label: 'Level 8: + Q & P',
     allowedKeys: ['f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p'],
-    spawnIntervalMs: 1610,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 465,
     spawnRampDurationMs: 55000,
     descentSpeed: 83,
@@ -101,7 +102,7 @@ export const LEVELS: LevelConfig[] = [
     allowedKeys: [
       'f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p', 'w', 'o',
     ],
-    spawnIntervalMs: 1580,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 440,
     spawnRampDurationMs: 58000,
     descentSpeed: 88,
@@ -113,7 +114,7 @@ export const LEVELS: LevelConfig[] = [
     allowedKeys: [
       'f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p', 'w', 'o', 't', 'y',
     ],
-    spawnIntervalMs: 1550,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 415,
     spawnRampDurationMs: 61000,
     descentSpeed: 93,
@@ -126,7 +127,7 @@ export const LEVELS: LevelConfig[] = [
       'f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p', 'w', 'o', 't', 'y',
       'v', 'm',
     ],
-    spawnIntervalMs: 1520,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 390,
     spawnRampDurationMs: 64000,
     descentSpeed: 98,
@@ -139,7 +140,7 @@ export const LEVELS: LevelConfig[] = [
       'f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p', 'w', 'o', 't', 'y',
       'v', 'm', 'c', ',',
     ],
-    spawnIntervalMs: 1490,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 365,
     spawnRampDurationMs: 67000,
     descentSpeed: 103,
@@ -152,7 +153,7 @@ export const LEVELS: LevelConfig[] = [
       'f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p', 'w', 'o', 't', 'y',
       'v', 'm', 'c', ',', 'z', '/',
     ],
-    spawnIntervalMs: 1460,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 340,
     spawnRampDurationMs: 70000,
     descentSpeed: 108,
@@ -165,7 +166,7 @@ export const LEVELS: LevelConfig[] = [
       'f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p', 'w', 'o', 't', 'y',
       'v', 'm', 'c', ',', 'z', '/', 'x', '.',
     ],
-    spawnIntervalMs: 1430,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 315,
     spawnRampDurationMs: 73000,
     descentSpeed: 113,
@@ -178,7 +179,7 @@ export const LEVELS: LevelConfig[] = [
       'f', 'j', 'd', 'k', 'a', ';', 's', 'l', 'g', 'h', 'r', 'u', 'e', 'i', 'q', 'p', 'w', 'o', 't', 'y',
       'v', 'm', 'c', ',', 'z', '/', 'x', '.', 'b', 'n',
     ],
-    spawnIntervalMs: 1400,
+    spawnIntervalMs: 2200,
     minSpawnIntervalMs: 290,
     spawnRampDurationMs: 76000,
     descentSpeed: 118,

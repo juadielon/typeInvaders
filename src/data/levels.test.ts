@@ -24,6 +24,18 @@ describe('LEVELS pacing', () => {
     })
   })
 
+  it('opens every level at the same gentle spawn cadence', () => {
+    LEVELS.forEach((level) => {
+      expect(level.spawnIntervalMs).toBe(LEVELS[0].spawnIntervalMs)
+    })
+  })
+
+  it('gives each lesson a longer ramp than the one before it', () => {
+    LEVELS.slice(1).forEach((level, index) => {
+      expect(level.spawnRampDurationMs).toBeGreaterThan(LEVELS[index].spawnRampDurationMs)
+    })
+  })
+
   it('ramps from the warm-up interval to the minimum interval', () => {
     const level = LEVELS[0]
 

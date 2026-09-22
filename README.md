@@ -145,30 +145,34 @@ A quick reference to every rule the game currently applies.
 ## Level progression
 
 Each level unlocks two more keys, raises the practice target, and ends at a
-faster spawn cadence than the one before it. Levels 1-5 cover the Home Row,
-levels 6-10 add the Top Row and levels 11-15 add the Bottom Row, completing
-every letter on the keyboard. Alien species stop being introduced once all
-five have appeared at Level 5; later levels keep reusing the full roster,
-since the species is cosmetic. Earlier species keep appearing, so the fleet
-grows as you progress through the Home Row.
+faster spawn cadence than the one before it. Every level opens at the same
+gentle 2200 ms cadence, so a longer, later lesson never feels harder to
+start than an earlier one; the pressure instead builds from a longer ramp
+and a faster minimum cadence as the lesson goes on. Levels 1-5 cover the
+Home Row, levels 6-10 add the Top Row and levels 11-15 add the Bottom Row,
+completing every letter on the keyboard. Alien species stop being
+introduced once all five have appeared at Level 5; later levels keep
+reusing the full roster, since the species is cosmetic. Earlier species
+keep appearing, so the fleet grows as you progress through the Home Row.
 
 | Level | Keys | New alien | Aliens to clear | Opening spawn | Fastest spawn |
 | --- | --- | --- | --- | --- | --- |
 | 1 | F J | Scout | 42 | 2200 ms | 800 ms |
-| 2 | + D K | Brute | 50 | 2000 ms | 720 ms |
-| 3 | + A ; | Trickster | 58 | 1900 ms | 660 ms |
-| 4 | + S L | Lurker | 66 | 1800 ms | 600 ms |
-| 5 | + G H | Warden | 74 | 1700 ms | 540 ms |
-| 6 | + R U | - | 80 | 1670 ms | 515 ms |
-| 7 | + E I | - | 86 | 1640 ms | 490 ms |
-| 8 | + Q P | - | 92 | 1610 ms | 465 ms |
-| 9 | + W O | - | 98 | 1580 ms | 440 ms |
-| 10 | + T Y | - | 104 | 1550 ms | 415 ms |
-| 11 | + V M | - | 110 | 1520 ms | 390 ms |
-| 12 | + C , | - | 116 | 1490 ms | 365 ms |
-| 13 | + Z / | - | 122 | 1460 ms | 340 ms |
-| 14 | + X . | - | 128 | 1430 ms | 315 ms |
-| 15 | + B N | - | 134 | 1400 ms | 290 ms |
+| 2 | + D K | Brute | 50 | 2200 ms | 720 ms |
+| 3 | + A ; | Trickster | 58 | 2200 ms | 660 ms |
+| 4 | + S L | Lurker | 66 | 2200 ms | 600 ms |
+| 5 | + G H | Warden | 74 | 2200 ms | 540 ms |
+| 6 | + R U | - | 80 | 2200 ms | 515 ms |
+| 7 | + E I | - | 86 | 2200 ms | 490 ms |
+| 8 | + Q P | - | 92 | 2200 ms | 465 ms |
+| 9 | + W O | - | 98 | 2200 ms | 440 ms |
+| 10 | + T Y | - | 104 | 2200 ms | 415 ms |
+| 11 | + V M | - | 110 | 2200 ms | 390 ms |
+| 12 | + C , | - | 116 | 2200 ms | 365 ms |
+| 13 | + Z / | - | 122 | 2200 ms | 340 ms |
+| 14 | + X . | - | 128 | 2200 ms | 315 ms |
+| 15 | + B N | - | 134 | 2200 ms | 290 ms |
+
 
 The spawn rate eases from the opening cadence to the fastest cadence over the
 course of the level, so the pressure builds while you settle into the new keys.
