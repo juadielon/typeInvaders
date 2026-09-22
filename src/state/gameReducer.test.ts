@@ -27,17 +27,32 @@ function testMothership(overrides: Partial<Mothership> = {}): Mothership {
 }
 
 describe('gameReducer', () => {
-  it('starts a fresh game at the first level briefing with a full shield', () => {
+  it('starts a fresh game at lesson selection with a full shield', () => {
     const state = gameReducer(createInitialState(), { type: 'START_GAME' })
-    expect(state.status).toBe('levelBriefing')
+    expect(state.status).toBe('lessonSelect')
     expect(state.shieldHp).toBe(100)
     expect(state.levelIndex).toBe(0)
   })
 
   function beginGame() {
-    const briefing = gameReducer(createInitialState(), { type: 'START_GAME' })
+    const selection = gameReducer(createInitialState(), { type: 'START_GAME' })
+    const briefing = gameReducer(selection, { type: 'SELECT_LEVEL', levelIndex: 0 })
     return gameReducer(briefing, { type: 'BEGIN_LEVEL' })
   }
+
+  it('selects a lesson and opens its briefing', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 2 })
+
+    expect(state.status).toBe('levelBriefing')
+    expect(state.levelIndex).toBe(2)
+  })
+
+  it('ignores invalid lesson selections', () => {
+    const state = gameReducer(createInitialState(), { type: 'START_GAME' })
+
+    expect(gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 99 })).toEqual(state)
+  })
 
   it('spawns an alien using an allowed key for the current level', () => {
     const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0)
@@ -163,6 +178,7 @@ describe('gameReducer', () => {
 
   it('begins play only when the learner continues from the briefing', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 0 })
     state = gameReducer(state, { type: 'BEGIN_LEVEL' })
 
     expect(state.status).toBe('playing')

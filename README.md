@@ -48,6 +48,9 @@ Node.js/npm installation on your machine is required.
   the level's practice letters — destroy it to restore some Shield HP and
   earn a score bonus. It doesn't count toward a level's kill target, so it's
   a bonus rather than a requirement.
+- Starting a game opens a lesson selector so you can choose any current home-row
+  mission. The selected lesson then shows its finger-position briefing before
+  play begins.
 - Clearing the required number of aliens in a level advances you to the
   next level, which unlocks additional keys and increases difficulty
   (faster spawns, faster descent); the screen is cleared of aliens before
