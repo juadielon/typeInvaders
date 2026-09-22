@@ -16,6 +16,9 @@ The game must be enjoyable without assuming they already type quickly.
 ## Learning and gameplay principles
 
 - Start with a small, useful key set and introduce new keys gradually.
+- Define typing terms such as Home Row and game terms such as Shield before
+  asking a first-time player to act on them. Prefer plain language and
+  percentages over unexplained abbreviations.
 - Show the correct key, hand, and finger at the point they are needed.
 - Reward accurate, timely input without punishing an occasional mistake.
 - Make the most urgent matching alien the target so typing feels fair and

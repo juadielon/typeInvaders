@@ -76,17 +76,31 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
         <div className="mt-3 rounded-md border border-slate-700 bg-slate-950/60 p-3">
           <h3 className="font-semibold text-amber-300">What to expect</h3>
           <p className="mt-1 text-sm text-slate-300">
-            {level.targetKills} aliens will descend using {level.allowedKeys
+            Your goal is to destroy {level.targetKills} aliens. Each alien will show one of
+            these keyboard keys: {level.allowedKeys
               .map((key) => key.toUpperCase())
               .join(', ')}
-            . Type the matching letter before each alien reaches your ship. Spawns start gently
-            and speed up as the lesson goes on, and the lesson bar at the top shows how many
-            aliens are left before the level ends.
+            . Press the key it shows before it reaches your ship. Aliens appear slowly at first
+            and more quickly later; the lesson bar shows how many remain.
           </p>
           <p className="mt-1.5 text-sm text-slate-300">
-            New this level:{' '}
-            <strong className="text-emerald-300">{ALIEN_VARIANT_LABELS[level.newAlien]}</strong>{' '}
-            aliens join the fleet alongside the species you have already faced.
+            {level.id === 1 ? (
+              <>
+                Your first alien species is the{' '}
+                <strong className="text-emerald-300">
+                  {ALIEN_VARIANT_LABELS[level.newAlien]}
+                </strong>
+                .
+              </>
+            ) : (
+              <>
+                New this level:{' '}
+                <strong className="text-emerald-300">
+                  {ALIEN_VARIANT_LABELS[level.newAlien]}
+                </strong>{' '}
+                aliens join the species from earlier missions.
+              </>
+            )}
           </p>
         </div>
 

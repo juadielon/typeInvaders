@@ -25,6 +25,15 @@ describe('LevelBriefing', () => {
     expect(screen.getByText(/right index sideways from j to h/i)).toBeInTheDocument()
   })
 
+  it('describes the first mission without referring to earlier aliens', () => {
+    render(<LevelBriefing level={LEVELS[0]} onBegin={vi.fn()} />)
+
+    expect(screen.getByText(/goal is to destroy 42 aliens/i)).toBeInTheDocument()
+    expect(screen.getByText(/each alien will show one of these keyboard keys: f, j/i)).toBeInTheDocument()
+    expect(screen.getByText(/your first alien species is the/i)).toBeInTheDocument()
+    expect(screen.queryByText(/species from earlier missions/i)).not.toBeInTheDocument()
+  })
+
   it('explains reaching up to the Top Row and introduces its new alien', () => {
     render(<LevelBriefing level={LEVELS[5]} onBegin={vi.fn()} />)
 

@@ -32,8 +32,10 @@ export function LessonSelect({ levels, onSelect }: LessonSelectProps) {
       </p>
       <h2 className="mt-1 text-2xl font-bold">Which lesson would you like to practise?</h2>
       <p className="mt-2 text-sm text-slate-400">
-        Pick any lesson, from the Home Row through to the Top and Bottom Rows. You can replay
-        an easier mission or jump straight to a key set you want to practise.
+        The keyboard has three letter rows: the <strong className="text-slate-200">Home Row</strong>{' '}
+        in the middle, the <strong className="text-slate-200">Top Row</strong> above it and the{' '}
+        <strong className="text-slate-200">Bottom Row</strong> below it. If you are new to touch
+        typing, start with Mission 1. Otherwise, choose any group of keys you want to practise.
       </p>
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {levels.map((level, index) => (
