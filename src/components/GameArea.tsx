@@ -148,7 +148,7 @@ function AlienAccessories({ variant }: { variant: AlienVariant }) {
       return (
         <span
           aria-hidden="true"
-          className="type-invader-moustache absolute left-1/2 top-2.5 z-20 flex -translate-x-1/2"
+          className="type-invader-moustache absolute left-1/2 top-3 z-20 flex -translate-x-1/2"
         >
           <span className="h-1.5 w-2.5 -rotate-12 rounded-bl-full rounded-tr-full bg-slate-950" />
           <span className="h-1.5 w-2.5 rotate-12 rounded-br-full rounded-tl-full bg-slate-950" />

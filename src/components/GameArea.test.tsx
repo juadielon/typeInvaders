@@ -26,7 +26,7 @@ describe('GameArea alien labels', () => {
     expect(screen.getByText('r')).not.toHaveClass('bg-slate-950/95')
     expect(screen.getByText('f')).not.toHaveClass('z-30')
     expect(document.querySelector('.type-invader-giggler-smile')).toHaveClass('top-3', 'h-1.5', 'w-3')
-    expect(document.querySelector('.type-invader-moustache')).toHaveClass('top-2.5')
+    expect(document.querySelector('.type-invader-moustache')).toHaveClass('top-3')
     expect(screen.getByText('w')).toHaveClass('bottom-0.5')
     expect(screen.getByText('w').parentElement).toHaveClass('top-0', 'bottom-1')
   })
