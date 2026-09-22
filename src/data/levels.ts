@@ -76,6 +76,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 49000,
     descentSpeed: 73,
     targetKills: 80,
+    newAlien: 'giggler',
   },
   {
     id: 7,
@@ -86,6 +87,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 52000,
     descentSpeed: 78,
     targetKills: 86,
+    newAlien: 'noodle',
   },
   {
     id: 8,
@@ -96,6 +98,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 55000,
     descentSpeed: 83,
     targetKills: 92,
+    newAlien: 'disco',
   },
   {
     id: 9,
@@ -108,6 +111,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 58000,
     descentSpeed: 88,
     targetKills: 98,
+    newAlien: 'moustachio',
   },
   {
     id: 10,
@@ -120,6 +124,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 61000,
     descentSpeed: 93,
     targetKills: 104,
+    newAlien: 'propeller',
   },
   {
     id: 11,
@@ -133,6 +138,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 64000,
     descentSpeed: 98,
     targetKills: 110,
+    newAlien: 'jellybean',
   },
   {
     id: 12,
@@ -146,6 +152,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 67000,
     descentSpeed: 103,
     targetKills: 116,
+    newAlien: 'cyclops',
   },
   {
     id: 13,
@@ -159,6 +166,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 70000,
     descentSpeed: 108,
     targetKills: 122,
+    newAlien: 'crabster',
   },
   {
     id: 14,
@@ -172,6 +180,7 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 73000,
     descentSpeed: 113,
     targetKills: 128,
+    newAlien: 'toaster',
   },
   {
     id: 15,
@@ -185,19 +194,15 @@ export const LEVELS: LevelConfig[] = [
     spawnRampDurationMs: 76000,
     descentSpeed: 118,
     targetKills: 134,
+    newAlien: 'partyKing',
   },
 ]
 
 /**
  * Alien species available at a given level. New species stack on top of the
- * earlier ones so the fleet visibly grows as the learner progresses. Once
- * every species has been introduced (Home Row levels), later levels simply
- * keep reusing the full roster, since the species is cosmetic only.
+ * earlier ones so the fleet visibly grows as the learner progresses.
  */
 export function variantsForLevel(levelIndex: number): AlienVariant[] {
   const clamped = Math.min(Math.max(levelIndex, 0), LEVELS.length - 1)
-  const introduced = LEVELS.slice(0, clamped + 1)
-    .map((level) => level.newAlien)
-    .filter((variant): variant is AlienVariant => variant !== undefined)
-  return introduced.length > 0 ? introduced : [LEVELS[0].newAlien as AlienVariant]
+  return LEVELS.slice(0, clamped + 1).map((level) => level.newAlien)
 }

@@ -25,12 +25,13 @@ describe('LevelBriefing', () => {
     expect(screen.getByText(/right index sideways from j to h/i)).toBeInTheDocument()
   })
 
-  it('explains reaching up to the Top Row and omits the new-alien callout once every species has appeared', () => {
+  it('explains reaching up to the Top Row and introduces its new alien', () => {
     render(<LevelBriefing level={LEVELS[5]} onBegin={vi.fn()} />)
 
     expect(screen.getByText(/reach your left index up from f to r/i)).toBeInTheDocument()
     expect(screen.getByText(/reach your right index up from j to u/i)).toBeInTheDocument()
-    expect(screen.queryByText(/new this level/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/new this level/i)).toBeInTheDocument()
+    expect(screen.getByText('The Giggler')).toBeInTheDocument()
   })
 
   it('explains reaching down to the Bottom Row', () => {

@@ -1,4 +1,12 @@
-import type { Alien, Explosion, Laser, Mothership, PlasmaBolt, ShieldFeedback } from '../types/game'
+import type {
+  Alien,
+  AlienVariant,
+  Explosion,
+  Laser,
+  Mothership,
+  PlasmaBolt,
+  ShieldFeedback,
+} from '../types/game'
 import {
   ALIEN_SIZE,
   MOTHERSHIP_HEIGHT,
@@ -42,7 +50,159 @@ const alienStyles = {
     eyes: 'rounded-sm bg-rose-400',
     label: 'bottom-0.5 text-rose-100',
   },
+  giggler: {
+    arm: 'bg-lime-300 shadow-[0_0_7px_rgba(190,242,100,0.85)]',
+    body: 'inset-x-1 top-1 bottom-2 rounded-[45%] border-lime-300 bg-lime-900/80 shadow-[0_0_11px_rgba(190,242,100,0.6)]',
+    eyes: 'rounded-full bg-white shadow-[0_0_3px_white]',
+    label: 'bottom-0 z-30 text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.9)]',
+  },
+  noodle: {
+    arm: 'bg-orange-300 shadow-[0_0_7px_rgba(253,186,116,0.85)]',
+    body: 'inset-x-2.5 top-0 bottom-1 rounded-full border-orange-300 bg-orange-950/80 shadow-[0_0_11px_rgba(253,186,116,0.6)]',
+    eyes: 'rounded-full bg-orange-200',
+    label: 'bottom-1 text-orange-100',
+  },
+  disco: {
+    arm: 'bg-violet-300 shadow-[0_0_8px_rgba(196,181,253,0.9)]',
+    body: 'inset-x-1 top-1 bottom-1 rounded-full border-violet-200 bg-gradient-to-br from-fuchsia-700 via-cyan-700 to-amber-500 shadow-[0_0_13px_rgba(232,121,249,0.8)]',
+    eyes: 'rounded-sm bg-cyan-100',
+    label: 'bottom-1 text-white',
+  },
+  moustachio: {
+    arm: 'bg-sky-300 shadow-[0_0_7px_rgba(125,211,252,0.85)]',
+    body: 'inset-x-0.5 top-0 bottom-1 rounded-t-full rounded-b-lg border-sky-300 bg-sky-950/80 shadow-[0_0_11px_rgba(125,211,252,0.6)]',
+    eyes: 'rounded-full bg-sky-100',
+    label: 'bottom-0 text-sky-100',
+  },
+  propeller: {
+    arm: 'bg-red-300 shadow-[0_0_7px_rgba(252,165,165,0.85)]',
+    body: 'inset-x-1 top-2 bottom-2 rounded-lg border-red-300 bg-red-950/80 shadow-[0_0_11px_rgba(252,165,165,0.6)]',
+    eyes: 'rounded-sm bg-red-100',
+    label: 'bottom-0.5 text-red-100',
+  },
+  jellybean: {
+    arm: 'bg-pink-300 shadow-[0_0_7px_rgba(249,168,212,0.85)]',
+    body: 'inset-x-1 top-0.5 bottom-1 rotate-6 rounded-[55%_40%_55%_40%] border-pink-300 bg-pink-950/80 shadow-[0_0_12px_rgba(249,168,212,0.65)]',
+    eyes: 'rounded-full bg-yellow-200',
+    label: 'bottom-1 text-pink-100',
+  },
+  cyclops: {
+    arm: 'bg-teal-300 shadow-[0_0_7px_rgba(94,234,212,0.85)]',
+    body: 'inset-x-1 top-1 bottom-1 rounded-[40%] border-teal-300 bg-teal-950/80 shadow-[0_0_12px_rgba(94,234,212,0.65)]',
+    eyes: 'rounded-full bg-teal-100',
+    label: 'bottom-0 text-teal-100',
+  },
+  crabster: {
+    arm: 'bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.9)]',
+    body: 'inset-x-0.5 top-2 bottom-1 rounded-[50%_50%_30%_30%] border-orange-400 bg-red-950/80 shadow-[0_0_12px_rgba(251,146,60,0.7)]',
+    eyes: 'rounded-full bg-yellow-100',
+    label: 'bottom-1 text-orange-100',
+  },
+  toaster: {
+    arm: 'bg-slate-300 shadow-[0_0_7px_rgba(203,213,225,0.85)]',
+    body: 'inset-x-0.5 top-2 bottom-1 rounded-md border-slate-300 bg-slate-600/90 shadow-[0_0_12px_rgba(203,213,225,0.65)]',
+    eyes: 'rounded-sm bg-red-300',
+    label: 'bottom-1 text-white',
+  },
+  partyKing: {
+    arm: 'bg-yellow-300 shadow-[0_0_9px_rgba(253,224,71,0.95)]',
+    body: 'inset-x-1 top-2 bottom-1 rounded-xl border-yellow-300 bg-purple-900/90 shadow-[0_0_14px_rgba(253,224,71,0.8)]',
+    eyes: 'rounded-full bg-yellow-100',
+    label: 'bottom-1 text-yellow-100',
+  },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
+
+const alienMotion: Partial<Record<AlienVariant, string>> = {
+  noodle: 'type-invader-noodle',
+  disco: 'type-invader-disco',
+  jellybean: 'type-invader-jellybean',
+  partyKing: 'type-invader-party-king',
+}
+
+function AlienAccessories({ variant }: { variant: AlienVariant }) {
+  switch (variant) {
+    case 'giggler':
+      return (
+        <span
+          aria-hidden="true"
+          className="type-invader-giggler-smile absolute left-1/2 top-3 z-20 h-1.5 w-3 -translate-x-1/2 rounded-b-full border-b-2 border-lime-200"
+        />
+      )
+    case 'noodle':
+      return (
+        <>
+          <span className="type-invader-antenna absolute left-2 top-0 h-3 w-0.5 -rotate-12 bg-orange-300" />
+          <span className="type-invader-antenna absolute left-1/2 -top-1 h-4 w-0.5 -translate-x-1/2 bg-orange-300" />
+          <span className="type-invader-antenna absolute right-2 top-0 h-3 w-0.5 rotate-12 bg-orange-300" />
+        </>
+      )
+    case 'disco':
+      return (
+        <>
+          <span className="absolute -left-1 top-1 h-1.5 w-1.5 rotate-45 bg-yellow-200 shadow-[0_0_5px_white]" />
+          <span className="absolute -right-1 top-5 h-1.5 w-1.5 rotate-45 bg-cyan-200 shadow-[0_0_5px_white]" />
+          <span className="absolute left-1/2 -top-1 h-1.5 w-1.5 -translate-x-1/2 rotate-45 bg-fuchsia-200 shadow-[0_0_5px_white]" />
+        </>
+      )
+    case 'moustachio':
+      return (
+        <span
+          aria-hidden="true"
+          className="type-invader-moustache absolute left-1/2 top-3.5 z-20 flex -translate-x-1/2"
+        >
+          <span className="h-1.5 w-2.5 -rotate-12 rounded-bl-full rounded-tr-full bg-slate-400" />
+          <span className="h-1.5 w-2.5 rotate-12 rounded-br-full rounded-tl-full bg-slate-400" />
+        </span>
+      )
+    case 'propeller':
+      return (
+        <>
+          <span className="absolute left-1/2 -top-1 h-3 w-0.5 -translate-x-1/2 bg-red-300" />
+          <span className="type-invader-propeller absolute -top-1 left-1/2 z-20 h-1.5 w-8 -translate-x-1/2 rounded-full bg-red-200" />
+        </>
+      )
+    case 'jellybean':
+      return (
+        <>
+          <span className="absolute left-2 top-4 z-20 h-1.5 w-1.5 rounded-full bg-cyan-300" />
+          <span className="absolute right-2 top-2 z-20 h-2 w-2 rounded-full bg-yellow-300" />
+        </>
+      )
+    case 'cyclops':
+      return (
+        <span className="type-invader-cyclops-sclera absolute left-1/2 top-2 z-20 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-white">
+          <span className="type-invader-cyclops-eye h-1.5 w-1.5 rounded-full bg-teal-700" />
+        </span>
+      )
+    case 'crabster':
+      return (
+        <>
+          <span className="absolute -left-2 top-2 z-20 h-4 w-4 rotate-45 rounded-tl-full border-l-4 border-t-4 border-orange-400" />
+          <span className="absolute -right-2 top-2 z-20 h-4 w-4 -rotate-45 rounded-tr-full border-r-4 border-t-4 border-orange-400" />
+        </>
+      )
+    case 'toaster':
+      return (
+        <>
+          <span className="absolute left-2 -top-1 h-4 w-3 rounded-t-full border border-amber-400 bg-amber-700" />
+          <span className="absolute right-2 -top-2 h-4 w-3 rounded-t-full border border-amber-300 bg-amber-600" />
+        </>
+      )
+    case 'partyKing':
+      return (
+        <>
+          <span
+            className="absolute -top-2 left-1/2 z-20 h-4 w-7 -translate-x-1/2 bg-yellow-300"
+            style={{ clipPath: 'polygon(0 100%, 0 20%, 25% 65%, 50% 0, 75% 65%, 100% 20%, 100% 100%)' }}
+          />
+          <span className="absolute -left-1 top-1 h-1.5 w-1.5 rotate-45 bg-cyan-300" />
+          <span className="absolute -right-1 top-3 h-1.5 w-1.5 rounded-full bg-pink-300" />
+        </>
+      )
+    default:
+      return null
+  }
+}
 
 /** Alien variants that can launch plasma bolts, matching the reducer's launcher list. */
 type PlasmaLauncherVariant = 'trickster' | 'warden'
@@ -154,7 +314,8 @@ export function GameArea({
               transform: `translate(${alien.x - ALIEN_SIZE / 2}px, ${MOTHERSHIP_LANE_HEIGHT + alien.y}px)`,
             }}
           >
-            <div className="type-invader-alien relative h-full w-full">
+            <div className={`type-invader-alien relative h-full w-full ${alienMotion[alien.variant] ?? ''}`}>
+              <AlienAccessories variant={alien.variant} />
               {alien.variant === 'trickster' && (
                 <>
                   <span className="type-invader-antenna absolute left-3 top-0 h-3 w-0.5 origin-bottom -rotate-12 bg-fuchsia-400">
@@ -182,12 +343,14 @@ export function GameArea({
                 {alien.variant === 'lurker' && (
                   <div className="absolute inset-x-1.5 top-1.5 h-1.5 rounded-full bg-cyan-400/90" />
                 )}
-                {alien.variant !== 'trickster' && alien.variant !== 'lurker' && (
+                {alien.variant !== 'trickster' &&
+                  alien.variant !== 'lurker' &&
+                  alien.variant !== 'cyclops' && (
                   <div className="absolute inset-x-1 top-1 flex justify-center gap-2">
                     <span className={`h-1.5 w-1.5 ${style.eyes}`} />
                     <span className={`h-1.5 w-1.5 ${style.eyes}`} />
                   </div>
-                )}
+                  )}
                 <div className={`absolute inset-x-0 text-center font-mono text-sm font-black uppercase leading-none ${style.label}`}>
                   {alien.char}
                 </div>

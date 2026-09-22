@@ -34,9 +34,10 @@ Node.js/npm installation on your machine is required.
 ## How the game works
 
 - Aliens descend from the top of the playfield, each labelled with a letter
-  (Level 1 starts with `F` and `J` only). They come in several
-  visual species (Scout, Brute, Trickster, Lurker and Warden), which are
-  purely cosmetic — the letter is all that matters for gameplay.
+  (Level 1 starts with `F` and `J` only). Every mission introduces a new
+  visual species, from the Scout to increasingly silly invaders such as
+  Noodle Doodle, Moustachio, Cosmic Toaster and Party King. Species are
+  purely cosmetic - the letter is all that matters for gameplay.
 - Type the letter shown on an alien to destroy it with a laser — the ship
   glides to and fires from the position of the lowest (most urgent)
   on-screen alien matching that key, with a small explosion on a hit.
@@ -64,10 +65,10 @@ Node.js/npm installation on your machine is required.
 - A lesson progress bar in the status bar shows how many aliens you have
   cleared and how many remain before the level ends, so a longer lesson
   never feels open-ended.
-- Every level introduces a new alien species (Scout, Brute, Trickster,
-  Lurker and Warden). Earlier species keep appearing, so the fleet visibly
-  grows as you progress. The species is cosmetic only: every alien is still
-  destroyed by typing the letter it carries.
+- Every level introduces one new alien species. Earlier species keep
+  appearing, so the fleet becomes more varied and ridiculous as you
+  progress. Species are cosmetic only: every alien is still destroyed by
+  typing the letter it carries.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
   but are not saved between sessions in this MVP. WPM is an estimate based on
   five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
@@ -151,11 +152,9 @@ start than an earlier one. Alien descent also begins at the same gentle
 speed in every level. The pressure instead builds from a longer ramp, a
 faster minimum cadence and a faster final descent speed as the lesson goes
 on. Levels 1-5 cover the Home Row, levels 6-10 add the Top Row and levels
-11-15 add the Bottom Row, completing every letter on the keyboard. Alien
-species stop being
-introduced once all five have appeared at Level 5; later levels keep
-reusing the full roster, since the species is cosmetic. Earlier species
-keep appearing, so the fleet grows as you progress through the Home Row.
+11-15 add the Bottom Row, completing every letter on the keyboard. Every
+mission introduces one new alien species while retaining all earlier
+species, so the fleet grows throughout the full curriculum.
 
 | Level | Keys | New alien | Aliens to clear | Opening spawn | Fastest spawn |
 | --- | --- | --- | --- | --- | --- |
@@ -164,16 +163,16 @@ keep appearing, so the fleet grows as you progress through the Home Row.
 | 3 | + A ; | Trickster | 58 | 2200 ms | 660 ms |
 | 4 | + S L | Lurker | 66 | 2200 ms | 600 ms |
 | 5 | + G H | Warden | 74 | 2200 ms | 540 ms |
-| 6 | + R U | - | 80 | 2200 ms | 515 ms |
-| 7 | + E I | - | 86 | 2200 ms | 490 ms |
-| 8 | + Q P | - | 92 | 2200 ms | 465 ms |
-| 9 | + W O | - | 98 | 2200 ms | 440 ms |
-| 10 | + T Y | - | 104 | 2200 ms | 415 ms |
-| 11 | + V M | - | 110 | 2200 ms | 390 ms |
-| 12 | + C , | - | 116 | 2200 ms | 365 ms |
-| 13 | + Z / | - | 122 | 2200 ms | 340 ms |
-| 14 | + X . | - | 128 | 2200 ms | 315 ms |
-| 15 | + B N | - | 134 | 2200 ms | 290 ms |
+| 6 | + R U | The Giggler | 80 | 2200 ms | 515 ms |
+| 7 | + E I | Noodle Doodle | 86 | 2200 ms | 490 ms |
+| 8 | + Q P | Disco Blob | 92 | 2200 ms | 465 ms |
+| 9 | + W O | Moustachio | 98 | 2200 ms | 440 ms |
+| 10 | + T Y | Propellerhead | 104 | 2200 ms | 415 ms |
+| 11 | + V M | Jellybean | 110 | 2200 ms | 390 ms |
+| 12 | + C , | Wobbly Cyclops | 116 | 2200 ms | 365 ms |
+| 13 | + Z / | Crabster | 122 | 2200 ms | 340 ms |
+| 14 | + X . | Cosmic Toaster | 128 | 2200 ms | 315 ms |
+| 15 | + B N | Party King | 134 | 2200 ms | 290 ms |
 
 
 The spawn rate eases from the opening cadence to the fastest cadence over the
