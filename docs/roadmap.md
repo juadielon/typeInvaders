@@ -19,6 +19,50 @@ affects the feature's behaviour or scope.
 - Unit tests for the core rules and selected UI behaviour.
 - Setup, play, test, and production-preview documentation.
 
+## Planned lesson progression
+
+Lessons should be short, replayable missions. Each module starts with a
+briefing, introduces only a small number of new keys, and ends with a fun
+challenge that mixes the new skill with previously learned keys. The exact
+number of levels in each module can change as play-testing reveals the right
+difficulty curve.
+
+1. **Launch pad: F and J** - Find the raised bumps, place both index fingers,
+   and practise alternating the two anchor keys. Keep the pace gentle and
+   celebrate a first clean wave of invaders.
+2. **Home-row crew: D and K** - Add the middle fingers while keeping F and J
+   active. Use paired left/right targets and a short `combo streak` bonus
+   to make balanced hand use feel rewarding.
+3. **Home-row squad: S and L** - Add the ring fingers and practise moving
+   between the middle and outer home keys. Use alternating patterns so
+   players learn to look at the screen rather than hunt for keys.
+4. **Home-row command: A and ;** - Complete the home row with the pinkies.
+   Use a rescue mission or mothership bonus to make the new outer keys feel
+   useful, not merely harder.
+5. **Index reaches: G and H** - Teach the left and right index fingers to
+   reach sideways from F and J, then return to their home positions. Add
+   brief two-key patterns such as `FG` and `JH` before mixing the full home row.
+6. **Top-row scouts: R, T, Y, U, I and O** - Introduce upper-row reaches in
+   small hand-based groups, first left then right. Give the player a faster
+   scout wave to make the new vertical movement feel like a natural upgrade.
+7. **Top-row sweep: Q, W, E and P** - Finish the upper row from the outside
+   towards the centre. Add timed formation waves, but keep the target count
+   low enough that accuracy remains more important than speed.
+8. **Bottom-row explorers: V, B, N and M** - Introduce the lower-row reaches
+   beneath the home position, using wider alien formations to reinforce hand
+   movement without overwhelming beginners.
+9. **Bottom-row sweep: Z, X, C and comma/full stop** - Complete the letter
+   rows with a slower precision mission, then a mixed-row final wave.
+10. **Space defence: Spacebar** - Introduce alien plasma bolts and the
+    `Press [SPACE] to Shield!` response. Begin with generous timing, then
+    gradually ask players to alternate letter shots and thumb presses.
+11. **Number sector** - Add the number row only after the letter rows are
+    comfortable. Teach numbers in left/right groups and use score multipliers
+    or a bonus-star run to make this advanced module feel special.
+12. **Pilot certification** - Mix all learned letters, numbers, and Spacebar
+    defence in short missions. Reward accuracy, consistency, and improvement
+    with personal bests rather than requiring a high typing speed.
+
 ## Next priorities
 
 1. Expand the lesson path beyond the initial home-row key set while keeping
