@@ -75,8 +75,10 @@ Node.js/npm installation on your machine is required.
   never feels open-ended.
 - Every level introduces one new alien species. Earlier species keep
   appearing, so the fleet becomes more varied and ridiculous as you
-  progress. Species are cosmetic only: every alien is still destroyed by
-  typing the letter it carries.
+  progress. The first alien always shows the mission's new species; later
+  spawns use the full unlocked roster even if that first alien reaches the
+  ship. Species are cosmetic only: every alien is still destroyed by typing
+  the key it carries.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
   but are not saved between sessions in this MVP. WPM is an estimate based on
   five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
