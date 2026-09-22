@@ -55,7 +55,11 @@ Node.js/npm installation on your machine is required.
   to continue. It shows the correct home-row hand positions, each key's
   finger movement, and the new level's objective.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
-  but are not saved between sessions in this MVP.
+  but are not saved between sessions in this MVP. WPM is an estimate based on
+  five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
+  Since the MVP practises individual letters, it is a practice estimate rather
+  than a completed-word speed; future word and phrase lessons can use completed
+  text and spaces for a more natural calculation.
 
 ## Prerequisites
 
@@ -74,6 +78,47 @@ cd typeInvaders
 docker compose build dev
 ```
 
+## Command-line instructions
+
+The following commands can be run from either PowerShell or Bash.
+
+Clone the repository and build the development image:
+
+```PowerShell/Bash
+git clone https://github.com/juadielon/typeInvaders.git
+cd typeInvaders
+docker compose build dev
+```
+
+Start the Vite development server:
+
+```PowerShell/Bash
+docker compose up --build
+```
+
+Stop the running containers:
+
+```PowerShell/Bash
+docker compose down
+```
+
+Run the unit tests:
+
+```PowerShell/Bash
+docker compose run --rm dev npm test
+```
+
+Run tests in watch mode while developing:
+
+```PowerShell/Bash
+docker compose run --rm dev npm run test:watch
+```
+
+Install a dependency inside the container:
+
+```PowerShell/Bash
+docker compose run --rm dev npm install <package-name>
+```
 ## Running the game
 
 Start the Vite dev server inside Docker:
