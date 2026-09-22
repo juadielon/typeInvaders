@@ -97,8 +97,11 @@ difficulty curve.
 
 ## Open decisions
 
-- Should inaccurate keystrokes have a visible penalty, or remain neutral
-  while accuracy is tracked?
+- **Recommended accuracy rule:** keep an occasional typo neutral, but apply a tiny
+  shield drain after a short streak of consecutive misfires (for example, three),
+  with a visible but non-alarming feedback cue. Cap the drain so mistakes cannot
+  rapidly end a beginner session; accuracy should remain more important than
+  punishment.
 - How should players unlock or choose lessons: a fixed sequence, free
   selection, or both?
 - Should Spacebar shields consume a limited resource, rely purely on timing,
