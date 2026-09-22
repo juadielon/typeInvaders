@@ -55,7 +55,11 @@ Node.js/npm installation on your machine is required.
   to continue. It shows the correct home-row hand positions, each key's
   finger movement, and the new level's objective.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
-  but are not saved between sessions in this MVP.
+  but are not saved between sessions in this MVP. WPM is an estimate based on
+  five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
+  Since the MVP practises individual letters, it is a practice estimate rather
+  than a completed-word speed; future word and phrase lessons can use completed
+  text and spaces for a more natural calculation.
 
 ## Prerequisites
 

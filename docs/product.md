@@ -38,6 +38,12 @@ The MVP includes:
   taken damage, rewarding a correct keystroke with restored Shield HP and
   bonus score without counting toward level progression.
 - WPM and accuracy shown during a game.
+- **WPM meaning:** Words Per Minute treats five correct keystrokes as one
+  standard word. The current estimate is `correctKeystrokes / 5 / elapsedMinutes`,
+  calculated from the start of the game and updated live. Incorrect keys do not
+  increase WPM, and the value is not saved. Because the MVP practises individual
+  letters rather than complete words, this is an estimated practice WPM; word and
+  phrase lessons can later calculate it from completed text and spaces.
 - A visual keyboard that identifies the relevant key and finger.
 - Unit tests for the game reducer, keyboard mapping, and start screen.
 - A Docker-only development workflow.
