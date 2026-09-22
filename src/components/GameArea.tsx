@@ -170,8 +170,8 @@ function AlienAccessories({ variant }: { variant: AlienVariant }) {
       )
     case 'cyclops':
       return (
-        <span className="absolute left-1/2 top-2 z-20 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full bg-white">
-          <span className="type-invader-cyclops-eye h-2 w-2 rounded-full bg-teal-700" />
+        <span className="type-invader-cyclops-sclera absolute left-1/2 top-2 z-20 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full bg-white">
+          <span className="type-invader-cyclops-eye h-1.5 w-1.5 rounded-full bg-teal-700" />
         </span>
       )
     case 'crabster':

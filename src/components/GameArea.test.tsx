@@ -10,6 +10,7 @@ describe('GameArea alien labels', () => {
           { id: 'giggler-1', char: 'r', variant: 'giggler', x: 100, y: 50 },
           { id: 'scout-1', char: 'f', variant: 'scout', x: 200, y: 50 },
           { id: 'moustachio-1', char: 'w', variant: 'moustachio', x: 300, y: 50 },
+          { id: 'cyclops-1', char: 'c', variant: 'cyclops', x: 400, y: 50 },
         ]}
         lasers={[]}
         explosions={[]}
@@ -31,5 +32,7 @@ describe('GameArea alien labels', () => {
     expect(moustache?.firstElementChild).toHaveClass('bg-slate-400')
     expect(screen.getByText('w')).toHaveClass('bottom-0')
     expect(screen.getByText('w').parentElement).toHaveClass('top-0', 'bottom-1')
+    expect(document.querySelector('.type-invader-cyclops-sclera')).toHaveClass('h-3', 'w-3')
+    expect(document.querySelector('.type-invader-cyclops-eye')).toHaveClass('h-1.5', 'w-1.5')
   })
 })
