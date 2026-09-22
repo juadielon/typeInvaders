@@ -29,9 +29,21 @@ describe('LevelBriefing', () => {
     render(<LevelBriefing level={LEVELS[0]} onBegin={vi.fn()} />)
 
     expect(screen.getByText(/goal is to destroy 42 aliens/i)).toBeInTheDocument()
-    expect(screen.getByText(/each alien will show one of these keyboard keys: f, j/i)).toBeInTheDocument()
+    expect(screen.getByLabelText('Lesson keys: F, J')).toBeInTheDocument()
     expect(screen.getByText(/your first alien species is the/i)).toBeInTheDocument()
     expect(screen.queryByText(/species from earlier missions/i)).not.toBeInTheDocument()
+  })
+
+  it('distinguishes lesson keys from the commas separating them', () => {
+    render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
+
+    const keyList = screen.getByLabelText(/lesson keys:/i)
+    const separators = keyList.querySelectorAll('.text-slate-500')
+    const keys = keyList.querySelectorAll('.text-emerald-300')
+
+    expect(separators.length).toBe(LEVELS[11].allowedKeys.length - 1)
+    expect(keys.length).toBe(LEVELS[11].allowedKeys.length)
+    expect(Array.from(keys).some((key) => key.textContent === ',')).toBe(true)
   })
 
   it('explains reaching up to the Top Row and introduces its new alien', () => {

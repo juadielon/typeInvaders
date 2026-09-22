@@ -77,9 +77,21 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
           <h3 className="font-semibold text-amber-300">What to expect</h3>
           <p className="mt-1 text-sm text-slate-300">
             Your goal is to destroy {level.targetKills} aliens. Each alien will show one of
-            these keyboard keys: {level.allowedKeys
-              .map((key) => key.toUpperCase())
-              .join(', ')}
+            these keyboard keys:{' '}
+            <span
+              aria-label={`Lesson keys: ${level.allowedKeys
+                .map((key) => key.toUpperCase())
+                .join(', ')}`}
+            >
+              {level.allowedKeys.map((key, index) => (
+                <span key={key}>
+                  {index > 0 && <span className="text-slate-500">, </span>}
+                  <span className="font-mono font-bold text-emerald-300">
+                    {key.toUpperCase()}
+                  </span>
+                </span>
+              ))}
+            </span>
             . Press the key it shows before it reaches your ship. Aliens appear slowly at first
             and more quickly later; the lesson bar shows how many remain.
           </p>
