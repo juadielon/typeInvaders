@@ -37,7 +37,9 @@ Node.js/npm installation on your machine is required.
   (Level 1 starts with `F` and `J` only). Every mission introduces a new
   visual species, from the Scout to increasingly silly invaders such as
   Noodle Doodle, Moustachio, Cosmic Toaster and Party King. Species are
-  purely cosmetic - the letter is all that matters for gameplay.
+  purely cosmetic - the letter is all that matters for gameplay. Every
+  species uses the same high-contrast character badge so its target remains
+  easy to read over the alien artwork.
 - Type the letter shown on an alien to destroy it with a laser — the ship
   glides to and fires from the position of the lowest (most urgent)
   on-screen alien matching that key, with a small explosion on a hit.

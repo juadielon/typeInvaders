@@ -24,93 +24,78 @@ const alienStyles = {
     arm: 'bg-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.8)]',
     body: 'inset-x-1 top-1 bottom-2 rounded-t-xl rounded-b-md border-emerald-300 bg-emerald-900/80 shadow-[0_0_10px_rgba(52,211,153,0.55)]',
     eyes: 'rounded-full bg-emerald-500',
-    label: 'bottom-0.5 text-emerald-100',
   },
   brute: {
     arm: 'bg-amber-300 shadow-[0_0_6px_rgba(252,211,77,0.8)]',
     body: 'inset-x-0.5 top-2 bottom-2 rounded-md border-amber-300 bg-amber-900/80 shadow-[0_0_10px_rgba(252,211,77,0.55)]',
     eyes: 'rounded-sm bg-amber-500',
-    label: 'bottom-0.5 text-amber-100',
   },
   trickster: {
     arm: 'bg-fuchsia-300 shadow-[0_0_6px_rgba(240,171,252,0.8)]',
     body: 'inset-x-2 top-2 bottom-2 rounded-full border-fuchsia-300 bg-fuchsia-900/80 shadow-[0_0_10px_rgba(240,171,252,0.55)]',
     eyes: 'rounded-full bg-fuchsia-500',
-    label: 'bottom-0.5 text-fuchsia-100',
   },
   lurker: {
     arm: 'bg-cyan-300 shadow-[0_0_6px_rgba(103,232,249,0.8)]',
     body: 'inset-x-1 top-2 bottom-1 rounded-b-3xl rounded-t-sm border-cyan-300 bg-cyan-900/80 shadow-[0_0_10px_rgba(103,232,249,0.55)]',
     eyes: 'rounded-full bg-cyan-400',
-    label: 'bottom-0.5 text-cyan-100',
   },
   warden: {
     arm: 'bg-rose-300 shadow-[0_0_6px_rgba(253,164,175,0.8)]',
     body: 'inset-x-0.5 top-1.5 bottom-2 rounded-t-md rounded-b-xl border-rose-300 bg-rose-900/80 shadow-[0_0_10px_rgba(253,164,175,0.55)]',
     eyes: 'rounded-sm bg-rose-400',
-    label: 'bottom-0.5 text-rose-100',
   },
   giggler: {
     arm: 'bg-lime-300 shadow-[0_0_7px_rgba(190,242,100,0.85)]',
     body: 'inset-x-1 top-1 bottom-2 rounded-[45%] border-lime-300 bg-lime-900/80 shadow-[0_0_11px_rgba(190,242,100,0.6)]',
     eyes: 'rounded-full bg-white shadow-[0_0_3px_white]',
-    label: 'bottom-0.5 text-lime-100',
   },
   noodle: {
     arm: 'bg-orange-300 shadow-[0_0_7px_rgba(253,186,116,0.85)]',
     body: 'inset-x-2.5 top-0 bottom-1 rounded-full border-orange-300 bg-orange-950/80 shadow-[0_0_11px_rgba(253,186,116,0.6)]',
     eyes: 'rounded-full bg-orange-200',
-    label: 'bottom-1 text-orange-100',
   },
   disco: {
     arm: 'bg-violet-300 shadow-[0_0_8px_rgba(196,181,253,0.9)]',
     body: 'inset-x-1 top-1 bottom-1 rounded-full border-violet-200 bg-gradient-to-br from-fuchsia-700 via-cyan-700 to-amber-500 shadow-[0_0_13px_rgba(232,121,249,0.8)]',
     eyes: 'rounded-sm bg-cyan-100',
-    label: 'bottom-1 text-white',
   },
   moustachio: {
     arm: 'bg-sky-300 shadow-[0_0_7px_rgba(125,211,252,0.85)]',
     body: 'inset-x-0.5 top-1 bottom-2 rounded-t-full rounded-b-lg border-sky-300 bg-sky-950/80 shadow-[0_0_11px_rgba(125,211,252,0.6)]',
     eyes: 'rounded-full bg-sky-100',
-    label: 'bottom-0.5 text-sky-100',
   },
   propeller: {
     arm: 'bg-red-300 shadow-[0_0_7px_rgba(252,165,165,0.85)]',
     body: 'inset-x-1 top-2 bottom-2 rounded-lg border-red-300 bg-red-950/80 shadow-[0_0_11px_rgba(252,165,165,0.6)]',
     eyes: 'rounded-sm bg-red-100',
-    label: 'bottom-0.5 text-red-100',
   },
   jellybean: {
     arm: 'bg-pink-300 shadow-[0_0_7px_rgba(249,168,212,0.85)]',
     body: 'inset-x-1 top-0.5 bottom-1 rotate-6 rounded-[55%_40%_55%_40%] border-pink-300 bg-pink-950/80 shadow-[0_0_12px_rgba(249,168,212,0.65)]',
     eyes: 'rounded-full bg-yellow-200',
-    label: 'bottom-1 text-pink-100',
   },
   cyclops: {
     arm: 'bg-teal-300 shadow-[0_0_7px_rgba(94,234,212,0.85)]',
     body: 'inset-x-1 top-1 bottom-1 rounded-[40%] border-teal-300 bg-teal-950/80 shadow-[0_0_12px_rgba(94,234,212,0.65)]',
     eyes: 'rounded-full bg-teal-100',
-    label: 'bottom-1 text-teal-100',
   },
   crabster: {
     arm: 'bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.9)]',
     body: 'inset-x-0.5 top-2 bottom-1 rounded-[50%_50%_30%_30%] border-orange-400 bg-red-950/80 shadow-[0_0_12px_rgba(251,146,60,0.7)]',
     eyes: 'rounded-full bg-yellow-100',
-    label: 'bottom-1 text-orange-100',
   },
   toaster: {
     arm: 'bg-slate-300 shadow-[0_0_7px_rgba(203,213,225,0.85)]',
     body: 'inset-x-0.5 top-2 bottom-1 rounded-md border-slate-300 bg-slate-600/90 shadow-[0_0_12px_rgba(203,213,225,0.65)]',
     eyes: 'rounded-sm bg-red-300',
-    label: 'bottom-1 text-white',
   },
   partyKing: {
     arm: 'bg-yellow-300 shadow-[0_0_9px_rgba(253,224,71,0.95)]',
     body: 'inset-x-1 top-2 bottom-1 rounded-xl border-yellow-300 bg-purple-900/90 shadow-[0_0_14px_rgba(253,224,71,0.8)]',
     eyes: 'rounded-full bg-yellow-100',
-    label: 'bottom-1 text-yellow-100',
   },
-} satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
+} satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes', string>>
 
 const alienMotion: Partial<Record<AlienVariant, string>> = {
   noodle: 'type-invader-noodle',
@@ -345,10 +330,13 @@ export function GameArea({
                     <span className={`h-1.5 w-1.5 ${style.eyes}`} />
                   </div>
                   )}
-                <div className={`absolute inset-x-0 text-center font-mono text-sm font-black uppercase leading-none ${style.label}`}>
-                  {alien.char}
-                </div>
               </div>
+              <span
+                aria-label={`Type ${alien.char.toUpperCase()}`}
+                className="absolute -bottom-1 left-1/2 z-30 flex h-5 min-w-5 -translate-x-1/2 items-center justify-center rounded border border-white bg-slate-950 px-1 font-mono text-base font-black uppercase leading-none text-white shadow-[0_0_6px_rgba(255,255,255,0.8)]"
+              >
+                {alien.char}
+              </span>
               <span className={`type-invader-leg absolute bottom-0 left-2 h-2 w-1.5 rounded-full ${style.arm}`} />
               <span className={`type-invader-leg absolute bottom-0 right-2 h-2 w-1.5 rounded-full ${style.arm}`} />
             </div>
