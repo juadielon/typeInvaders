@@ -1,4 +1,4 @@
-import type { LevelConfig } from '../../types/game'
+import { ALIEN_VARIANT_LABELS, type LevelConfig } from '../../types/game'
 import { fingerLabel } from '../../utils/keyboardLayout'
 
 interface LevelBriefingProps {
@@ -58,8 +58,14 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
             {level.targetKills} aliens will descend using {level.allowedKeys
               .map((key) => key.toUpperCase())
               .join(', ')}
-            . Type the matching letter before each alien reaches your ship. Later levels have
-            faster spawns and movement.
+            . Type the matching letter before each alien reaches your ship. Spawns start gently
+            and speed up as the lesson goes on, and the lesson bar at the top shows how many
+            aliens are left before the level ends.
+          </p>
+          <p className="mt-1.5 text-sm text-slate-300">
+            New this level:{' '}
+            <strong className="text-emerald-300">{ALIEN_VARIANT_LABELS[level.newAlien]}</strong>{' '}
+            aliens join the fleet alongside the species you have already faced.
           </p>
         </div>
 

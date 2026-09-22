@@ -1,6 +1,5 @@
-import { LEVELS } from '../data/levels'
+import { LEVELS, variantsForLevel } from '../data/levels'
 import {
-  ALIEN_VARIANTS,
   MOTHERSHIP_VARIANTS,
   type Alien,
   type AlienVariant,
@@ -75,8 +74,9 @@ function randomChar(allowedKeys: string[]): string {
   return allowedKeys[Math.floor(Math.random() * allowedKeys.length)]
 }
 
-function randomVariant(): AlienVariant {
-  return ALIEN_VARIANTS[Math.floor(Math.random() * ALIEN_VARIANTS.length)]
+function randomVariant(levelIndex: number): AlienVariant {
+  const variants = variantsForLevel(levelIndex)
+  return variants[Math.floor(Math.random() * variants.length)]
 }
 
 function randomMothershipVariant(): MothershipVariant {
@@ -153,7 +153,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const alien: Alien = {
         id: nextId('alien'),
         char: randomChar(level.allowedKeys),
-        variant: randomVariant(),
+        variant: randomVariant(state.levelIndex),
         x: randomX(),
         y: -ALIEN_SIZE,
       }

@@ -55,6 +55,8 @@ function App() {
             levelLabel={currentLevel.label}
             wpm={Math.max(wpm, 0)}
             accuracy={accuracy}
+            kills={state.kills}
+            targetKills={currentLevel.targetKills}
           />
 
           <div className="relative">

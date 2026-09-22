@@ -58,6 +58,13 @@ Node.js/npm installation on your machine is required.
   the next level begins. A briefing then pauses the game until you choose
   to continue. It shows the correct home-row hand positions, each key's
   finger movement, and the new level's objective.
+- A lesson progress bar in the status bar shows how many aliens you have
+  cleared and how many remain before the level ends, so a longer lesson
+  never feels open-ended.
+- Every level introduces a new alien species (Scout, Brute, Trickster,
+  Lurker and Warden). Earlier species keep appearing, so the fleet visibly
+  grows as you progress. The species is cosmetic only: every alien is still
+  destroyed by typing the letter it carries.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
   but are not saved between sessions in this MVP. WPM is an estimate based on
   five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.

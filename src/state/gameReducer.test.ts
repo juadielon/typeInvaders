@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { LEVELS } from '../data/levels'
+import { LEVELS, variantsForLevel } from '../data/levels'
 import { ALIEN_SIZE, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
 import { ALIEN_VARIANTS, MOTHERSHIP_VARIANTS, type Alien, type Mothership } from '../types/game'
 import { createInitialState, gameReducer } from './gameReducer'
@@ -76,6 +76,21 @@ describe('gameReducer', () => {
     expect(LEVELS[0].allowedKeys).toContain(next.aliens[0].char)
     expect(ALIEN_VARIANTS).toContain(next.aliens[0].variant)
     randomSpy.mockRestore()
+  })
+
+  it('only spawns alien species unlocked by the current level', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 0 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+
+    for (let i = 0; i < 5; i += 1) {
+      state = gameReducer(state, { type: 'SPAWN' })
+    }
+
+    expect(state.aliens.length).toBeGreaterThan(0)
+    state.aliens.forEach((alien) => {
+      expect(variantsForLevel(0)).toContain(alien.variant)
+    })
   })
 
   it('does not spawn aliens beyond the simultaneous cap', () => {

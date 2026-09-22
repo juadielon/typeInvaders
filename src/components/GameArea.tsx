@@ -29,6 +29,18 @@ const alienStyles = {
     eyes: 'rounded-full bg-fuchsia-500',
     label: 'bottom-0.5 text-fuchsia-100',
   },
+  lurker: {
+    arm: 'bg-cyan-300 shadow-[0_0_6px_rgba(103,232,249,0.8)]',
+    body: 'inset-x-1 top-2 bottom-1 rounded-b-3xl rounded-t-sm border-cyan-300 bg-cyan-900/80 shadow-[0_0_10px_rgba(103,232,249,0.55)]',
+    eyes: 'rounded-full bg-cyan-400',
+    label: 'bottom-0.5 text-cyan-100',
+  },
+  warden: {
+    arm: 'bg-rose-300 shadow-[0_0_6px_rgba(253,164,175,0.8)]',
+    body: 'inset-x-0.5 top-1.5 bottom-2 rounded-t-md rounded-b-xl border-rose-300 bg-rose-900/80 shadow-[0_0_10px_rgba(253,164,175,0.55)]',
+    eyes: 'rounded-sm bg-rose-400',
+    label: 'bottom-0.5 text-rose-100',
+  },
 } satisfies Record<Alien['variant'], Record<'arm' | 'body' | 'eyes' | 'label', string>>
 
 const mothershipStyles = {
@@ -119,10 +131,24 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
                   </span>
                 </>
               )}
+              {alien.variant === 'warden' && (
+                <>
+                  <span className="absolute left-1 top-1 h-1.5 w-3 rounded-sm bg-rose-300/80" />
+                  <span className="absolute right-1 top-1 h-1.5 w-3 rounded-sm bg-rose-300/80" />
+                </>
+              )}
+              {alien.variant === 'lurker' && (
+                <span className="type-invader-antenna absolute left-1/2 top-0 h-2.5 w-0.5 origin-bottom -translate-x-1/2 bg-cyan-300">
+                  <span className="absolute -left-1 -top-1.5 h-2 w-2 rounded-full bg-cyan-400" />
+                </span>
+              )}
               <span className={`type-invader-arm absolute left-0 top-3 h-3 w-1.5 rounded-full ${style.arm}`} />
               <span className={`type-invader-arm absolute right-0 top-3 h-3 w-1.5 rounded-full ${style.arm}`} />
               <div className={`absolute border-2 ${style.body}`}>
-                {alien.variant !== 'trickster' && (
+                {alien.variant === 'lurker' && (
+                  <div className="absolute inset-x-1.5 top-1.5 h-1.5 rounded-full bg-cyan-400/90" />
+                )}
+                {alien.variant !== 'trickster' && alien.variant !== 'lurker' && (
                   <div className="absolute inset-x-1 top-1 flex justify-center gap-2">
                     <span className={`h-1.5 w-1.5 ${style.eyes}`} />
                     <span className={`h-1.5 w-1.5 ${style.eyes}`} />

@@ -8,9 +8,18 @@ export type HandSide = 'left' | 'right'
 
 export type Finger = 'pinky' | 'ring' | 'middle' | 'index' | 'thumb'
 
-export const ALIEN_VARIANTS = ['scout', 'brute', 'trickster'] as const
+export const ALIEN_VARIANTS = ['scout', 'brute', 'trickster', 'lurker', 'warden'] as const
 
 export type AlienVariant = (typeof ALIEN_VARIANTS)[number]
+
+/** Friendly names shown in level briefings when a new alien joins the fight. */
+export const ALIEN_VARIANT_LABELS: Record<AlienVariant, string> = {
+  scout: 'Scout',
+  brute: 'Brute',
+  trickster: 'Trickster',
+  lurker: 'Lurker',
+  warden: 'Warden',
+}
 
 export interface Alien {
   id: string
@@ -76,6 +85,8 @@ export interface LevelConfig {
   descentSpeed: number
   /** Number of aliens that must be destroyed to clear this level. */
   targetKills: number
+  /** Alien species introduced by this level; earlier species keep appearing. */
+  newAlien: AlienVariant
 }
 
 export interface GameState {

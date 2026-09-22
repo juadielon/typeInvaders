@@ -30,8 +30,11 @@ The game must be enjoyable without assuming they already type quickly.
 
 The MVP includes:
 
-- Home-row typing lessons across five progressively harder levels, with lesson selection and replay available before each briefing. Each lesson starts with a gentle spawn cadence, increases alien frequency during practice, and requires a longer target before advancing.
-- Descending single-letter aliens in a few cosmetic varieties, a ship that
+- Home-row typing lessons across five progressively harder levels, with lesson selection and replay available before each briefing. Each lesson starts with a gentle spawn cadence, builds to a noticeably faster cadence by the end, and requires a longer target before advancing.
+- A lesson progress bar showing cleared and remaining aliens, so learners can
+  see when the level will end.
+- Descending single-letter aliens with a new species introduced each level
+  (Scout, Brute, Trickster, Lurker and Warden), a ship that
   glides to and fires from its target, laser feedback with a hit
   explosion, scoring, shields, and game-over and victory states.
 - A rescuable mothership that appears occasionally once the Shield has
