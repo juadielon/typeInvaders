@@ -7,6 +7,7 @@ import { GameArea } from './components/GameArea'
 import { VisualKeyboard } from './components/VisualKeyboard'
 import { HUD } from './components/HUD'
 import { StartScreen } from './components/screens/StartScreen'
+import { LessonSelect } from './components/screens/LessonSelect'
 import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
 
@@ -42,7 +43,11 @@ function App() {
         <StartScreen onStart={() => dispatch({ type: 'START_GAME' })} />
       )}
 
-      {state.status !== 'idle' && (
+      {state.status === 'lessonSelect' && (
+        <LessonSelect levels={LEVELS} onSelect={(levelIndex) => dispatch({ type: 'SELECT_LEVEL', levelIndex })} />
+      )}
+
+      {state.status !== 'idle' && state.status !== 'lessonSelect' && (
         <>
           <HUD
             shieldHp={state.shieldHp}

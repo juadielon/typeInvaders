@@ -37,6 +37,7 @@ const MOTHERSHIP_LASER_Y = -(MOTHERSHIP_LANE_HEIGHT / 2)
 
 export type Action =
   | { type: 'START_GAME' }
+  | { type: 'SELECT_LEVEL'; levelIndex: number }
   | { type: 'TICK'; dt: number; now: number }
   | { type: 'SPAWN' }
   | { type: 'KEY_PRESS'; key: string }
@@ -113,8 +114,17 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case 'START_GAME':
       return {
         ...createInitialState(),
-        status: 'levelBriefing',
+        status: 'lessonSelect',
         startedAt: performance.now(),
+      }
+
+    case 'SELECT_LEVEL':
+      if (state.status !== 'lessonSelect') return state
+      if (action.levelIndex < 0 || action.levelIndex >= LEVELS.length) return state
+      return {
+        ...state,
+        levelIndex: action.levelIndex,
+        status: 'levelBriefing',
       }
 
     case 'BEGIN_LEVEL':

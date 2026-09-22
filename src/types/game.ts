@@ -2,7 +2,7 @@
  * Core type definitions for Type Invaders.
  */
 
-export type GameStatus = 'idle' | 'levelBriefing' | 'playing' | 'gameOver'
+export type GameStatus = 'idle' | 'lessonSelect' | 'levelBriefing' | 'playing' | 'gameOver'
 
 export type HandSide = 'left' | 'right'
 
