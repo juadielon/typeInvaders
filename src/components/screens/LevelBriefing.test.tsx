@@ -34,7 +34,7 @@ describe('LevelBriefing', () => {
     expect(screen.queryByText(/species from earlier missions/i)).not.toBeInTheDocument()
   })
 
-  it('keeps comma keys and separators in the normal text colour', () => {
+  it('highlights the comma mission key but not the commas separating keys', () => {
     render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
 
     const keyList = screen.getByLabelText(/lesson keys:/i)
@@ -43,10 +43,8 @@ describe('LevelBriefing', () => {
       (key) => key.textContent === ',',
     )
 
-    expect(highlightedKeys.length).toBe(
-      LEVELS[11].allowedKeys.filter((key) => /^[a-z;]$/.test(key)).length,
-    )
-    expect(commaKey).not.toHaveClass('text-emerald-300')
+    expect(highlightedKeys.length).toBe(LEVELS[11].allowedKeys.length)
+    expect(commaKey).toHaveClass('text-emerald-300')
     expect(keyList.querySelector('.text-slate-500')).not.toBeInTheDocument()
   })
 

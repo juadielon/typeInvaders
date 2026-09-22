@@ -86,13 +86,7 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
               {level.allowedKeys.map((key, index) => (
                 <span key={key}>
                   {index > 0 && <span>, </span>}
-                  <span
-                    className={
-                      /^[a-z;]$/.test(key)
-                        ? 'font-mono font-bold text-emerald-300'
-                        : 'font-mono'
-                    }
-                  >
+                  <span className="font-mono font-bold text-emerald-300">
                     {key.toUpperCase()}
                   </span>
                 </span>
