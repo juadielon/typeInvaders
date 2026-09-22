@@ -8,6 +8,7 @@ import {
   type Laser,
   type Mothership,
   type MothershipVariant,
+  type PlasmaBolt,
 } from '../types/game'
 import {
   ALIEN_SIZE,
@@ -16,6 +17,11 @@ import {
   MOTHERSHIP_WIDTH,
   PLAYFIELD_WIDTH,
   SHIP_Y,
+  PLASMA_BOLT_DAMAGE,
+  PLASMA_BOLT_SPEED,
+  PLASMA_BLOCK_WINDOW,
+  PLASMA_MAX_CHECK_DELAY_MS,
+  PLASMA_MIN_CHECK_DELAY_MS,
 } from '../hooks/useGameLoop'
 
 const HIT_DAMAGE = 10
@@ -46,6 +52,7 @@ export type Action =
   | { type: 'TICK'; dt: number; now: number }
   | { type: 'SPAWN' }
   | { type: 'KEY_PRESS'; key: string }
+  | { type: 'SPACE_PRESS' }
   | { type: 'BEGIN_LEVEL' }
   | { type: 'RESET' }
 
@@ -62,6 +69,9 @@ export function createInitialState(): GameState {
     aliens: [],
     lasers: [],
     explosions: [],
+    plasmaBolts: [],
+    shieldFeedback: null,
+    shieldFeedbackUntil: 0,
     shipX: PLAYFIELD_WIDTH / 2,
     shieldHp: 100,
     score: 0,
@@ -74,6 +84,7 @@ export function createInitialState(): GameState {
     mothershipNextCheckAt: 0,
     levelStartedAt: 0,
     levelCompletedAt: 0,
+    nextPlasmaCheckAt: 0,
   }
 }
 
@@ -95,6 +106,13 @@ function randomX(): number {
   return margin + Math.random() * (PLAYFIELD_WIDTH - margin * 2)
 }
 
+function randomPlasmaCheckDelay(): number {
+  return (
+    PLASMA_MIN_CHECK_DELAY_MS +
+    Math.random() * (PLASMA_MAX_CHECK_DELAY_MS - PLASMA_MIN_CHECK_DELAY_MS)
+  )
+}
+
 function randomMothershipCheckDelay(): number {
   return (
     MOTHERSHIP_MIN_CHECK_DELAY_MS +
@@ -111,6 +129,10 @@ function spawnMothership(allowedKeys: string[]): Mothership {
     direction,
     x: direction === 1 ? -MOTHERSHIP_WIDTH / 2 : PLAYFIELD_WIDTH + MOTHERSHIP_WIDTH / 2,
   }
+}
+
+function spawnPlasmaBolt(alien: Alien, now: number): PlasmaBolt {
+  return { id: nextId('plasma'), x: alien.x, y: alien.y + ALIEN_SIZE / 2, createdAt: now }
 }
 
 function explosionAt(x: number, y: number, now: number): Explosion {
@@ -144,6 +166,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         status: 'playing',
         levelStartedAt: performance.now(),
         mothershipNextCheckAt: performance.now() + randomMothershipCheckDelay(),
+        nextPlasmaCheckAt: performance.now() + randomPlasmaCheckDelay(),
       }
 
     case 'RESET':
@@ -171,7 +194,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const lasers = state.lasers.filter(
         (laser) => action.now - laser.createdAt < LASER_LIFETIME_MS,
       )
-      const explosions = state.explosions.filter(
+      let explosions = state.explosions.filter(
         (explosion) => action.now - explosion.createdAt < EXPLOSION_LIFETIME_MS,
       )
 
@@ -210,13 +233,56 @@ export function gameReducer(state: GameState, action: Action): GameState {
         }
       }
 
+      let plasmaBolts = state.plasmaBolts.map((bolt) => ({
+        ...bolt,
+        // Bolts gently home towards the ship, so moving the ship changes the
+        // impact point instead of leaving the missile aimed at stale x data.
+        x: bolt.x + (state.shipX - bolt.x) * Math.min(action.dt * 3, 1),
+        y: bolt.y + PLASMA_BOLT_SPEED * action.dt,
+      }))
+      const missedBolt = plasmaBolts.find((bolt) => bolt.y >= SHIP_Y)
+      let nextPlasmaCheckAt = state.nextPlasmaCheckAt
+      let shieldFeedback = state.shieldFeedback
+      let shieldFeedbackUntil = state.shieldFeedbackUntil
+      if (shieldFeedbackUntil > 0 && action.now >= shieldFeedbackUntil) {
+        shieldFeedback = null
+        shieldFeedbackUntil = 0
+      }
+      if (missedBolt) {
+        plasmaBolts = plasmaBolts.filter((bolt) => bolt.id !== missedBolt.id)
+        shieldHp = Math.max(0, shieldHp - PLASMA_BOLT_DAMAGE)
+        explosions = [...explosions, explosionAt(state.shipX, SHIP_Y, action.now)]
+        shieldFeedback = 'missed'
+        shieldFeedbackUntil = action.now + 900
+      }
+
+      if (plasmaBolts.some((bolt) => bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW) && shieldFeedback === null) {
+        shieldFeedback = 'ready'
+      }
+
+      if (action.now >= nextPlasmaCheckAt) {
+        const launchers = survivors.filter(
+          (alien) => alien.variant === 'trickster' || alien.variant === 'warden',
+        )
+        if (launchers.length > 0 && plasmaBolts.length === 0) {
+          const launcher = launchers[Math.floor(Math.random() * launchers.length)]
+          plasmaBolts = [...plasmaBolts, spawnPlasmaBolt(launcher, action.now)]
+          shieldFeedback = 'ready'
+          shieldFeedbackUntil = 0
+        }
+        nextPlasmaCheckAt = action.now + randomPlasmaCheckDelay()
+      }
       if (shieldHp <= 0) {
         return {
           ...state,
           aliens: [],
           lasers,
           explosions,
+          plasmaBolts: [],
           shieldHp: 0,
+          shieldFeedback: 'missed',
+          shieldFeedbackUntil: action.now + 900,
+          nextPlasmaCheckAt,
           status: 'gameOver',
           mothership: null,
         }
@@ -248,7 +314,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
         aliens: survivors,
         lasers,
         explosions,
+        plasmaBolts,
         shieldHp,
+        shieldFeedback,
+        shieldFeedbackUntil,
+        nextPlasmaCheckAt,
         mothership,
         mothershipNextCheckAt,
       }
@@ -331,6 +401,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
           correctKeystrokes,
           totalKeystrokes,
           mothership: null,
+          plasmaBolts: [],
+          shieldFeedback: null,
+          shieldFeedbackUntil: 0,
           // Hold the playfield so this final shot and explosion are seen; the
           // TICK handler moves on to the briefing or the victory screen.
           status: 'levelComplete',
@@ -351,6 +424,20 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
     }
 
+    case 'SPACE_PRESS': {
+      if (state.status !== 'playing') return state
+      const now = performance.now()
+      const boltIndex = state.plasmaBolts.findIndex((bolt) => bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW)
+      if (boltIndex === -1) return state
+
+      return {
+        ...state,
+        plasmaBolts: state.plasmaBolts.filter((_, index) => index !== boltIndex),
+        shieldFeedback: 'blocked',
+        shieldFeedbackUntil: now + 700,
+        score: state.score + 5,
+      }
+    }
     default:
       return state
   }

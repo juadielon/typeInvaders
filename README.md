@@ -118,6 +118,20 @@ A quick reference to every rule the game currently applies.
 | End-of-level pause | The playfield is held briefly so the final shot is visible. |
 | Winning | Clearing the final level ends the game in victory. |
 
+### Plasma defence
+
+| Rule | Detail |
+| --- | --- |
+| Who fires | Trickster and Warden aliens. |
+| Defence prompt | Appears when a bolt enters the lower defence window. |
+| Block key | Physical Spacebar. The on-screen prompt is instructional only. |
+| Successful block | Removes the bolt and awards 5 points. |
+| Missed bolt | Removes the bolt and costs 8 Shield HP. |
+| Missile path | Curves towards the spaceship's current position. |
+| Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
+| Shield bubble | Remains visible around the ship and absorbs the missile impact as Shield damage.
+| Timing | A block is accepted only while the bolt is in the defence window. |
+| Tab switching | The game loop pauses while the browser tab is hidden. |
 ### Scoring statistics
 
 | Rule | Detail |

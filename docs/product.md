@@ -35,7 +35,13 @@ The MVP includes:
   see when the level will end.
 - A brief hold at the end of a level so the final shot and explosion play out
   before the briefing or victory screen appears.
-- Descending single-letter aliens with a new species introduced each level
+
+- Plasma bolts home towards the spaceship, create an impact explosion, and
+  visibly deteriorate the ship as its shield weakens. A visible shield bubble
+  communicates that the shield absorbs missile damage.
+- Plasma defence prompts for Spacebar practice: Trickster and Warden aliens
+  can fire bolts, which learners block in a timing window or absorb as a
+  small Shield loss.- Descending single-letter aliens with a new species introduced each level
   (Scout, Brute, Trickster, Lurker and Warden), a ship that
   glides to and fires from its target, laser feedback with a hit
   explosion, scoring, shields, and game-over and victory states.
@@ -70,6 +76,7 @@ The MVP includes:
 | Pure reducer for game state | Rules such as scoring, targeting, damage, and level progression are easier to test and change safely. |
 | Pause the game when the browser tab is hidden | Players should not lose shields because their browser was in the background. |
 | Hold a cleared level for a moment before transitioning | The final shot and explosion should be seen, so a level never appears to end before the player's last keystroke landed. |
+| Spacebar plasma defence | A small timing-based thumb exercise adds variety without replacing letter practice. |
 | Tests for game-logic changes | Behavioural changes should be protected by targeted unit tests before they are merged. |
 
 ## Where the rules live

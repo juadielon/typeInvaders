@@ -50,6 +50,18 @@ export interface Laser {
   createdAt: number
 }
 
+export interface PlasmaBolt {
+  id: string
+  /** Horizontal position of the incoming bolt. */
+  x: number
+  /** Vertical position in the alien lane. */
+  y: number
+  /** Timestamp used for feedback and animation bookkeeping. */
+  createdAt: number
+}
+
+export type ShieldFeedback = 'ready' | 'blocked' | 'missed'
+
 export interface Explosion {
   id: string
   /** Centre position of the burst, in the same coordinate space as aliens. */
@@ -101,6 +113,9 @@ export interface GameState {
   aliens: Alien[]
   lasers: Laser[]
   explosions: Explosion[]
+  plasmaBolts: PlasmaBolt[]
+  shieldFeedback: ShieldFeedback | null
+  shieldFeedbackUntil: number
   /** Horizontal ship position in px from the left of the playfield. */
   shipX: number
   shieldHp: number
@@ -123,6 +138,8 @@ export interface GameState {
   mothership: Mothership | null
   /** Timestamp (ms) of the next roll to decide whether a mothership appears. */
   mothershipNextCheckAt: number
+  /** Timestamp (ms) when the next plasma bolt may be emitted. */
+  nextPlasmaCheckAt: number
 }
 
 export interface KeyFingerInfo {

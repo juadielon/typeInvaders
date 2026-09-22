@@ -8,6 +8,11 @@ export const PLAYFIELD_HEIGHT = ALIEN_LANE_HEIGHT + MOTHERSHIP_LANE_HEIGHT
 export const ALIEN_SIZE = 40
 export const SHIP_Y = ALIEN_LANE_HEIGHT - 40
 export const MAX_ALIENS = 6
+export const PLASMA_BOLT_SPEED = 150
+export const PLASMA_BOLT_DAMAGE = 8
+export const PLASMA_BLOCK_WINDOW = 150
+export const PLASMA_MIN_CHECK_DELAY_MS = 4500
+export const PLASMA_MAX_CHECK_DELAY_MS = 7500
 export const MOTHERSHIP_WIDTH = 56
 export const MOTHERSHIP_HEIGHT = 26
 /** The mothership's fixed vertical position within its reserved top lane. */

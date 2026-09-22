@@ -1,4 +1,4 @@
-import type { Alien, Explosion, Laser, Mothership } from '../types/game'
+import type { Alien, Explosion, Laser, Mothership, PlasmaBolt, ShieldFeedback } from '../types/game'
 import {
   ALIEN_SIZE,
   MOTHERSHIP_HEIGHT,
@@ -8,6 +8,7 @@ import {
   PLAYFIELD_HEIGHT,
   PLAYFIELD_WIDTH,
   SHIP_Y,
+  PLASMA_BLOCK_WINDOW,
 } from '../hooks/useGameLoop'
 
 const alienStyles = {
@@ -65,12 +66,24 @@ interface GameAreaProps {
   aliens: Alien[]
   lasers: Laser[]
   explosions: Explosion[]
+  plasmaBolts: PlasmaBolt[]
+  shieldFeedback: ShieldFeedback | null
+  shieldHp: number
   mothership: Mothership | null
   shipX: number
 }
 
 /** Renders the playfield: descending aliens, laser hit animations, and the player ship. */
-export function GameArea({ aliens, lasers, explosions, mothership, shipX }: GameAreaProps) {
+export function GameArea({
+  aliens,
+  lasers,
+  explosions,
+  plasmaBolts,
+  shieldFeedback,
+  shieldHp,
+  mothership,
+  shipX,
+}: GameAreaProps) {
   return (
     <div
       className="relative overflow-hidden rounded-lg border border-slate-700 bg-slate-950"
@@ -165,6 +178,33 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
         )
       })}
 
+      {plasmaBolts.map((bolt) => {
+        const isBlockable = bolt.y >= SHIP_Y - PLASMA_BLOCK_WINDOW
+        return (
+          <div
+            key={bolt.id}
+            aria-label={isBlockable ? 'Press Space to block plasma' : 'Incoming plasma bolt'}
+            className={`absolute h-5 w-2 -translate-x-1/2 rounded-full bg-orange-300 shadow-[0_0_10px_3px_rgba(251,146,60,0.85)] ${isBlockable ? 'animate-pulse' : ''}`}
+            style={{ left: bolt.x, top: MOTHERSHIP_LANE_HEIGHT + bolt.y }}
+          />
+        )
+      })}
+
+      {shieldFeedback === 'ready' && (
+        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-orange-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-orange-200 shadow-lg">
+          Press <span className="font-mono text-white">SPACE</span> to shield!
+        </div>
+      )}
+      {shieldFeedback === 'blocked' && (
+        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-emerald-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-emerald-200 shadow-lg">
+          Shield block!
+        </div>
+      )}
+      {shieldFeedback === 'missed' && (
+        <div className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 rounded-md border border-red-300 bg-slate-950/90 px-4 py-2 text-sm font-bold text-red-200 shadow-lg">
+          Plasma hit your shields!
+        </div>
+      )}
       {lasers.map((laser) => {
         const top = MOTHERSHIP_LANE_HEIGHT + Math.min(laser.fromY, laser.toY)
         const height = Math.abs(laser.fromY - laser.toY)
@@ -196,7 +236,19 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
         </div>
       ))}
 
-      {/* The ship lines up with each target before firing. */}
+      {/* The shield bubble absorbs plasma impacts and weakens as Shield HP falls. */}
+      <div
+        aria-label={`Ship shield ${shieldHp}%`}
+        className={`pointer-events-none absolute h-16 w-20 -translate-x-1/2 rounded-full border-2 transition-all duration-300 ${shieldHp > 60 ? 'border-sky-300/70 shadow-[0_0_16px_4px_rgba(56,189,248,0.35)]' : shieldHp > 30 ? 'border-amber-300/80 shadow-[0_0_14px_3px_rgba(251,191,36,0.4)]' : 'border-red-400/90 shadow-[0_0_14px_3px_rgba(248,113,113,0.5)]'}`}
+        style={{
+          left: shipX,
+          top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y - 14,
+          opacity: Math.max(0.35, shieldHp / 100),
+          transform: `translateX(-50%) scale(${0.82 + shieldHp / 500})`,
+        }}
+      />
+
+      {/* The ship lines up with each target before firing. Damage appears as the shield weakens. */}
       <div
         className="absolute h-8 w-12 -translate-x-1/2 transition-[left] duration-150 ease-out"
         style={{ left: shipX, top: MOTHERSHIP_LANE_HEIGHT + SHIP_Y }}
@@ -206,6 +258,8 @@ export function GameArea({ aliens, lasers, explosions, mothership, shipX }: Game
         <div className="absolute left-0 top-4 h-3 w-4 rounded-l-full border-2 border-sky-300 bg-sky-900/80 shadow-[0_0_8px_rgba(56,189,248,0.55)]" />
         <div className="absolute right-0 top-4 h-3 w-4 rounded-r-full border-2 border-sky-300 bg-sky-900/80 shadow-[0_0_8px_rgba(56,189,248,0.55)]" />
         <div className="absolute left-1/2 top-5 h-2 w-2 -translate-x-1/2 rounded-full bg-sky-200 shadow-[0_0_8px_2px_rgba(125,211,252,0.8)]" />
+        {shieldHp < 45 && <div className="absolute left-2 top-1 h-1 w-2 rotate-45 bg-red-300/80" />}
+        {shieldHp < 25 && <div className="absolute right-2 top-3 h-1 w-3 -rotate-45 bg-red-300/80" />}
       </div>
     </div>
   )

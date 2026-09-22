@@ -95,9 +95,7 @@ right difficulty curve.
    each lesson approachable for beginners. The pacing model is settled: longer
    practice targets with a gentle opening cadence that ramps to a faster final
    wave, and a new alien species introduced on each level.
-2. Introduce alien plasma bolts in later levels, with a "Press [SPACE] to
-   Shield!" prompt that teaches thumb discipline and breaks up repeated
-   letter-key practice.
+2. Expand the new plasma-defence module with more bolt patterns and timing`r`n   variations while keeping the Spacebar prompt clear for beginners.
 3. Improve accessibility with reduced-motion support, clearer focus states,
    and options for colour and text size.
 4. Add optional sound effects with a visible mute control.

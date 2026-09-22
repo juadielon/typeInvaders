@@ -21,7 +21,10 @@ function App() {
   const handleKey = useCallback((key: string) => {
     dispatch({ type: 'KEY_PRESS', key })
   }, [])
-  useKeyboardInput(state.status, handleKey)
+  const handleSpace = useCallback(() => {
+    dispatch({ type: 'SPACE_PRESS' })
+  }, [])
+  useKeyboardInput(state.status, handleKey, handleSpace)
 
   const elapsedMinutes = Math.max((performance.now() - state.startedAt) / 60000, 1 / 60)
   const wpm = Math.round(state.correctKeystrokes / 5 / elapsedMinutes)
@@ -64,6 +67,9 @@ function App() {
               aliens={state.aliens}
               lasers={state.lasers}
               explosions={state.explosions}
+              plasmaBolts={state.plasmaBolts}
+              shieldFeedback={state.shieldFeedback}
+              shieldHp={state.shieldHp}
               mothership={state.mothership}
               shipX={state.shipX}
             />

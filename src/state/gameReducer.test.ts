@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { LEVELS, variantsForLevel } from '../data/levels'
-import { ALIEN_SIZE, PLAYFIELD_WIDTH, SHIP_Y } from '../hooks/useGameLoop'
+import { ALIEN_SIZE, PLAYFIELD_WIDTH, PLASMA_BLOCK_WINDOW, PLASMA_BOLT_DAMAGE, SHIP_Y } from '../hooks/useGameLoop'
 import { ALIEN_VARIANTS, MOTHERSHIP_VARIANTS, type Alien, type Mothership } from '../types/game'
 import { createInitialState, gameReducer, LEVEL_CLEAR_DELAY_MS } from './gameReducer'
 
@@ -232,6 +232,81 @@ describe('gameReducer', () => {
     expect(afterClear).toEqual(state)
   })
 
+  it('launches plasma from a dangerous alien and shows the Spacebar prompt', () => {
+    let state = beginGame()
+    state = {
+      ...state,
+      nextPlasmaCheckAt: 0,
+      aliens: [testAlien({ variant: 'warden', y: 100 })],
+    }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0, now: 1000 })
+
+    expect(state.plasmaBolts).toHaveLength(1)
+    expect(state.plasmaBolts[0].x).toBe(10)
+    expect(state.shieldFeedback).toBe('ready')
+  })
+
+  it('blocks an approaching plasma bolt with Spacebar without losing Shield HP', () => {
+    let state = beginGame()
+    state = {
+      ...state,
+      plasmaBolts: [{ id: 'p1', x: 20, y: SHIP_Y - PLASMA_BLOCK_WINDOW, createdAt: 0 }],
+      shieldHp: 70,
+    }
+
+    state = gameReducer(state, { type: 'SPACE_PRESS' })
+
+    expect(state.plasmaBolts).toHaveLength(0)
+    expect(state.shieldHp).toBe(70)
+    expect(state.score).toBe(5)
+    expect(state.shieldFeedback).toBe('blocked')
+  })
+
+  it('homes plasma towards the spaceship as it moves', () => {
+    let state = beginGame()
+    state = {
+      ...state,
+      shipX: 300,
+      plasmaBolts: [{ id: 'p1', x: 20, y: 100, createdAt: 0 }],
+    }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1000 })
+
+    expect(state.plasmaBolts[0].x).toBeGreaterThan(20)
+    expect(state.plasmaBolts[0].x).toBeLessThan(300)
+  })
+  it('damages the Shield when a plasma bolt reaches the ship', () => {
+    let state = beginGame()
+    state = {
+      ...state,
+      plasmaBolts: [{ id: 'p1', x: 20, y: SHIP_Y - 1, createdAt: 0 }],
+      shieldHp: 70,
+    }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1000 })
+
+    expect(state.plasmaBolts).toHaveLength(0)
+    expect(state.shieldHp).toBe(70 - PLASMA_BOLT_DAMAGE)
+    expect(state.shieldFeedback).toBe('missed')
+    expect(state.explosions).toHaveLength(1)
+    expect(state.explosions[0].x).toBe(state.shipX)
+    expect(state.explosions[0].y).toBe(SHIP_Y)
+  })
+
+  it('ends the game when a missed plasma bolt drains the final Shield HP', () => {
+    let state = beginGame()
+    state = {
+      ...state,
+      plasmaBolts: [{ id: 'p1', x: 20, y: SHIP_Y - 1, createdAt: 0 }],
+      shieldHp: PLASMA_BOLT_DAMAGE,
+    }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0.1, now: 1000 })
+
+    expect(state.status).toBe('gameOver')
+    expect(state.shieldHp).toBe(0)
+  })
   it('stops spawning aliens once enough are already in play to clear the level', () => {
     let state = beginGame()
     state = { ...state, kills: LEVELS[0].targetKills - 1, aliens: [testAlien()] }
