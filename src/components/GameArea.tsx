@@ -72,7 +72,7 @@ const alienStyles = {
     arm: 'bg-sky-300 shadow-[0_0_7px_rgba(125,211,252,0.85)]',
     body: 'inset-x-0.5 top-0 bottom-1 rounded-t-full rounded-b-lg border-sky-300 bg-sky-950/80 shadow-[0_0_11px_rgba(125,211,252,0.6)]',
     eyes: 'rounded-full bg-sky-100',
-    label: 'bottom-0.5 text-sky-100',
+    label: 'bottom-0 text-sky-100',
   },
   propeller: {
     arm: 'bg-red-300 shadow-[0_0_7px_rgba(252,165,165,0.85)]',
@@ -148,7 +148,7 @@ function AlienAccessories({ variant }: { variant: AlienVariant }) {
       return (
         <span
           aria-hidden="true"
-          className="type-invader-moustache absolute left-1/2 top-3 z-20 flex -translate-x-1/2"
+          className="type-invader-moustache absolute left-1/2 top-3.5 z-20 flex -translate-x-1/2"
         >
           <span className="h-1.5 w-2.5 -rotate-12 rounded-bl-full rounded-tr-full bg-slate-950" />
           <span className="h-1.5 w-2.5 rotate-12 rounded-br-full rounded-tl-full bg-slate-950" />
