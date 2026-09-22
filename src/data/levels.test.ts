@@ -1,5 +1,9 @@
 ﻿import { describe, expect, it } from 'vitest'
-import { getSpawnInterval } from '../hooks/useGameLoop'
+import {
+  getAlienDescentSpeed,
+  getSpawnInterval,
+  INITIAL_ALIEN_DESCENT_SPEED,
+} from '../hooks/useGameLoop'
 import { ALIEN_VARIANTS } from '../types/game'
 import { LEVELS, variantsForLevel } from './levels'
 
@@ -45,6 +49,18 @@ describe('LEVELS pacing', () => {
     )
     expect(getSpawnInterval(level, level.spawnRampDurationMs)).toBe(level.minSpawnIntervalMs)
     expect(getSpawnInterval(level, level.spawnRampDurationMs * 2)).toBe(level.minSpawnIntervalMs)
+  })
+
+  it('starts alien descent equally and ramps to each level final speed', () => {
+    LEVELS.forEach((level) => {
+      expect(getAlienDescentSpeed(level, 0)).toBe(INITIAL_ALIEN_DESCENT_SPEED)
+      expect(getAlienDescentSpeed(level, level.spawnRampDurationMs)).toBe(level.descentSpeed)
+      expect(getAlienDescentSpeed(level, level.spawnRampDurationMs * 2)).toBe(level.descentSpeed)
+    })
+
+    expect(
+      getAlienDescentSpeed(LEVELS[LEVELS.length - 1], LEVELS[LEVELS.length - 1].spawnRampDurationMs),
+    ).toBeGreaterThan(getAlienDescentSpeed(LEVELS[0], LEVELS[0].spawnRampDurationMs))
   })
 })
 

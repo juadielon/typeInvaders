@@ -15,6 +15,7 @@ export const PLASMA_MIN_CHECK_DELAY_MS = 6500
 export const PLASMA_MAX_CHECK_DELAY_MS = 10500
 export const MOTHERSHIP_WIDTH = 56
 export const MOTHERSHIP_HEIGHT = 26
+export const INITIAL_ALIEN_DESCENT_SPEED = 40
 /** The mothership's fixed vertical position within its reserved top lane. */
 export const MOTHERSHIP_Y = (MOTHERSHIP_LANE_HEIGHT - MOTHERSHIP_HEIGHT) / 2
 
@@ -25,6 +26,12 @@ export type GameAction =
 export function getSpawnInterval(level: LevelConfig, levelElapsedMs: number): number {
   const rampProgress = Math.min(Math.max(levelElapsedMs, 0) / level.spawnRampDurationMs, 1)
   return level.spawnIntervalMs + (level.minSpawnIntervalMs - level.spawnIntervalMs) * rampProgress
+}
+
+export function getAlienDescentSpeed(level: LevelConfig, levelElapsedMs: number): number {
+  const rampProgress = Math.min(Math.max(levelElapsedMs, 0) / level.spawnRampDurationMs, 1)
+  return INITIAL_ALIEN_DESCENT_SPEED +
+    (level.descentSpeed - INITIAL_ALIEN_DESCENT_SPEED) * rampProgress
 }
 
 /**

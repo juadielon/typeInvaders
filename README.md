@@ -147,10 +147,12 @@ A quick reference to every rule the game currently applies.
 Each level unlocks two more keys, raises the practice target, and ends at a
 faster spawn cadence than the one before it. Every level opens at the same
 gentle 2200 ms cadence, so a longer, later lesson never feels harder to
-start than an earlier one; the pressure instead builds from a longer ramp
-and a faster minimum cadence as the lesson goes on. Levels 1-5 cover the
-Home Row, levels 6-10 add the Top Row and levels 11-15 add the Bottom Row,
-completing every letter on the keyboard. Alien species stop being
+start than an earlier one. Alien descent also begins at the same gentle
+speed in every level. The pressure instead builds from a longer ramp, a
+faster minimum cadence and a faster final descent speed as the lesson goes
+on. Levels 1-5 cover the Home Row, levels 6-10 add the Top Row and levels
+11-15 add the Bottom Row, completing every letter on the keyboard. Alien
+species stop being
 introduced once all five have appeared at Level 5; later levels keep
 reusing the full roster, since the species is cosmetic. Earlier species
 keep appearing, so the fleet grows as you progress through the Home Row.

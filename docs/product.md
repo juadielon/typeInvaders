@@ -30,7 +30,10 @@ The game must be enjoyable without assuming they already type quickly.
 
 The MVP includes:
 
-- Home-row typing lessons across five progressively harder levels, with lesson selection and replay available before each briefing. Each lesson starts with a gentle spawn cadence, builds to a noticeably faster cadence by the end, and requires a longer target before advancing.
+- Fifteen progressively harder lessons covering the Home, Top and Bottom Rows,
+  with lesson selection and replay available before each briefing. Every
+  lesson starts with the same gentle spawn cadence and alien descent speed,
+  then builds to a faster cadence and descent speed before advancing.
 - A lesson progress bar showing cleared and remaining aliens, so learners can
   see when the level will end.
 - A brief hold at the end of a level so the final shot and explosion play out

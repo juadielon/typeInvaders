@@ -8,7 +8,8 @@ import type { AlienVariant, LevelConfig } from '../types/game'
  * gentle spawn cadence (`spawnIntervalMs`), so a later, longer lesson never
  * feels harder to start than an earlier one. Difficulty instead grows via a
  * faster end-of-level cadence (`minSpawnIntervalMs`), a longer ramp/level
- * (`spawnRampDurationMs`/`targetKills`), and a faster alien descent speed.
+ * (`spawnRampDurationMs`/`targetKills`), and a faster final alien descent
+ * speed. Alien descent also starts at the same gentle speed in every level.
  */
 export const LEVELS: LevelConfig[] = [
   {
