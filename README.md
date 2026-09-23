@@ -51,7 +51,9 @@ Node.js/npm installation on your machine is required.
   same key, the highlight briefly clears and returns to prompt another press.
   Other available keys use a
   lighter amber background. It is a reference only — gameplay only responds
-  to your physical keyboard.
+  to your physical keyboard. Whichever key you actually press also briefly
+  flashes green on a hit or red on a misfire, so you get instant confirmation
+  of what was typed as well as what to type next.
 - Optional sound effects provide arcade feedback for hits, including
   variant-specific alien voices, mothership and ship explosions, incoming
   plasma alarms, shield damage, mission completion and game over. Use the Sound on/off control to
@@ -108,6 +110,7 @@ A quick reference to every rule the game currently applies.
 | Priority penalty | Destroying an alien while a closer one is still descending costs 5 Shield HP, so you can't dodge the most urgent threat by picking an easier key. |
 | Wrong key | Counts as a misfire against accuracy, but costs no Shield HP. |
 | Input source | Only the physical keyboard; the Visual Keyboard is a reference. |
+| Keystroke confirmation | The pressed key briefly flashes green on a hit or red on a misfire on the Visual Keyboard. |
 
 ### Shields and losing
 
@@ -271,8 +274,8 @@ docker compose run --rm dev npm run test:watch
 Test coverage includes the reducer and level rules, exact mission-clear timing,
 keyboard input and finger mapping, closest-alien target priority, mission retry
 flows, spoken punctuation labels, and selected UI behaviour including alien
-labels, keyboard highlights, briefings, lesson selection, the HUD and the sound
-toggle.
+labels, keyboard highlights, keystroke hit/misfire flashing, briefings, lesson
+selection, the HUD and the sound toggle.
 
 ## Running the linter
 
