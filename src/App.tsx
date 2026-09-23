@@ -65,7 +65,7 @@ function App() {
   )
 
   return (
-    <div className="flex h-screen min-h-[720px] flex-col items-center gap-4 overflow-hidden bg-slate-950 py-8 text-slate-100 max-[940px]:gap-2 max-[940px]:py-2">
+    <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100 max-[940px]:gap-2 max-[940px]:py-2">
       <div className="flex w-full items-center justify-between px-4" style={{ maxWidth: 760 }}>
         <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
         <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
