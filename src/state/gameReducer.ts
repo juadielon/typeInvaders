@@ -95,6 +95,7 @@ export function createInitialState(): GameState {
     targetWarningUntil: 0,
     audioEvent: null,
     alarmEvent: null,
+    lastKeyPress: null,
   }
 }
 
@@ -420,11 +421,12 @@ export function gameReducer(state: GameState, action: Action): GameState {
             correctKeystrokes: state.correctKeystrokes + 1,
             totalKeystrokes,
             audioEvent: { id: nextId('audio'), type: 'mothershipHit' },
+            lastKeyPress: { id: nextId('key'), key, correct: true },
           }
         }
 
         // Misfire: no matching alien or mothership on screen for this key.
-        return { ...state, totalKeystrokes }
+        return { ...state, totalKeystrokes, lastKeyPress: { id: nextId('key'), key, correct: false } }
       }
 
       const target = state.aliens[targetIndex]
@@ -472,6 +474,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           status: 'gameOver',
           mothership: null,
           audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
+          lastKeyPress: { id: nextId('key'), key, correct: true },
         }
       }
 
@@ -500,6 +503,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           status: 'levelComplete',
           levelCompletedAt: now,
           audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
+          lastKeyPress: { id: nextId('key'), key, correct: true },
         }
       }
 
@@ -517,6 +521,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         targetWarning,
         targetWarningUntil,
         audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
+        lastKeyPress: { id: nextId('key'), key, correct: true },
       }
     }
 
