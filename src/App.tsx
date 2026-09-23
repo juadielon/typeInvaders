@@ -106,7 +106,10 @@ function App() {
             {state.status === 'levelBriefing' && (
               <LevelBriefing
                 level={currentLevel}
-                onBegin={() => dispatch({ type: 'BEGIN_LEVEL' })}
+                onBegin={() => {
+                  unlockAudio()
+                  dispatch({ type: 'BEGIN_LEVEL' })
+                }}
               />
             )}
 
@@ -117,8 +120,14 @@ function App() {
                   score={state.score}
                   wpm={Math.max(wpm, 0)}
                   accuracy={accuracy}
-                  onRetry={() => dispatch({ type: 'RETRY_LEVEL' })}
-                  onChooseMission={() => dispatch({ type: 'START_GAME' })}
+                  onRetry={() => {
+                    unlockAudio()
+                    dispatch({ type: 'RETRY_LEVEL' })
+                  }}
+                  onChooseMission={() => {
+                    unlockAudio()
+                    dispatch({ type: 'START_GAME' })
+                  }}
                 />
               </div>
             )}
@@ -131,8 +140,14 @@ function App() {
                   score={state.score}
                   wpm={Math.max(wpm, 0)}
                   accuracy={accuracy}
-                  onRetry={() => dispatch({ type: 'RETRY_LEVEL' })}
-                  onContinue={() => dispatch({ type: 'CONTINUE_LEVEL' })}
+                  onRetry={() => {
+                    unlockAudio()
+                    dispatch({ type: 'RETRY_LEVEL' })
+                  }}
+                  onContinue={() => {
+                    unlockAudio()
+                    dispatch({ type: 'CONTINUE_LEVEL' })
+                  }}
                 />
               </div>
             )}
