@@ -47,4 +47,18 @@ describe('getAlienKeyPriority', () => {
       primaryTargetId: undefined,
     })
   })
+
+  it('uses the leftmost remaining alien as the Word Formation target', () => {
+    const priority = getAlienKeyPriority(
+      [
+        { ...alien('a1', 'd', 100), x: 180 },
+        { ...alien('a2', 'a', 100), x: 80 },
+      ],
+      true,
+    )
+
+    expect(priority.primaryKey).toBe('a')
+    expect(priority.primaryTargetId).toBe('a2')
+    expect(priority.activeKeys).toEqual(['a', 'd'])
+  })
 })

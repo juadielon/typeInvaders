@@ -76,11 +76,23 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
         <div className="mt-3 rounded-md border border-slate-700 bg-slate-950/60 p-3">
           <h3 className="font-semibold text-amber-300">What to expect</h3>
           <p className="mt-1 text-sm text-slate-300">
-            Your goal is to destroy {level.targetKills} aliens. Each alien will show one of
-            these keyboard keys:{' '}
-            <span
-              aria-label={`Lesson keys: ${level.allowedKeys
-                .map(spokenKeyName)
+            {level.kind === 'wordFormation' ? (
+              <>
+                Your goal is to build {level.wordTarget} words from descending alien formations.
+                Each formation spells a word from left to right. Press the leftmost remaining alien
+                before the formation reaches your ship. Your word bank includes:{' '}
+                <span className="font-mono font-bold text-violet-300">
+                  {level.wordPool?.join('  ')}
+                </span>
+                .
+              </>
+            ) : (
+              <>
+                Your goal is to destroy {level.targetKills} aliens. Each alien will show one of
+                these keyboard keys:{' '}
+              <span
+                aria-label={`Lesson keys: ${level.allowedKeys
+                  .map(spokenKeyName)
                 .join(', ')}`}
             >
               {level.allowedKeys.map((key, index) => (
@@ -94,8 +106,10 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
             </span>
             . Press the key it shows before it reaches your ship. Aliens appear slowly at first
             and more quickly later; the lesson bar shows how many remain.
+            </>
+          )}
           </p>
-          <p className="mt-1.5 text-sm text-slate-300">
+          {level.kind !== 'wordFormation' && <p className="mt-1.5 text-sm text-slate-300">
             {level.id === 1 ? (
               <>
                 Your first alien species is the{' '}
@@ -113,10 +127,10 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
                 aliens join the species from earlier missions.
               </>
             )}
-          </p>
+          </p>}
         </div>
 
-        <div className="mt-3">
+        {level.kind !== 'wordFormation' && <div className="mt-3">
           <h3 className="font-semibold text-amber-300">How to press this level's keys</h3>
           <ul className="mt-1.5 grid gap-1.5 text-xs text-slate-300 sm:grid-cols-2">
             {level.allowedKeys.map((key) => (
@@ -127,7 +141,7 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
               </li>
             ))}
           </ul>
-        </div>
+        </div>}
 
         <button
           type="button"

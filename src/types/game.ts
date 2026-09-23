@@ -11,6 +11,8 @@ export type GameStatus =
   | 'levelResults'
   | 'gameOver'
 
+export type MissionKind = 'combat' | 'wordFormation'
+
 export type HandSide = 'left' | 'right'
 
 export type Finger = 'pinky' | 'ring' | 'middle' | 'index' | 'thumb'
@@ -123,6 +125,7 @@ export interface Mothership {
 
 export interface LevelConfig {
   id: number
+  kind?: MissionKind
   /** Human-readable label, e.g. "Level 1: F & J". */
   label: string
   /** Characters that may appear on aliens during this level. */
@@ -139,6 +142,10 @@ export interface LevelConfig {
   targetKills: number
   /** Alien species introduced by this level. */
   newAlien: AlienVariant
+  /** Keys available to the word-formation pool at this checkpoint. */
+  wordPool?: string[]
+  /** Number of words required to complete a word-formation mission. */
+  wordTarget?: number
 }
 
 export interface GameState {
@@ -157,6 +164,10 @@ export interface GameState {
   kills: number
   /** Whether this mission has already produced its guaranteed introductory alien. */
   hasSpawnedIntroAlien: boolean
+  /** The word currently shown by a word-formation mission, if any. */
+  currentWord: string | null
+  /** Number of complete word formations cleared in the current mission. */
+  wordsCompleted: number
   correctKeystrokes: number
   totalKeystrokes: number
   /** True when the player cleared all levels rather than losing all HP. */

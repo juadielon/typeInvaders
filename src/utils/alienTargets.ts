@@ -7,9 +7,13 @@ export interface AlienKeyPriority {
 }
 
 /** Orders visible keys with the alien closest to the spaceship first. */
-export function getAlienKeyPriority(aliens: Alien[]): AlienKeyPriority {
+export function getAlienKeyPriority(aliens: Alien[], wordFormation = false): AlienKeyPriority {
   const closestAlien = aliens.reduce<Alien | undefined>(
-    (closest, alien) => (!closest || alien.y > closest.y ? alien : closest),
+    (closest, alien) =>
+      !closest ||
+      (wordFormation ? alien.x < closest.x : alien.y > closest.y)
+        ? alien
+        : closest,
     undefined,
   )
   const primaryKey = closestAlien?.char
@@ -29,10 +33,11 @@ export function getKeyboardHighlights(
   status: GameStatus,
   lessonKeys: string[],
   aliens: Alien[],
+  wordFormation = false,
 ): AlienKeyPriority {
   if (status === 'levelBriefing') {
     return { activeKeys: lessonKeys, primaryKey: undefined, primaryTargetId: undefined }
   }
 
-  return getAlienKeyPriority(aliens)
+  return getAlienKeyPriority(aliens, wordFormation)
 }

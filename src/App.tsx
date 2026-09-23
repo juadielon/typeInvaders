@@ -54,8 +54,14 @@ function App() {
       : Math.round((state.correctKeystrokes / state.totalKeystrokes) * 100)
 
   const { activeKeys, primaryKey, primaryTargetId } = useMemo(
-    () => getKeyboardHighlights(state.status, currentLevel.allowedKeys, state.aliens),
-    [currentLevel.allowedKeys, state.aliens, state.status],
+    () =>
+      getKeyboardHighlights(
+        state.status,
+        currentLevel.allowedKeys,
+        state.aliens,
+        currentLevel.kind === 'wordFormation',
+      ),
+    [currentLevel.allowedKeys, currentLevel.kind, state.aliens, state.status],
   )
 
   return (
@@ -88,6 +94,10 @@ function App() {
             accuracy={accuracy}
             kills={state.kills}
             targetKills={currentLevel.targetKills}
+            missionKind={currentLevel.kind}
+            currentWord={state.currentWord}
+            wordsCompleted={state.wordsCompleted}
+            wordTarget={currentLevel.wordTarget}
           />
 
           <div className="relative">

@@ -3,10 +3,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { LEVELS } from '../../data/levels'
 import { LevelBriefing } from './LevelBriefing'
 
+const level = (id: number) => LEVELS.find((entry) => entry.id === id && entry.kind !== 'wordFormation')!
+
 describe('LevelBriefing', () => {
   it('explains the level finger movements and lets the learner begin', () => {
     const onBegin = vi.fn()
-    render(<LevelBriefing level={LEVELS[1]} onBegin={onBegin} />)
+    render(<LevelBriefing level={level(2)} onBegin={onBegin} />)
 
     expect(screen.getByRole('heading', { name: /place your fingers on the home row/i })).toBeInTheDocument()
     expect(screen.getByText(/middle letter row of the keyboard/i)).toBeInTheDocument()
@@ -19,7 +21,7 @@ describe('LevelBriefing', () => {
   })
 
   it('explains the index-finger reaches for G and H', () => {
-    render(<LevelBriefing level={LEVELS[4]} onBegin={vi.fn()} />)
+    render(<LevelBriefing level={level(5)} onBegin={vi.fn()} />)
 
     expect(screen.getByText(/left index sideways from f to g/i)).toBeInTheDocument()
     expect(screen.getByText(/right index sideways from j to h/i)).toBeInTheDocument()
@@ -35,7 +37,7 @@ describe('LevelBriefing', () => {
   })
 
   it('highlights the comma mission key but not the commas separating keys', () => {
-    render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
+    render(<LevelBriefing level={level(12)} onBegin={vi.fn()} />)
 
     const keyList = screen.getByLabelText(/lesson keys:.*comma/i)
     const highlightedKeys = keyList.querySelectorAll('.text-emerald-300')
@@ -43,13 +45,13 @@ describe('LevelBriefing', () => {
       (key) => key.textContent === ',',
     )
 
-    expect(highlightedKeys.length).toBe(LEVELS[11].allowedKeys.length)
+    expect(highlightedKeys.length).toBe(level(12).allowedKeys.length)
     expect(commaKey).toHaveClass('text-emerald-300')
     expect(keyList.querySelector('.text-slate-500')).not.toBeInTheDocument()
   })
 
   it('highlights the semicolon mission key', () => {
-    render(<LevelBriefing level={LEVELS[2]} onBegin={vi.fn()} />)
+    render(<LevelBriefing level={level(3)} onBegin={vi.fn()} />)
 
     const semicolonKey = Array.from(
       screen.getByLabelText(/lesson keys:.*semicolon/i).querySelectorAll('.font-mono'),
@@ -59,7 +61,7 @@ describe('LevelBriefing', () => {
   })
 
   it('uses spoken names for every punctuation key in accessible lesson labels', () => {
-    render(<LevelBriefing level={LEVELS[14]} onBegin={vi.fn()} />)
+    render(<LevelBriefing level={level(15)} onBegin={vi.fn()} />)
 
     const accessibleLabel = screen.getByLabelText(/^lesson keys:/i).getAttribute('aria-label')
 
@@ -70,7 +72,7 @@ describe('LevelBriefing', () => {
   })
 
   it('explains reaching up to the Top Row and introduces its new alien', () => {
-    render(<LevelBriefing level={LEVELS[5]} onBegin={vi.fn()} />)
+    render(<LevelBriefing level={level(6)} onBegin={vi.fn()} />)
 
     expect(screen.getByText(/reach your left index up from f to r/i)).toBeInTheDocument()
     expect(screen.getByText(/reach your right index up from j to u/i)).toBeInTheDocument()
@@ -79,9 +81,17 @@ describe('LevelBriefing', () => {
   })
 
   it('explains reaching down to the Bottom Row', () => {
-    render(<LevelBriefing level={LEVELS[10]} onBegin={vi.fn()} />)
+    render(<LevelBriefing level={level(11)} onBegin={vi.fn()} />)
 
     expect(screen.getByText(/reach your left index down from f to v/i)).toBeInTheDocument()
     expect(screen.getByText(/reach your right index down from j to m/i)).toBeInTheDocument()
+  })
+
+  it('explains a Word Formation mission and its word bank', () => {
+    render(<LevelBriefing level={LEVELS[3]} onBegin={vi.fn()} />)
+
+    expect(screen.getByText(/build 6 words from descending alien formations/i)).toBeInTheDocument()
+    expect(screen.getByText(/dad\s+fad\s+add/)).toBeInTheDocument()
+    expect(screen.queryByText(/your first alien species is/i)).not.toBeInTheDocument()
   })
 })

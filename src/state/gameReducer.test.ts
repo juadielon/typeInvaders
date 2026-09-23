@@ -84,6 +84,66 @@ describe('gameReducer', () => {
     randomSpy.mockRestore()
   })
 
+  it('spawns Word Formation missions as left-to-right character formations', () => {
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0)
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 3 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+    state = gameReducer(state, { type: 'SPAWN' })
+
+    expect(state.currentWord).toBe('dad')
+    expect(state.aliens.map((alien) => alien.char).join('')).toBe('dad')
+    expect(state.aliens[0].x).toBeLessThan(state.aliens[1].x)
+    expect(state.aliens.every((alien) => alien.y === state.aliens[0].y)).toBe(true)
+    randomSpy.mockRestore()
+  })
+
+  it('targets only the leftmost character in a Word Formation', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 3 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+    state = {
+      ...state,
+      currentWord: 'dad',
+      aliens: [
+        testAlien({ id: 'first', char: 'd', x: 100 }),
+        testAlien({ id: 'second', char: 'a', x: 152 }),
+      ],
+    }
+
+    const misfire = gameReducer(state, { type: 'KEY_PRESS', key: 'a' })
+    expect(misfire.aliens).toHaveLength(2)
+    expect(misfire.lastKeyPress?.correct).toBe(false)
+
+    const hit = gameReducer(state, { type: 'KEY_PRESS', key: 'd' })
+    expect(hit.aliens.map((alien) => alien.id)).toEqual(['second'])
+    expect(hit.lastKeyPress?.correct).toBe(true)
+  })
+
+  it('completes a Word Formation when its final word is destroyed', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 3 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+    state = {
+      ...state,
+      currentWord: 'dad',
+      wordsCompleted: (LEVELS[3].wordTarget ?? 1) - 1,
+      aliens: [
+        testAlien({ id: 'first', char: 'd', x: 100 }),
+        testAlien({ id: 'second', char: 'a', x: 152 }),
+        testAlien({ id: 'third', char: 'd', x: 204 }),
+      ],
+    }
+
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'd' })
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'a' })
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'd' })
+
+    expect(state.status).toBe('levelComplete')
+    expect(state.wordsCompleted).toBe(LEVELS[3].wordTarget)
+    expect(state.aliens).toHaveLength(0)
+  })
+
   it('only spawns alien species unlocked by the current level', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
     state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 0 })
@@ -555,6 +615,8 @@ describe('gameReducer', () => {
       ...state,
       levelIndex: lastIndex,
       kills: LEVELS[lastIndex].targetKills - 1,
+      wordsCompleted: (LEVELS[lastIndex].wordTarget ?? 1) - 1,
+      currentWord: key,
       aliens: [testAlien({ char: key })],
     }
 

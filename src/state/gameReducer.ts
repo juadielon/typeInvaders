@@ -30,6 +30,7 @@ const EXPLOSION_LIFETIME_MS = 300
 /** Shield HP cost for destroying an alien that wasn't the closest one to the ship. */
 const PRIORITY_PENALTY = 5
 const TARGET_WARNING_DURATION_MS = 900
+const WORD_FORMATION_GAP = 52
 /**
  * How long the playfield is held after the final alien of a level dies. Without
  * it the level would end on the same action that fires the shot, so the last
@@ -82,6 +83,8 @@ export function createInitialState(): GameState {
     score: 0,
     kills: 0,
     hasSpawnedIntroAlien: false,
+    currentWord: null,
+    wordsCompleted: 0,
     correctKeystrokes: 0,
     totalKeystrokes: 0,
     victory: false,
@@ -217,6 +220,22 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.status !== 'playing') return state
       if (state.aliens.length >= MAX_ALIENS) return state
       const level = LEVELS[state.levelIndex]
+      if (level.kind === 'wordFormation') {
+        if (state.aliens.length > 0 || state.wordsCompleted >= (level.wordTarget ?? 0)) {
+          return state
+        }
+        const word = level.wordPool?.[Math.floor(Math.random() * (level.wordPool?.length ?? 1))]
+        if (!word) return state
+        const startX = PLAYFIELD_WIDTH / 2 - ((word.length - 1) * WORD_FORMATION_GAP) / 2
+        const aliens = [...word].map((char, index) => ({
+          id: nextId('alien'),
+          char,
+          variant: level.newAlien,
+          x: startX + index * WORD_FORMATION_GAP,
+          y: -ALIEN_SIZE,
+        }))
+        return { ...state, aliens, currentWord: word, hasSpawnedIntroAlien: true }
+      }
       // Stop feeding in new aliens once enough are already in play (destroyed
       // or on screen) to clear the level, so the screen empties out naturally
       // instead of levelling up with a wall of aliens still descending.
@@ -265,6 +284,22 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const dyPx = descentSpeed * action.dt
 
       let shieldHp = state.shieldHp
+      if (level.kind === 'wordFormation') {
+        const y = state.aliens.map((alien) => ({ ...alien, y: alien.y + dyPx }))
+        const reachedShip = y.some((alien) => alien.y + ALIEN_SIZE >= SHIP_Y)
+        if (!reachedShip) return { ...state, aliens: y, lasers, explosions }
+        shieldHp = Math.max(0, shieldHp - HIT_DAMAGE)
+        return {
+          ...state,
+          aliens: [],
+          currentWord: null,
+          lasers,
+          explosions,
+          shieldHp,
+          status: shieldHp <= 0 ? 'gameOver' : 'playing',
+          wordsCompleted: state.wordsCompleted,
+        }
+      }
       const survivors: Alien[] = []
       for (const alien of state.aliens) {
         const y = alien.y + dyPx
@@ -385,6 +420,53 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.status !== 'playing') return state
       const { key } = action
       const now = performance.now()
+      const level = LEVELS[state.levelIndex]
+      const totalKeystrokes = state.totalKeystrokes + 1
+
+      if (level.kind === 'wordFormation') {
+        const target = state.aliens.reduce<Alien | null>(
+          (current, alien) => (!current || alien.x < current.x ? alien : current),
+          null,
+        )
+        if (!target || target.char !== key) {
+          return {
+            ...state,
+            totalKeystrokes,
+            lastKeyPress: { id: nextId('key'), key, correct: false },
+          }
+        }
+
+        const impactY = target.y + ALIEN_SIZE / 2
+        const laser: Laser = {
+          id: nextId('laser'),
+          x: target.x,
+          fromY: SHIP_Y,
+          toY: impactY,
+          createdAt: now,
+        }
+        const explosion = explosionAt(target.x, impactY, now)
+        const aliens = state.aliens.filter((alien) => alien.id !== target.id)
+        const wordComplete = aliens.length === 0
+        const wordsCompleted = wordComplete ? state.wordsCompleted + 1 : state.wordsCompleted
+        const completed = wordComplete && wordsCompleted >= (level.wordTarget ?? 0)
+        return {
+          ...state,
+          aliens,
+          currentWord: wordComplete ? null : state.currentWord,
+          lasers: [...state.lasers, laser],
+          explosions: [...state.explosions, explosion],
+          shipX: target.x,
+          score: state.score + 10,
+          kills: completed ? level.targetKills : state.kills,
+          correctKeystrokes: state.correctKeystrokes + 1,
+          totalKeystrokes,
+          wordsCompleted,
+          status: completed ? 'levelComplete' : 'playing',
+          levelCompletedAt: completed ? now : state.levelCompletedAt,
+          audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
+          lastKeyPress: { id: nextId('key'), key, correct: true },
+        }
+      }
 
       // Target the lowest (closest to the ship) alien matching this key.
       let targetIndex = -1
@@ -395,8 +477,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
           targetIndex = index
         }
       })
-
-      const totalKeystrokes = state.totalKeystrokes + 1
 
       if (targetIndex === -1) {
         // No descending alien matches; see if the mothership does instead.
@@ -454,8 +534,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const kills = state.kills + 1
       const score = state.score + 10
       const correctKeystrokes = state.correctKeystrokes + 1
-      const level = LEVELS[state.levelIndex]
-
       if (shieldHp <= 0) {
         return {
           ...state,

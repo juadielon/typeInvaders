@@ -9,7 +9,8 @@ describe('mission alien introduction', () => {
   })
 
   it('opens each mission with its newly introduced alien species', () => {
-    LEVELS.forEach((level, levelIndex) => {
+    LEVELS.filter((level) => level.kind !== 'wordFormation').forEach((level) => {
+      const levelIndex = LEVELS.indexOf(level)
       let state = gameReducer(createInitialState(), { type: 'START_GAME' })
       state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex })
       state = gameReducer(state, { type: 'BEGIN_LEVEL' })
@@ -22,7 +23,10 @@ describe('mission alien introduction', () => {
 
   it('uses the accumulated roster after the introductory alien reaches the ship', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
-    const levelIndex = LEVELS.length - 1
+    const combatLevels = LEVELS.map((level, index) => ({ level, index })).filter(
+      ({ level }) => level.kind !== 'wordFormation',
+    )
+    const levelIndex = combatLevels[combatLevels.length - 1].index
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
     state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex })
     state = gameReducer(state, { type: 'BEGIN_LEVEL' })
