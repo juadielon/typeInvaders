@@ -145,8 +145,8 @@ function App() {
             {state.status === 'levelResults' && (
               <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80">
                 <MissionCompleteScreen
-                  levelNumber={currentLevel.id}
-                  nextLevelNumber={LEVELS[state.levelIndex + 1]?.id}
+                  levelLabel={currentLevel.label}
+                  nextLevelLabel={LEVELS[state.levelIndex + 1]?.label}
                   isLastLevel={state.levelIndex === LEVELS.length - 1}
                   score={state.score}
                   wpm={Math.max(wpm, 0)}
