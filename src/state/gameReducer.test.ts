@@ -91,9 +91,8 @@ describe('gameReducer', () => {
     state = gameReducer(state, { type: 'BEGIN_LEVEL' })
     state = gameReducer(state, { type: 'SPAWN' })
 
-    expect(state.currentWord).toBe('dad')
-    expect(state.aliens.map((alien) => alien.char).join('')).toBe('dad')
-    expect(state.aliens[0].x).toBeLessThan(state.aliens[1].x)
+    expect(state.currentWord).toBe('a')
+    expect(state.aliens.map((alien) => alien.char).join('')).toBe('a')
     expect(state.aliens.every((alien) => alien.y === state.aliens[0].y)).toBe(true)
     randomSpy.mockRestore()
   })

@@ -211,7 +211,7 @@ const WORD_FORMATION_MISSIONS: LevelConfig[] = [
     descentSpeed: 44,
     targetKills: 6,
     newAlien: 'scout',
-    wordPool: ['dad', 'fad', 'add'],
+    wordPool: ['a', 'ad', 'add', 'dad', 'fad', 'fa', 'faff', 'aa', 'da', 'dada', 'ka', 'kaf'],
     wordTarget: 6,
   },
   {

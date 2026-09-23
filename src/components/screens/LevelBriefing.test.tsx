@@ -91,7 +91,7 @@ describe('LevelBriefing', () => {
     render(<LevelBriefing level={LEVELS[3]} onBegin={vi.fn()} />)
 
     expect(screen.getByText(/build 6 words from descending alien formations/i)).toBeInTheDocument()
-    expect(screen.getByText(/dad\s+fad\s+add/)).toBeInTheDocument()
+    expect(screen.getByText(/a\s+ad\s+add\s+dad\s+fad\s+fa\s+faff/)).toBeInTheDocument()
     expect(screen.queryByText(/your first alien species is/i)).not.toBeInTheDocument()
   })
 })

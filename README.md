@@ -47,7 +47,9 @@ Node.js/npm installation on your machine is required.
 - Word Formation missions interrupt the combat curriculum after Levels 3, 6,
   9, 12 and 15. Each word appears as a horizontal alien formation that
   descends as one unit. Press the leftmost remaining character to destroy it,
-  then continue from left to right until the word is complete.
+  then continue from left to right until the word is complete. The first
+  formation checkpoint uses the released `A S D F J K ;` keys and includes
+  short entries such as `a`, `ad`, `dad`, `fad`, `faff`, `dada` and `kaf`.
 - The Visual Keyboard overlay below the playfield highlights the currently
   relevant key(s) and shows a hint such as "F → Left Index" or
   "J → Right Index". The alien closest to the spaceship determines the next
