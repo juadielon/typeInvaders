@@ -409,6 +409,27 @@ describe('gameReducer', () => {
 
     expect(state.plasmaBolts).toHaveLength(1)
     expect(state.plasmaBolts[0].x).toBe(10)
+    // The alarm sound is driven by this explicit event id, not by array length,
+    // so it still fires even when a bolt is replaced within the same tick.
+    expect(state.alarmEvent).toEqual({ id: expect.any(String) })
+  })
+
+  it('raises a fresh alarm event when a missile hits the ship and a replacement launches in the same tick', () => {
+    let state = beginGame()
+    state = {
+      ...state,
+      nextPlasmaCheckAt: 0,
+      aliens: [testAlien({ variant: 'warden', y: 100 })],
+      plasmaBolts: [{ id: 'p1', x: 10, y: SHIP_Y, createdAt: 0, sourceVariant: 'warden' }],
+    }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0, now: 1000 })
+
+    // The impacting bolt is removed and a new one launches in the same tick,
+    // so the bolt count is unchanged, but the alarm must still be raised.
+    expect(state.plasmaBolts).toHaveLength(1)
+    expect(state.plasmaBolts[0].id).not.toBe('p1')
+    expect(state.alarmEvent).toEqual({ id: expect.any(String) })
   })
 
   it('fires a laser at an approaching plasma missile with Spacebar, destroying it without losing Shield HP', () => {

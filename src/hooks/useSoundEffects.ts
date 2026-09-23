@@ -231,7 +231,7 @@ export function useSoundEffects(
         if (newAudioEvent.type === 'mothershipHit') playMothershipExplosion(context)
         if (newAudioEvent.type === 'plasmaMissileImpact') playShipExplosion(context)
       }
-      if (state.plasmaBolts.length > previous.plasmaBolts.length) playAlarm(context)
+      if (state.alarmEvent && state.alarmEvent.id !== previous.alarmEvent?.id) playAlarm(context)
       if (
         state.shieldHp < previous.shieldHp &&
         newAudioEvent?.type !== 'plasmaMissileImpact'

@@ -94,6 +94,7 @@ export function createInitialState(): GameState {
     targetWarning: null,
     targetWarningUntil: 0,
     audioEvent: null,
+    alarmEvent: null,
   }
 }
 
@@ -302,6 +303,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shieldFeedbackUntil = action.now + 900
       }
 
+      let alarmEvent = state.alarmEvent
       if (action.now >= nextPlasmaCheckAt) {
         const launchers = survivors.filter(
           (alien) => alien.variant === 'trickster' || alien.variant === 'warden',
@@ -309,6 +311,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         if (launchers.length > 0 && plasmaBolts.length === 0) {
           const launcher = launchers[Math.floor(Math.random() * launchers.length)]
           plasmaBolts = [...plasmaBolts, spawnPlasmaBolt(launcher, action.now)]
+          alarmEvent = { id: nextId('audio') }
         }
         nextPlasmaCheckAt = action.now + randomPlasmaCheckDelay()
       }
@@ -328,6 +331,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           audioEvent: missedBolt
             ? { id: nextId('audio'), type: 'plasmaMissileImpact' }
             : state.audioEvent,
+          alarmEvent,
         }
       }
 
@@ -369,6 +373,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         audioEvent: missedBolt
           ? { id: nextId('audio'), type: 'plasmaMissileImpact' }
           : state.audioEvent,
+        alarmEvent,
       }
     }
 
