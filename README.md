@@ -53,8 +53,8 @@ Node.js/npm installation on your machine is required.
   lighter amber background. It is a reference only — gameplay only responds
   to your physical keyboard.
 - Optional sound effects provide arcade feedback for hits, including
-  variant-specific alien voices, shield damage, plasma
-  warnings, mission completion and game over. Use the Sound on/off control to
+  variant-specific alien voices, mothership and ship explosions, incoming
+  plasma alarms, shield damage, mission completion and game over. Use the Sound on/off control to
   change the preference; it is saved in this browser.
 - Letting an alien reach the bottom costs 10 Shield HP (protection points).
   Your Shield starts at 100; reaching 0 ends the game.

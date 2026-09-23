@@ -75,9 +75,9 @@ The MVP includes:
   Screen-reader labels use spoken punctuation names so punctuation targets
   cannot be confused with separators.
 - Optional sound effects provide arcade feedback for successful hits, including
-  variant-specific alien voices, damage, plasma warnings and mission outcomes.
-  Sound is controlled by a visible toggle and is disabled without affecting
-  gameplay when muted.
+  variant-specific alien voices, mothership and ship explosions, damage, plasma
+  warnings and mission outcomes. Sound is controlled by a visible toggle and is
+  disabled without affecting gameplay when muted.
 - Targeted unit and component tests covering reducer rules, lesson pacing,
   keyboard input and mapping, closest-alien priority, alien readability and
   key user-interface states.

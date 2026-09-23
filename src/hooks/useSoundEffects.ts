@@ -41,6 +41,27 @@ function playTone(context: AudioContext, sound: SoundName): void {
   oscillator.stop(now + note.duration)
 }
 
+function playAlarm(context: AudioContext): void {
+  const now = context.currentTime
+  for (const [offset, frequency] of [
+    [0, 920],
+    [0.12, 620],
+    [0.24, 920],
+  ] as const) {
+    const oscillator = context.createOscillator()
+    const gain = context.createGain()
+    oscillator.type = 'square'
+    oscillator.frequency.setValueAtTime(frequency, now + offset)
+    gain.gain.setValueAtTime(0.0001, now + offset)
+    gain.gain.exponentialRampToValueAtTime(0.08, now + offset + 0.01)
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.1)
+    oscillator.connect(gain)
+    gain.connect(context.destination)
+    oscillator.start(now + offset)
+    oscillator.stop(now + offset + 0.1)
+  }
+}
+
 function playAlienVoice(context: AudioContext, variant: AlienVariant): void {
   const now = context.currentTime
   const oscillator = context.createOscillator()
@@ -98,6 +119,58 @@ function playExplosion(context: AudioContext, variant: AlienVariant): void {
   source.start(now)
 }
 
+function playShipExplosion(context: AudioContext): void {
+  const now = context.currentTime
+  const oscillator = context.createOscillator()
+  const gain = context.createGain()
+  oscillator.type = 'sawtooth'
+  oscillator.frequency.setValueAtTime(260, now)
+  oscillator.frequency.exponentialRampToValueAtTime(28, now + 0.65)
+  gain.gain.setValueAtTime(0.0001, now)
+  gain.gain.exponentialRampToValueAtTime(0.28, now + 0.02)
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65)
+  oscillator.connect(gain)
+  gain.connect(context.destination)
+  oscillator.start(now)
+  oscillator.stop(now + 0.65)
+
+  const buffer = context.createBuffer(1, context.sampleRate * 0.55, context.sampleRate)
+  const noise = buffer.getChannelData(0)
+  for (let index = 0; index < noise.length; index += 1) {
+    noise[index] = (Math.random() * 2 - 1) * Math.pow(1 - index / noise.length, 2)
+  }
+  const source = context.createBufferSource()
+  const noiseGain = context.createGain()
+  source.buffer = buffer
+  noiseGain.gain.setValueAtTime(0.3, now)
+  noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55)
+  source.connect(noiseGain)
+  noiseGain.connect(context.destination)
+  source.start(now)
+}
+
+function playMothershipExplosion(context: AudioContext): void {
+  const now = context.currentTime
+  for (const [offset, frequency] of [
+    [0, 180],
+    [0.08, 260],
+    [0.16, 420],
+  ] as const) {
+    const oscillator = context.createOscillator()
+    const gain = context.createGain()
+    oscillator.type = 'square'
+    oscillator.frequency.setValueAtTime(frequency, now + offset)
+    gain.gain.setValueAtTime(0.0001, now + offset)
+    gain.gain.exponentialRampToValueAtTime(0.16, now + offset + 0.01)
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.16)
+    oscillator.connect(gain)
+    gain.connect(context.destination)
+    oscillator.start(now + offset)
+    oscillator.stop(now + offset + 0.16)
+  }
+  playShipExplosion(context)
+}
+
 export function useSoundEffects(
   state: GameState,
   soundEnabled: boolean,
@@ -125,13 +198,25 @@ export function useSoundEffects(
 
     try {
       if (state.score > previous.score) {
+        const mothershipDestroyed =
+          previous.mothership !== null &&
+          state.mothership === null &&
+          state.score - previous.score >= 50
         const destroyedAlien = previous.aliens.find(
           (alien) => !state.aliens.some((remaining) => remaining.id === alien.id),
         )
-        if (destroyedAlien) playExplosion(context, destroyedAlien.variant)
+        if (mothershipDestroyed) playMothershipExplosion(context)
+        else if (destroyedAlien) playExplosion(context, destroyedAlien.variant)
       }
-      if (state.shieldHp < previous.shieldHp) playTone(context, 'damage')
-      if (state.plasmaBolts.length > previous.plasmaBolts.length) playTone(context, 'warning')
+      if (state.plasmaBolts.length > previous.plasmaBolts.length) playAlarm(context)
+      if (
+        state.plasmaBolts.length < previous.plasmaBolts.length &&
+        state.shieldHp < previous.shieldHp
+      ) {
+        playShipExplosion(context)
+      } else if (state.shieldHp < previous.shieldHp) {
+        playTone(context, 'damage')
+      }
       if (state.status === 'levelResults' && previous.status !== 'levelResults') {
         playTone(context, 'complete')
       }
