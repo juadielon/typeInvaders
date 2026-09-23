@@ -1,5 +1,6 @@
 import { ALIEN_VARIANT_LABELS, type LevelConfig } from '../../types/game'
 import { KEYBOARD_ROWS, fingerLabel, spokenKeyName } from '../../utils/keyboardLayout'
+import { LEVELS } from '../../data/levels'
 
 interface LevelBriefingProps {
   level: LevelConfig
@@ -39,7 +40,17 @@ function movementInstruction(key: string): string {
 }
 
 function exampleWordsFor(level: LevelConfig): string[] {
-  const words = level.wordPool?.filter((word) => !word.endsWith(';')) ?? []
+  const previousWords = new Set(
+    LEVELS.filter(
+      (previousLevel) =>
+        previousLevel.kind === 'wordFormation' && previousLevel.id < level.id,
+    ).flatMap((previousLevel) =>
+      (previousLevel.wordPool ?? []).map((word) => word.replace(/;$/, '')),
+    ),
+  )
+  const words = (level.wordPool ?? [])
+    .filter((word) => !word.endsWith(';'))
+    .filter((word) => !previousWords.has(word))
   const availableWords = new Set(words)
   const shownWordBases = new Set<string>()
   const shownWords: string[] = []

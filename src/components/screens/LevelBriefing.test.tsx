@@ -122,4 +122,12 @@ describe('LevelBriefing', () => {
     expect(exampleText).toMatch(/\b[a-z]{1,3}\b/)
     expect(exampleText).toMatch(/\b[a-z]{8,}\b/)
   })
+
+  it('avoids words already shown in earlier Word Formation missions', () => {
+    render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
+
+    const briefing = screen.getByText(/example english words include/i).parentElement
+    expect(briefing).not.toHaveTextContent(/\bask\b/)
+    expect(LEVELS[11].wordPool).toContain('ask')
+  })
 })
