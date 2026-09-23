@@ -45,10 +45,10 @@ The MVP includes:
 - Plasma bolts home towards the spaceship, create an impact explosion, and
   visibly deteriorate the ship as its shield weakens.
 - Plasma defence prompts for Spacebar practice: Trickster and Warden aliens
-  can fire bolts labelled "space" (matching the letter labels on other
+  can fire bolts labelled "space" (matching the key labels on other
   aliens), which highlight the Spacebar on the on-screen keyboard while
   inbound. Learners fire the ship's laser at the missile, just like shooting
-  a lettered alien, or absorb a small Shield loss if it reaches the ship.
+  a labelled alien, or absorb a small Shield loss if it reaches the ship.
 - Descending single-key aliens with one new visual species introduced in
   every mission. The first spawn guarantees that mission's new species, then
   later spawns use the cumulative unlocked roster regardless of whether the
@@ -62,7 +62,7 @@ The MVP includes:
   standard word. The current estimate is `correctKeystrokes / 5 / elapsedMinutes`,
   calculated from the start of the game and updated live. Incorrect keys do not
   increase WPM, and the value is not saved. Because the MVP practises individual
-  letters rather than complete words, this is an estimated practice WPM; word and
+  keys rather than complete words, this is an estimated practice WPM; word and
   phrase lessons can later calculate it from completed text and spaces.
 - A visual keyboard that identifies the relevant key and finger. The alien
   closest to the spaceship receives the strong amber "type next"
@@ -83,7 +83,9 @@ The MVP includes:
 - Sound effects and music.
 - Persistent scores, progress, accounts, or leaderboards.
 - Mobile and touch-screen input.
-- Accessibility settings beyond the current browser defaults.
+- User-selectable accessibility settings such as reduced motion, colour
+  themes, and text sizing. Semantic labels for current controls and
+  punctuation targets remain part of the MVP.
 
 ## Established technical decisions
 
@@ -96,8 +98,9 @@ The MVP includes:
 | Pause the game when the browser tab is hidden | Players should not lose shields because their browser was in the background. |
 | Hold a cleared level for a moment before transitioning | The final shot and explosion should be seen, so a level never appears to end before the player's last keystroke landed. |
 | Offer retry at every mission outcome | Learners should be able to repeat the same keys immediately after completing a mission or reaching game over, without navigating back through lesson selection. |
-| Spacebar plasma defence | Firing at an incoming missile adds a small reflex exercise, and now counts toward accuracy/WPM like a letter key. |
-| Closest-alien keyboard priority | Strong and secondary keyboard highlights teach the player which visible threat should be handled next without hiding other available letters. |
+| Spacebar plasma defence | Firing at an incoming missile adds a small reflex exercise and counts toward accuracy/WPM like another target key. |
+| Closest-alien keyboard priority | Strong and secondary keyboard highlights teach the player which visible threat should be handled next without hiding other available keys. |
+| Exact level-clear timing boundary | Deterministic reducer tests protect both the final-shot hold and the first valid transition timestamp from off-by-one regressions. |
 | ESLint 9 flat configuration | TypeScript and React quality checks run consistently inside the Docker workflow. |
 | Tests for game-logic changes | Behavioural changes should be protected by targeted unit tests before they are merged. |
 

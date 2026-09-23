@@ -3,12 +3,13 @@
 **Type Invaders** is a Space Invaders–style arcade game that doubles as a
 touch-typing tutor for complete beginners. Alien "invaders" — with one
 new visual species introduced in every mission — descend from the top of the screen, each
-labelled with a single letter. The player destroys aliens by typing
-the correct letter on their physical keyboard; the on-screen ship glides to
+labelled with a single keyboard key. The player destroys aliens by pressing
+the matching key on their physical keyboard; the on-screen ship glides to
 the closest matching alien and fires the shot from its own position. A
 Visual Keyboard overlay highlights the target key and the correct
 hand/finger to use, and a 15-level lesson plan gradually introduces every
-letter on the Home, Top and Bottom Rows as the player improves. A rescuable
+letter plus semicolon, comma, full stop and slash across the Home, Top and
+Bottom Rows as the player improves. A rescuable
 "mothership" occasionally drifts across a lane above the aliens whenever
 your Shield has taken damage — destroying it restores some Shield HP and a
 score bonus.
@@ -24,6 +25,7 @@ Node.js/npm installation on your machine is required.
 - [Level progression](#level-progression)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Command-line instructions](#command-line-instructions)
 - [Running the game](#running-the-game)
 - [Running the tests](#running-the-tests)
 - [Running the linter](#running-the-linter)
@@ -34,25 +36,25 @@ Node.js/npm installation on your machine is required.
 
 ## How the game works
 
-- Aliens descend from the top of the playfield, each labelled with a letter
+- Aliens descend from the top of the playfield, each labelled with a keyboard key
   (Level 1 starts with `F` and `J` only). Every mission introduces a new
   visual species, from the Scout to increasingly silly invaders such as
   Noodle Doodle, Moustachio, Cosmic Toaster and Party King. Species are
-  purely cosmetic - the letter is all that matters for gameplay.
-- Type the letter shown on an alien to destroy it with a laser — the ship
+  purely cosmetic - the displayed key is all that matters for gameplay.
+- Press the key shown on an alien to destroy it with a laser — the ship
   glides to and fires from the position of the lowest (most urgent)
   on-screen alien matching that key, with a small explosion on a hit.
 - The Visual Keyboard overlay below the playfield highlights the currently
   relevant key(s) and shows a hint such as "F → Left Index" or
   "J → Right Index". The alien closest to the spaceship determines the next
-  key and keeps the strong amber highlight; other available letters use a
+  key and keeps the strong amber highlight; other available keys use a
   lighter amber background. It is a reference only — gameplay only responds
   to your physical keyboard.
-- Letting an alien reach the bottom costs 10 Shield HP. Your Shield starts
-  at 100 HP; reaching 0 ends the game.
+- Letting an alien reach the bottom costs 10 Shield HP (protection points).
+  Your Shield starts at 100; reaching 0 ends the game.
 - Whenever your Shield has taken any damage, a rescuable "mothership" may
   drift across a lane above the aliens from time to time. It carries one of
-  the level's practice letters — destroy it to restore some Shield HP and
+  the level's practice keys — destroy it to restore some Shield HP and
   earn a score bonus. It doesn't count toward a level's kill target, so it's
   a bonus rather than a requirement.
 - Starting a game opens a lesson selector so you can choose any current
@@ -82,7 +84,7 @@ Node.js/npm installation on your machine is required.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round,
   but are not saved between sessions in this MVP. WPM is an estimate based on
   five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
-  Since the MVP practises individual letters, it is a practice estimate rather
+  Since the MVP practises individual keys, it is a practice estimate rather
   than a completed-word speed; future word and phrase lessons can use completed
   text and spaces for a more natural calculation.
 
@@ -94,10 +96,10 @@ A quick reference to every rule the game currently applies.
 
 | Rule | Detail |
 | --- | --- |
-| Destroying an alien | Press the letter shown on the alien. |
-| Which alien is hit | The lowest (most urgent) alien carrying that letter. |
+| Destroying an alien | Press the key shown on the alien. |
+| Which alien is hit | The lowest (most urgent) alien carrying that key. |
 | Score per alien | 10 points. |
-| Priority penalty | Destroying an alien while a closer one is still descending costs 5 Shield HP, so you can't dodge the most urgent threat by picking an easier letter. |
+| Priority penalty | Destroying an alien while a closer one is still descending costs 5 Shield HP, so you can't dodge the most urgent threat by picking an easier key. |
 | Wrong key | Counts as a misfire against accuracy, but costs no Shield HP. |
 | Input source | Only the physical keyboard; the Visual Keyboard is a reference. |
 
@@ -114,7 +116,7 @@ A quick reference to every rule the game currently applies.
 | Rule | Detail |
 | --- | --- |
 | When it appears | Only once your Shield has taken damage, and only occasionally. |
-| How to destroy it | Type the letter it carries, when no descending alien matches. |
+| How to destroy it | Press the key it carries, when no descending alien matches. |
 | Reward | 50 points and 30 Shield HP restored (capped at 100). |
 | Progression | Does not count toward the level's kill target. |
 
@@ -128,7 +130,7 @@ A quick reference to every rule the game currently applies.
 | Clearing a level | Destroy the level's target number of aliens. |
 | Spawn pacing | Starts gently and speeds up as the level progresses. |
 | Alien descent | Starts at the same gentle speed in every level, then ramps towards the level's faster final speed. |
-| Keyboard priority | The closest alien's key uses the strong amber highlight; other visible letters use lighter amber. |
+| Keyboard priority | The closest alien's key uses the strong amber highlight; other visible keys use lighter amber. |
 | Progress indicator | The lesson bar shows cleared and remaining aliens. |
 | End-of-level pause | The playfield is held briefly so the final shot is visible, then offers Retry Mission before continuing. |
 | Winning | Clearing the final level offers a retry before finishing the curriculum in victory. |
@@ -138,12 +140,12 @@ A quick reference to every rule the game currently applies.
 | Rule | Detail |
 | --- | --- |
 | Who fires | Trickster and Warden aliens. |
-| Bolt label | Each plasma bolt is labelled "space", just as aliens are labelled with their letter. |
+| Bolt label | Each plasma bolt is labelled "space", just as aliens are labelled with their key. |
 | Defence prompt | The Spacebar highlights on the on-screen keyboard while a bolt is inbound. |
 | Fire key | Physical Spacebar. The on-screen keyboard highlight is instructional only. |
 | Successful shot | Fires a laser at the inbound bolt, destroying it and awarding 5 points. |
 | Missed bolt | Reaching the ship removes the bolt and costs 8 Shield HP. |
-| Accuracy and WPM | Counts toward accuracy and WPM the same as a letter key: a successful shot is a correct keystroke, and pressing Space with no missile inbound is a misfire. A missile that reaches the ship unshot only costs Shield HP; it isn't a keystroke, so it doesn't affect accuracy. |
+| Accuracy and WPM | Counts toward accuracy and WPM the same as another target key: a successful shot is a correct keystroke, and pressing Space with no missile inbound is a misfire. A missile that reaches the ship unshot only costs Shield HP; it isn't a keystroke, so it doesn't affect accuracy. |
 | Missile path | Curves towards the spaceship's current position. |
 | Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
 | Tab switching | The game loop pauses while the browser tab is hidden. |
@@ -164,7 +166,8 @@ start than an earlier one. Alien descent also begins at the same gentle
 speed in every level. The pressure instead builds from a longer ramp, a
 faster minimum cadence and a faster final descent speed as the lesson goes
 on. Levels 1-5 cover the Home Row, levels 6-10 add the Top Row and levels
-11-15 add the Bottom Row, completing every letter on the keyboard. Every
+11-15 add the Bottom Row, completing every letter plus the four punctuation
+keys used by the curriculum. Every
 mission introduces one new alien species while retaining all earlier
 species, so the fleet grows throughout the full curriculum.
 
@@ -198,8 +201,8 @@ course of the level, so the pressure builds while you settle into the new keys.
 
 ## Installation
 
-Clone the repository, then simply build the Docker image; all dependencies
-are installed inside the container, never on your host machine:
+Clone the repository and build the development image. All dependencies are
+installed inside Docker, never on your host machine:
 
 ```powershell
 git clone https://github.com/juadielon/typeInvaders.git
@@ -209,57 +212,30 @@ docker compose build dev
 
 ## Command-line instructions
 
-The following commands can be run from either PowerShell or Bash.
+The following commands work in both PowerShell and Bash. Run them from the
+`typeInvaders` directory.
 
-Clone the repository and build the development image:
+| What you want to do | Command |
+| --- | --- |
+| Start the game | `docker compose up dev` |
+| Stop the game | `docker compose down` |
+| Run all tests once | `docker compose run --rm dev npm test` |
+| Run tests while editing | `docker compose run --rm dev npm run test:watch` |
+| Run the linter | `docker compose run --rm dev npm run lint` |
+| Install a dependency | `docker compose run --rm dev npm install <package-name>` |
+| Rebuild after changing dependencies or Docker setup | `docker compose build dev` |
+| Preview the production build | `docker compose --profile prod up --build prod` |
 
-```PowerShell/Bash
-git clone https://github.com/juadielon/typeInvaders.git
-cd typeInvaders
-docker compose build dev
-```
+For a first run after installation, use **Start the game**. You do not need
+`--build` each time because the source code is mounted into the development
+container and reloads automatically.
+
+## Running the game
 
 Start the Vite development server:
 
-```PowerShell/Bash
-docker compose up --build
-```
-
-Stop the running containers:
-
-```PowerShell/Bash
-docker compose down
-```
-
-Run the unit tests:
-
-```PowerShell/Bash
-docker compose run --rm dev npm test
-```
-
-Run tests in watch mode while developing:
-
-```PowerShell/Bash
-docker compose run --rm dev npm run test:watch
-```
-
-Run ESLint:
-
-```PowerShell/Bash
-docker compose run --rm dev npm run lint
-```
-
-Install a dependency inside the container:
-
-```PowerShell/Bash
-docker compose run --rm dev npm install <package-name>
-```
-## Running the game
-
-Start the Vite dev server inside Docker:
-
 ```powershell
-docker compose up --build
+docker compose up dev
 ```
 
 Then open <http://localhost:5173> in your browser. Source changes under
@@ -286,9 +262,10 @@ For a watch-mode loop while developing:
 docker compose run --rm dev npm run test:watch
 ```
 
-Test coverage includes the reducer and level rules, keyboard input and finger
-mapping, closest-alien target priority, and selected UI behaviour including
-alien labels, keyboard highlights, briefings, lesson selection and the HUD.
+Test coverage includes the reducer and level rules, exact mission-clear timing,
+keyboard input and finger mapping, closest-alien target priority, mission retry
+flows, spoken punctuation labels, and selected UI behaviour including alien
+labels, keyboard highlights, briefings, lesson selection and the HUD.
 
 ## Running the linter
 
@@ -301,12 +278,13 @@ docker compose run --rm dev npm run lint
 
 ## Adding a dependency
 
-Never run `npm install` on the host — always install through the
+Never run `npm install` on the host - always install through the
 container so `package.json`/`package-lock.json` and the container image
-stay in sync:
+stay in sync. After installation finishes, rebuild the development image:
 
 ```powershell
 docker compose run --rm dev npm install <package-name>
+docker compose build dev
 ```
 
 ## Production build preview
@@ -344,7 +322,7 @@ type-invaders/
 │       ├── GameArea.tsx         # Aliens, lasers, player ship
 │       ├── VisualKeyboard.tsx   # On-screen keyboard with hints
 │       ├── HUD.tsx              # Shield HP, Score, Level, WPM, Accuracy
-│       └── screens/             # Start / LevelUp / GameOver screens
+│       └── screens/             # Start, lesson, briefing, results, and game-over screens
 └── ...config files (Vite, Tailwind, TypeScript)
 ```
 
