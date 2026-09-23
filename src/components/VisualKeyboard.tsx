@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { KEYBOARD_ROWS, fingerLabel } from '../utils/keyboardLayout'
 
 const REPEATED_TARGET_FLASH_MS = 140
+const KEY_PRESS_FLASH_MS = 150
 
 interface VisualKeyboardProps {
   /** Keys currently present among on-screen aliens; highlighted for the player. */
@@ -14,6 +15,8 @@ interface VisualKeyboardProps {
   spaceActive?: boolean
   /** Whether to show concise key-to-finger guidance beneath the Spacebar. */
   showHints?: boolean
+  /** Most recent physical keystroke, briefly flashed a hit/misfire colour. */
+  lastKeyPress?: { id: string; key: string; correct: boolean } | null
 }
 
 /**
@@ -27,9 +30,27 @@ export function VisualKeyboard({
   primaryTargetId,
   spaceActive = false,
   showHints = true,
+  lastKeyPress,
 }: VisualKeyboardProps) {
   const previousTarget = useRef<{ id?: string; key?: string }>()
   const [suppressedKey, setSuppressedKey] = useState<string>()
+  const [pressFlash, setPressFlash] = useState<{ key: string; correct: boolean }>()
+
+  useEffect(() => {
+    if (!lastKeyPress) {
+      // A level reset (retry/continue) clears lastKeyPress while this
+      // component stays mounted; without this the previous flash could
+      // persist indefinitely into the new level until another key is pressed.
+      setPressFlash(undefined)
+      return
+    }
+    setPressFlash({ key: lastKeyPress.key, correct: lastKeyPress.correct })
+    const timeoutId = window.setTimeout(() => setPressFlash(undefined), KEY_PRESS_FLASH_MS)
+    return () => window.clearTimeout(timeoutId)
+    // Only the id identifies a genuinely new keystroke; re-running this
+    // effect for every render of the same press would restart the timer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastKeyPress?.id])
 
   useEffect(() => {
     const previous = previousTarget.current
@@ -66,18 +87,23 @@ export function VisualKeyboard({
             const isActive = activeSet.has(key) && !isTemporarilySuppressed
             const isPrimary = key === primaryKey && !isTemporarilySuppressed
             const isHomeRow = rowIndex === 1
+            const isPressed = pressFlash?.key === key
             return (
               <div
                 key={key}
                 className={[
                   'flex h-9 w-9 items-center justify-center rounded border font-mono text-sm uppercase transition-colors',
-                  isPrimary
-                    ? 'border-amber-400 bg-amber-400 text-slate-900 shadow-[0_0_10px_rgba(251,191,36,0.8)]'
-                    : isActive
-                      ? 'border-amber-300 bg-amber-200 text-amber-950 shadow-[0_0_6px_rgba(253,230,138,0.45)]'
-                    : isHomeRow
-                      ? 'border-slate-500 bg-slate-800 text-slate-200'
-                      : 'border-slate-700 bg-slate-800/50 text-slate-500',
+                  isPressed
+                    ? pressFlash?.correct
+                      ? 'border-emerald-400 bg-emerald-400 text-slate-900 shadow-[0_0_10px_rgba(52,211,153,0.85)]'
+                      : 'border-rose-500 bg-rose-500 text-slate-900 shadow-[0_0_10px_rgba(244,63,94,0.85)]'
+                    : isPrimary
+                      ? 'border-amber-400 bg-amber-400 text-slate-900 shadow-[0_0_10px_rgba(251,191,36,0.8)]'
+                      : isActive
+                        ? 'border-amber-300 bg-amber-200 text-amber-950 shadow-[0_0_6px_rgba(253,230,138,0.45)]'
+                      : isHomeRow
+                        ? 'border-slate-500 bg-slate-800 text-slate-200'
+                        : 'border-slate-700 bg-slate-800/50 text-slate-500',
                 ].join(' ')}
               >
                 {key}

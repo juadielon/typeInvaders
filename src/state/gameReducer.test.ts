@@ -171,6 +171,7 @@ describe('gameReducer', () => {
     expect(state.explosions[0].x).toBe(20)
     // The beam must stop exactly where the explosion occurs, not overshoot past it.
     expect(state.lasers[0].toY).toBe(state.explosions[0].y)
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'f', correct: true })
   })
 
   it('destroys the closest alien without any Shield penalty', () => {
@@ -230,6 +231,7 @@ describe('gameReducer', () => {
 
     expect(state.shieldHp).toBe(0)
     expect(state.status).toBe('gameOver')
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'f', correct: true })
   })
 
   it('registers a misfire without affecting shield HP when no alien matches', () => {
@@ -242,6 +244,7 @@ describe('gameReducer', () => {
     expect(state.shieldHp).toBe(100)
     expect(state.totalKeystrokes).toBe(1)
     expect(state.correctKeystrokes).toBe(0)
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'j', correct: false })
   })
 
   it('opens mission results after reaching the kill target and clears remaining aliens', () => {
@@ -267,6 +270,7 @@ describe('gameReducer', () => {
       variant: 'scout',
     })
     expect(state.explosions).toHaveLength(1)
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'f', correct: true })
 
     // Pin the completion timestamp to a deterministic integer so the delay
     // boundary below is exact, rather than inherited from a fractional
@@ -643,6 +647,7 @@ describe('gameReducer', () => {
     expect(state.score).toBe(50)
     expect(state.kills).toBe(0)
     expect(state.explosions).toHaveLength(1)
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'f', correct: true })
   })
 
   it('caps the shield restore from the mothership at full health', () => {

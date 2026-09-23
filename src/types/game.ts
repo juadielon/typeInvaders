@@ -183,6 +183,8 @@ export interface GameState {
   audioEvent: AudioEvent | null
   /** Identifies each newly launched plasma missile so the alarm sound can be triggered exactly once per launch, even when a bolt is replaced within the same tick it hits the ship. */
   alarmEvent: { id: string } | null
+  /** The most recent physical keystroke, used to momentarily flash the pressed key on the visual keyboard. */
+  lastKeyPress: { id: string; key: string; correct: boolean } | null
 }
 
 export interface KeyFingerInfo {

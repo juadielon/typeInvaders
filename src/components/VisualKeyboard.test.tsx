@@ -86,4 +86,85 @@ describe('VisualKeyboard', () => {
 
     expect(screen.getByLabelText('Press Space to fire at the plasma missile')).toBeInTheDocument()
   })
+
+  it('briefly flashes a hit key green and then reverts to its usual highlight', () => {
+    vi.useFakeTimers()
+    const { rerender } = render(
+      <VisualKeyboard
+        activeKeys={['f']}
+        primaryKey="f"
+        lastKeyPress={{ id: 'key-1', key: 'f', correct: true }}
+      />,
+    )
+
+    expect(screen.getByText('f')).toHaveClass('bg-emerald-400')
+    expect(screen.getByText('f')).not.toHaveClass('bg-amber-400')
+
+    act(() => {
+      vi.advanceTimersByTime(150)
+    })
+    rerender(
+      <VisualKeyboard
+        activeKeys={['f']}
+        primaryKey="f"
+        lastKeyPress={{ id: 'key-1', key: 'f', correct: true }}
+      />,
+    )
+
+    expect(screen.getByText('f')).toHaveClass('bg-amber-400')
+    expect(screen.getByText('f')).not.toHaveClass('bg-emerald-400')
+  })
+
+  it('briefly flashes a misfired key red even when it has no other highlight', () => {
+    vi.useFakeTimers()
+    render(
+      <VisualKeyboard
+        activeKeys={['f']}
+        lastKeyPress={{ id: 'key-1', key: 'q', correct: false }}
+      />,
+    )
+
+    expect(screen.getByText('q')).toHaveClass('bg-rose-500')
+  })
+
+  it('flashes a repeated key press again when a new id arrives for the same key', () => {
+    vi.useFakeTimers()
+    const { rerender } = render(
+      <VisualKeyboard activeKeys={['f']} lastKeyPress={{ id: 'key-1', key: 'f', correct: true }} />,
+    )
+    act(() => {
+      vi.advanceTimersByTime(150)
+    })
+    rerender(
+      <VisualKeyboard activeKeys={['f']} lastKeyPress={{ id: 'key-1', key: 'f', correct: true }} />,
+    )
+    expect(screen.getByText('f')).not.toHaveClass('bg-emerald-400')
+
+    rerender(
+      <VisualKeyboard activeKeys={['f']} lastKeyPress={{ id: 'key-2', key: 'f', correct: true }} />,
+    )
+    expect(screen.getByText('f')).toHaveClass('bg-emerald-400')
+  })
+
+  it('clears an in-progress flash immediately when lastKeyPress resets to null (e.g. on retry)', () => {
+    vi.useFakeTimers()
+    const { rerender } = render(
+      <VisualKeyboard activeKeys={['f']} lastKeyPress={{ id: 'key-1', key: 'f', correct: true }} />,
+    )
+
+    expect(screen.getByText('f')).toHaveClass('bg-emerald-400')
+
+    // Simulate a level retry/continue resetting lastKeyPress before the
+    // flash's own timeout has fired.
+    rerender(<VisualKeyboard activeKeys={['f']} lastKeyPress={null} />)
+
+    expect(screen.getByText('f')).not.toHaveClass('bg-emerald-400')
+
+    // The stale timeout must also be cancelled, so it can't reapply the
+    // flash after the fact once the new level is under way.
+    act(() => {
+      vi.advanceTimersByTime(150)
+    })
+    expect(screen.getByText('f')).not.toHaveClass('bg-emerald-400')
+  })
 })

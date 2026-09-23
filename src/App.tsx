@@ -159,6 +159,7 @@ function App() {
             primaryTargetId={primaryTargetId}
             spaceActive={state.plasmaBolts.length > 0}
             showHints={state.status !== 'levelBriefing'}
+            lastKeyPress={state.lastKeyPress}
           />
         </>
       )}
