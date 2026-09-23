@@ -16,6 +16,7 @@ describe('getAlienKeyPriority', () => {
     ])
 
     expect(priority.primaryKey).toBe('j')
+    expect(priority.primaryTargetId).toBe('a2')
     expect(priority.activeKeys).toEqual(['j', 'f', 'd'])
   })
 
@@ -24,6 +25,7 @@ describe('getAlienKeyPriority', () => {
       expect(getKeyboardHighlights('levelBriefing', ['f', 'j', 'd', 'k'], [])).toEqual({
         activeKeys: ['f', 'j', 'd', 'k'],
         primaryKey: undefined,
+        primaryTargetId: undefined,
       })
     })
 
@@ -34,11 +36,15 @@ describe('getAlienKeyPriority', () => {
           ['f', 'j', 'd', 'k'],
           [alien('a1', 'f', 80), alien('a2', 'j', 220)],
         ),
-      ).toEqual({ activeKeys: ['j', 'f'], primaryKey: 'j' })
+      ).toEqual({ activeKeys: ['j', 'f'], primaryKey: 'j', primaryTargetId: 'a2' })
     })
   })
 
   it('returns no primary key when no aliens are visible', () => {
-    expect(getAlienKeyPriority([])).toEqual({ activeKeys: [], primaryKey: undefined })
+    expect(getAlienKeyPriority([])).toEqual({
+      activeKeys: [],
+      primaryKey: undefined,
+      primaryTargetId: undefined,
+    })
   })
 })

@@ -1,10 +1,15 @@
+import { useEffect, useRef, useState } from 'react'
 import { KEYBOARD_ROWS, fingerLabel } from '../utils/keyboardLayout'
+
+const REPEATED_TARGET_FLASH_MS = 140
 
 interface VisualKeyboardProps {
   /** Keys currently present among on-screen aliens; highlighted for the player. */
   activeKeys: string[]
   /** Key carried by the alien closest to the spaceship. */
   primaryKey?: string
+  /** Identity of the closest alien, used to retrigger repeated-key guidance. */
+  primaryTargetId?: string
   /** True while a plasma bolt is inbound and the Spacebar should be highlighted. */
   spaceActive?: boolean
   /** Whether to show concise key-to-finger guidance beneath the Spacebar. */
@@ -19,9 +24,34 @@ interface VisualKeyboardProps {
 export function VisualKeyboard({
   activeKeys,
   primaryKey,
+  primaryTargetId,
   spaceActive = false,
   showHints = true,
 }: VisualKeyboardProps) {
+  const previousTarget = useRef<{ id?: string; key?: string }>()
+  const [suppressedKey, setSuppressedKey] = useState<string>()
+
+  useEffect(() => {
+    const previous = previousTarget.current
+    previousTarget.current = { id: primaryTargetId, key: primaryKey }
+
+    if (
+      primaryKey &&
+      primaryTargetId &&
+      previous?.key === primaryKey &&
+      previous.id !== primaryTargetId
+    ) {
+      setSuppressedKey(primaryKey)
+      const timeoutId = window.setTimeout(
+        () => setSuppressedKey(undefined),
+        REPEATED_TARGET_FLASH_MS,
+      )
+      return () => window.clearTimeout(timeoutId)
+    }
+
+    setSuppressedKey(undefined)
+  }, [primaryKey, primaryTargetId])
+
   const activeSet = new Set(activeKeys)
   const hints = activeKeys
     .map((key) => `${key.toUpperCase()} → ${fingerLabel(key)}`)
@@ -32,8 +62,9 @@ export function VisualKeyboard({
       {KEYBOARD_ROWS.map((row, rowIndex) => (
         <div key={rowIndex} className="flex gap-1.5">
           {row.map((key) => {
-            const isActive = activeSet.has(key)
-            const isPrimary = key === primaryKey
+            const isTemporarilySuppressed = key === suppressedKey
+            const isActive = activeSet.has(key) && !isTemporarilySuppressed
+            const isPrimary = key === primaryKey && !isTemporarilySuppressed
             const isHomeRow = rowIndex === 1
             return (
               <div

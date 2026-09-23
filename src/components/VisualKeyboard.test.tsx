@@ -1,8 +1,12 @@
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { act, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { VisualKeyboard } from './VisualKeyboard'
 
 describe('VisualKeyboard', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('can hide redundant finger guidance during a mission briefing', () => {
     render(<VisualKeyboard activeKeys={['f', 'j']} showHints={false} />)
 
@@ -36,6 +40,40 @@ describe('VisualKeyboard', () => {
     expect(screen.getByText('j')).toHaveClass('bg-amber-400')
     expect(screen.getByText('f')).toHaveClass('bg-amber-200')
     expect(screen.getByText('d')).toHaveClass('bg-amber-200')
+  })
+
+  it('briefly clears the hint when consecutive targets use the same key', () => {
+    vi.useFakeTimers()
+    const { rerender } = render(
+      <VisualKeyboard activeKeys={['f']} primaryKey="f" primaryTargetId="alien-1" />,
+    )
+
+    expect(screen.getByText('f')).toHaveClass('bg-amber-400')
+
+    rerender(
+      <VisualKeyboard activeKeys={['f']} primaryKey="f" primaryTargetId="alien-2" />,
+    )
+
+    expect(screen.getByText('f')).not.toHaveClass('bg-amber-400')
+    expect(screen.getByText('f')).not.toHaveClass('bg-amber-200')
+
+    act(() => {
+      vi.advanceTimersByTime(140)
+    })
+
+    expect(screen.getByText('f')).toHaveClass('bg-amber-400')
+  })
+
+  it('highlights a different next key without clearing it first', () => {
+    const { rerender } = render(
+      <VisualKeyboard activeKeys={['f', 'j']} primaryKey="f" primaryTargetId="alien-1" />,
+    )
+
+    rerender(
+      <VisualKeyboard activeKeys={['f', 'j']} primaryKey="j" primaryTargetId="alien-2" />,
+    )
+
+    expect(screen.getByText('j')).toHaveClass('bg-amber-400')
   })
 
   it('highlights the spacebar only while a plasma bolt is inbound', () => {

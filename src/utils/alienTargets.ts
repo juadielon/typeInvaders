@@ -3,6 +3,7 @@ import type { Alien, GameStatus } from '../types/game'
 export interface AlienKeyPriority {
   activeKeys: string[]
   primaryKey?: string
+  primaryTargetId?: string
 }
 
 /** Orders visible keys with the alien closest to the spaceship first. */
@@ -19,6 +20,7 @@ export function getAlienKeyPriority(aliens: Alien[]): AlienKeyPriority {
   return {
     activeKeys: primaryKey ? [primaryKey, ...otherKeys] : otherKeys,
     primaryKey,
+    primaryTargetId: closestAlien?.id,
   }
 }
 
@@ -29,7 +31,7 @@ export function getKeyboardHighlights(
   aliens: Alien[],
 ): AlienKeyPriority {
   if (status === 'levelBriefing') {
-    return { activeKeys: lessonKeys, primaryKey: undefined }
+    return { activeKeys: lessonKeys, primaryKey: undefined, primaryTargetId: undefined }
   }
 
   return getAlienKeyPriority(aliens)
