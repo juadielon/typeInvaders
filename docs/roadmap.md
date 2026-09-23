@@ -9,8 +9,11 @@ affects the feature's behaviour or scope.
 - Docker-based React, TypeScript, Vite, and Tailwind project setup.
 - First playable game loop with aliens, lasers, shields, score, WPM, and
   accuracy.
-- Fifteen-level Home, Top and Bottom Row curriculum covering every letter,
-  comma, full stop, slash and semicolon.
+- Fifteen-level Home, Top and Bottom Row combat curriculum covering every
+  letter, comma, full stop, slash and semicolon.
+- Five Word Formation missions after Levels 3, 6, 9, 12 and 15. Each mission
+  lays a word out as a horizontal alien formation that descends as one unit
+  and is cleared from left to right.
 - Game-over, mission briefing, mission results, and victory screens.
 - A ship that glides to and fires from its target, redesigned to match the
   alien sprite aesthetic.
@@ -23,7 +26,7 @@ affects the feature's behaviour or scope.
 - Longer lessons with the same gentle opening spawn cadence and alien descent
   speed, ramping to a noticeably faster final wave.
 - A lesson progress bar showing cleared and remaining aliens.
-- One new alien species introduced in every mission, with later species
+- One new alien species introduced in every combat level, with later species
   becoming increasingly silly while remaining cosmetic, plus targeted
   readability refinements for the Giggler, Moustachio and Wobbly Cyclops.
 - Closest-alien keyboard priority: the next key keeps the strong amber
@@ -63,8 +66,9 @@ the curriculum rather than requiring a separate lesson.
 
 The next lesson modules remain planned:
 
-1. **Number sector** - Add the number row only after the letter rows are
-    comfortable. Teach numbers in left/right groups and use score multipliers
+1. **Number sector** - Add the number row only after the letter rows and Word
+    Formation checkpoints are comfortable. Teach numbers in
+    left/right groups and use score multipliers
     or a bonus-star run to make this advanced module feel special.
 2. **Pilot certification** - Mix all learned letters, numbers, and Spacebar
     defence in short missions. Reward accuracy, consistency, and improvement
