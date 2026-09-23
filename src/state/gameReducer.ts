@@ -93,6 +93,8 @@ export function createInitialState(): GameState {
     nextPlasmaCheckAt: 0,
     targetWarning: null,
     targetWarningUntil: 0,
+    audioEvent: null,
+    alarmEvent: null,
   }
 }
 
@@ -301,13 +303,18 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shieldFeedbackUntil = action.now + 900
       }
 
+      let alarmEvent = state.alarmEvent
       if (action.now >= nextPlasmaCheckAt) {
         const launchers = survivors.filter(
           (alien) => alien.variant === 'trickster' || alien.variant === 'warden',
         )
-        if (launchers.length > 0 && plasmaBolts.length === 0) {
+        // Don't launch a new missile (or its alarm) once shields are already
+        // depleted - the bolt would be discarded immediately by the game-over
+        // return below, leaving a phantom alarm for a missile that never appears.
+        if (launchers.length > 0 && plasmaBolts.length === 0 && shieldHp > 0) {
           const launcher = launchers[Math.floor(Math.random() * launchers.length)]
           plasmaBolts = [...plasmaBolts, spawnPlasmaBolt(launcher, action.now)]
+          alarmEvent = { id: nextId('audio') }
         }
         nextPlasmaCheckAt = action.now + randomPlasmaCheckDelay()
       }
@@ -324,6 +331,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
           nextPlasmaCheckAt,
           status: 'gameOver',
           mothership: null,
+          audioEvent: missedBolt
+            ? { id: nextId('audio'), type: 'plasmaMissileImpact' }
+            : state.audioEvent,
+          alarmEvent,
         }
       }
 
@@ -362,6 +373,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
         nextPlasmaCheckAt,
         mothership,
         mothershipNextCheckAt,
+        audioEvent: missedBolt
+          ? { id: nextId('audio'), type: 'plasmaMissileImpact' }
+          : state.audioEvent,
+        alarmEvent,
       }
     }
 
@@ -404,6 +419,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
             score: state.score + MOTHERSHIP_SCORE_BONUS,
             correctKeystrokes: state.correctKeystrokes + 1,
             totalKeystrokes,
+            audioEvent: { id: nextId('audio'), type: 'mothershipHit' },
           }
         }
 
@@ -455,6 +471,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           plasmaBolts: [],
           status: 'gameOver',
           mothership: null,
+          audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
         }
       }
 
@@ -482,6 +499,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           // TICK handler then opens the mission results.
           status: 'levelComplete',
           levelCompletedAt: now,
+          audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
         }
       }
 
@@ -498,6 +516,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shieldHp,
         targetWarning,
         targetWarningUntil,
+        audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
       }
     }
 
@@ -533,6 +552,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         score: state.score + 5,
         correctKeystrokes: state.correctKeystrokes + 1,
         totalKeystrokes,
+        audioEvent: { id: nextId('audio'), type: 'alienHit', variant: bolt.sourceVariant },
       }
     }
     default:

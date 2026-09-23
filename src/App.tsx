@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useReducer } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { LEVELS } from './data/levels'
 import { useGameLoop } from './hooks/useGameLoop'
 import { useKeyboardInput } from './hooks/useKeyboardInput'
@@ -12,20 +12,38 @@ import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
 import { MissionCompleteScreen } from './components/screens/MissionCompleteScreen'
 import { getKeyboardHighlights } from './utils/alienTargets'
+import { SoundToggle } from './components/SoundToggle'
+import { readSoundPreference, SOUND_PREFERENCE_KEY, useSoundEffects } from './hooks/useSoundEffects'
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState)
+  const [soundEnabled, setSoundEnabled] = useState(readSoundPreference)
 
   const currentLevel = LEVELS[state.levelIndex]
 
   useGameLoop(state.status, currentLevel, state.levelStartedAt, dispatch)
+  const { unlockAudio } = useSoundEffects(state, soundEnabled)
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(SOUND_PREFERENCE_KEY, String(soundEnabled))
+    } catch {
+      // Sound preference persistence is optional and must not block gameplay.
+    }
+  }, [soundEnabled])
 
   const handleKey = useCallback((key: string) => {
+    unlockAudio()
     dispatch({ type: 'KEY_PRESS', key })
-  }, [])
+  }, [unlockAudio])
+  const handleSoundToggle = useCallback((enabled: boolean) => {
+    if (enabled) unlockAudio()
+    setSoundEnabled(enabled)
+  }, [unlockAudio])
   const handleSpace = useCallback(() => {
+    unlockAudio()
     dispatch({ type: 'SPACE_PRESS' })
-  }, [])
+  }, [unlockAudio])
   useKeyboardInput(state.status, handleKey, handleSpace)
 
   const elapsedMinutes = Math.max((performance.now() - state.startedAt) / 60000, 1 / 60)
@@ -42,10 +60,18 @@ function App() {
 
   return (
     <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100">
-      <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
+      <div className="flex w-full items-center justify-between px-4" style={{ maxWidth: 760 }}>
+        <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
+        <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
+      </div>
 
       {state.status === 'idle' && (
-        <StartScreen onStart={() => dispatch({ type: 'START_GAME' })} />
+        <StartScreen
+          onStart={() => {
+            unlockAudio()
+            dispatch({ type: 'START_GAME' })
+          }}
+        />
       )}
 
       {state.status === 'lessonSelect' && (
@@ -80,7 +106,10 @@ function App() {
             {state.status === 'levelBriefing' && (
               <LevelBriefing
                 level={currentLevel}
-                onBegin={() => dispatch({ type: 'BEGIN_LEVEL' })}
+                onBegin={() => {
+                  unlockAudio()
+                  dispatch({ type: 'BEGIN_LEVEL' })
+                }}
               />
             )}
 
@@ -91,8 +120,14 @@ function App() {
                   score={state.score}
                   wpm={Math.max(wpm, 0)}
                   accuracy={accuracy}
-                  onRetry={() => dispatch({ type: 'RETRY_LEVEL' })}
-                  onChooseMission={() => dispatch({ type: 'START_GAME' })}
+                  onRetry={() => {
+                    unlockAudio()
+                    dispatch({ type: 'RETRY_LEVEL' })
+                  }}
+                  onChooseMission={() => {
+                    unlockAudio()
+                    dispatch({ type: 'START_GAME' })
+                  }}
                 />
               </div>
             )}
@@ -105,8 +140,14 @@ function App() {
                   score={state.score}
                   wpm={Math.max(wpm, 0)}
                   accuracy={accuracy}
-                  onRetry={() => dispatch({ type: 'RETRY_LEVEL' })}
-                  onContinue={() => dispatch({ type: 'CONTINUE_LEVEL' })}
+                  onRetry={() => {
+                    unlockAudio()
+                    dispatch({ type: 'RETRY_LEVEL' })
+                  }}
+                  onContinue={() => {
+                    unlockAudio()
+                    dispatch({ type: 'CONTINUE_LEVEL' })
+                  }}
                 />
               </div>
             )}

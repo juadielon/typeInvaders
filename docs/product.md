@@ -74,6 +74,10 @@ The MVP includes:
   key set equally so learners can locate every key before play begins.
   Screen-reader labels use spoken punctuation names so punctuation targets
   cannot be confused with separators.
+- Optional sound effects provide arcade feedback for successful hits, including
+  variant-specific alien voices, mothership and ship explosions, damage, plasma
+  warnings and mission outcomes. Sound is controlled by a visible toggle and is
+  disabled without affecting gameplay when muted.
 - Targeted unit and component tests covering reducer rules, lesson pacing,
   keyboard input and mapping, closest-alien priority, alien readability and
   key user-interface states.
@@ -82,8 +86,10 @@ The MVP includes:
 
 ## Deliberate MVP exclusions
 
-- Sound effects and music.
-- Persistent scores, progress, accounts, or leaderboards.
+- Background music (arcade sound effects are implemented; see above).
+- Persistent scores, progress, accounts, or leaderboards. (The sound on/off
+  preference is a small UI setting persisted to `localStorage`, not gameplay
+  progress.)
 - Mobile and touch-screen input.
 - User-selectable accessibility settings such as reduced motion, colour
   themes, and text sizing. Semantic labels for current controls and

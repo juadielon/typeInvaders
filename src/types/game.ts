@@ -91,6 +91,11 @@ export interface PlasmaBolt {
 
 export type ShieldFeedback = 'missed'
 
+export type AudioEvent =
+  | { id: string; type: 'alienHit'; variant: AlienVariant }
+  | { id: string; type: 'mothershipHit' }
+  | { id: string; type: 'plasmaMissileImpact' }
+
 export interface Explosion {
   id: string
   /** Centre position of the burst, in the same coordinate space as aliens. */
@@ -174,6 +179,10 @@ export interface GameState {
   /** Feedback shown when the player destroys an alien that wasn't the closest one to the ship. */
   targetWarning: 'outOfOrder' | null
   targetWarningUntil: number
+  /** Latest gameplay event that should produce an optional sound effect. */
+  audioEvent: AudioEvent | null
+  /** Identifies each newly launched plasma missile so the alarm sound can be triggered exactly once per launch, even when a bolt is replaced within the same tick it hits the ship. */
+  alarmEvent: { id: string } | null
 }
 
 export interface KeyFingerInfo {
