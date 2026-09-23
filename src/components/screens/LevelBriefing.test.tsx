@@ -37,7 +37,7 @@ describe('LevelBriefing', () => {
   it('highlights the comma mission key but not the commas separating keys', () => {
     render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
 
-    const keyList = screen.getByLabelText(/lesson keys:/i)
+    const keyList = screen.getByLabelText(/lesson keys:.*comma/i)
     const highlightedKeys = keyList.querySelectorAll('.text-emerald-300')
     const commaKey = Array.from(keyList.querySelectorAll('.font-mono')).find(
       (key) => key.textContent === ',',
@@ -52,10 +52,21 @@ describe('LevelBriefing', () => {
     render(<LevelBriefing level={LEVELS[2]} onBegin={vi.fn()} />)
 
     const semicolonKey = Array.from(
-      screen.getByLabelText(/lesson keys:/i).querySelectorAll('.font-mono'),
+      screen.getByLabelText(/lesson keys:.*semicolon/i).querySelectorAll('.font-mono'),
     ).find((key) => key.textContent === ';')
 
     expect(semicolonKey).toHaveClass('text-emerald-300')
+  })
+
+  it('uses spoken names for every punctuation key in accessible lesson labels', () => {
+    render(<LevelBriefing level={LEVELS[14]} onBegin={vi.fn()} />)
+
+    const accessibleLabel = screen.getByLabelText(/^lesson keys:/i).getAttribute('aria-label')
+
+    expect(accessibleLabel).toContain('semicolon')
+    expect(accessibleLabel).toContain('comma')
+    expect(accessibleLabel).toContain('full stop')
+    expect(accessibleLabel).toContain('slash')
   })
 
   it('explains reaching up to the Top Row and introduces its new alien', () => {

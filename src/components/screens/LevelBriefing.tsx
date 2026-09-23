@@ -1,5 +1,5 @@
 import { ALIEN_VARIANT_LABELS, type LevelConfig } from '../../types/game'
-import { KEYBOARD_ROWS, fingerLabel } from '../../utils/keyboardLayout'
+import { KEYBOARD_ROWS, fingerLabel, spokenKeyName } from '../../utils/keyboardLayout'
 
 interface LevelBriefingProps {
   level: LevelConfig
@@ -80,7 +80,7 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
             these keyboard keys:{' '}
             <span
               aria-label={`Lesson keys: ${level.allowedKeys
-                .map((key) => key.toUpperCase())
+                .map(spokenKeyName)
                 .join(', ')}`}
             >
               {level.allowedKeys.map((key, index) => (

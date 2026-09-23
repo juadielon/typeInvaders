@@ -66,10 +66,12 @@ The MVP includes:
   phrase lessons can later calculate it from completed text and spaces.
 - A visual keyboard that identifies the relevant key and finger. The alien
   closest to the spaceship receives the strong amber "type next"
-  keyboard highlight. Other visible alien letters remain available with a
-  lighter amber background, and duplicate letters are collapsed.
+  keyboard highlight. Other visible alien keys remain available with a
+  lighter amber background, and duplicate keys are collapsed.
 - During a mission briefing, the visual keyboard highlights the full lesson
   key set equally so learners can locate every key before play begins.
+  Screen-reader labels use spoken punctuation names so punctuation targets
+  cannot be confused with separators.
 - Targeted unit and component tests covering reducer rules, lesson pacing,
   keyboard input and mapping, closest-alien priority, alien readability and
   key user-interface states.

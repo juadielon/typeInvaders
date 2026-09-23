@@ -8,7 +8,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
       <h1 className="text-3xl font-bold text-emerald-300">Type Invaders</h1>
       <p className="max-w-md text-sm text-slate-400">
         Aliens are descending towards your spaceship. Each alien shows a
-        letter: press that letter on your physical keyboard to fire at it.
+        key: press that key on your physical keyboard to fire at it.
       </p>
       <ul className="max-w-md list-disc space-y-1 pl-5 text-left text-xs text-slate-400">
         <li>
@@ -16,7 +16,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
           the middle letter row of your keyboard.
         </li>
         <li>
-          Watch the on-screen keyboard: the strongest amber key is the next letter to press,
+          Watch the on-screen keyboard: the strongest amber key is the next key to press,
           and its hint shows which finger to use.
         </li>
         <li>
