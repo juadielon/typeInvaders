@@ -22,11 +22,21 @@ function getAudioContext(): AudioContext | null {
   }
 }
 
-function getActiveAudioContext(contextRef: { current: AudioContext | null }): AudioContext | null {
+function getActiveAudioContext(
+  contextRef: { current: AudioContext | null },
+  unavailableRef: { current: boolean },
+): AudioContext | null {
   if (contextRef.current?.state === 'closed') {
     contextRef.current = null
   }
-  contextRef.current ??= getAudioContext()
+  // Once construction has failed (unsupported browser, or the browser rejects
+  // creating a context), stop retrying on every animation-frame tick. Explicit
+  // user gestures still get a fresh attempt via unlockAudio, since permissions
+  // or output devices can change between interactions.
+  if (!contextRef.current && !unavailableRef.current) {
+    contextRef.current = getAudioContext()
+    if (!contextRef.current) unavailableRef.current = true
+  }
   return contextRef.current
 }
 
@@ -197,6 +207,7 @@ export function useSoundEffects(
   soundEnabled: boolean,
 ): { unlockAudio: () => void } {
   const contextRef = useRef<AudioContext | null>(null)
+  const contextUnavailableRef = useRef(false)
   const previousState = useRef<GameState | null>(null)
 
   // Callers only invoke this from explicit user interactions (Start, Space,
@@ -204,7 +215,11 @@ export function useSoundEffects(
   // the current `soundEnabled` value - that value can still be stale/false
   // at the exact moment the user is turning sound on.
   const unlockAudio = useCallback(() => {
-    const context = getActiveAudioContext(contextRef)
+    // A real user gesture is worth one fresh attempt even if a previous
+    // automatic attempt failed - conditions like output permissions can
+    // change between interactions.
+    contextUnavailableRef.current = false
+    const context = getActiveAudioContext(contextRef, contextUnavailableRef)
     if (!context) return
     contextRef.current = context
     if (context.state === 'suspended') {
@@ -217,7 +232,7 @@ export function useSoundEffects(
     previousState.current = state
     if (!soundEnabled || !previous) return
 
-    const context = getActiveAudioContext(contextRef)
+    const context = getActiveAudioContext(contextRef, contextUnavailableRef)
     if (!context) return
     contextRef.current = context
 

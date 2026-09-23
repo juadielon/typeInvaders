@@ -29,6 +29,37 @@ describe('useSoundEffects', () => {
     })
   })
 
+  it('stops retrying AudioContext construction on every tick once it has failed', () => {
+    let constructAttempts = 0
+    class FailingAudioContext {
+      constructor() {
+        constructAttempts += 1
+        throw new Error('audio unavailable')
+      }
+    }
+    const originalAudioContext = window.AudioContext
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: FailingAudioContext,
+    })
+    const initial = createInitialState()
+    const { rerender, unmount } = renderHook(
+      ({ state }) => useSoundEffects(state, true),
+      { initialProps: { state: initial } },
+    )
+    // Several automatic state transitions (as would happen across animation
+    // frames) must only attempt construction once, not once per tick.
+    rerender({ state: { ...initial, score: 1 } })
+    rerender({ state: { ...initial, score: 2 } })
+    rerender({ state: { ...initial, score: 3 } })
+    expect(constructAttempts).toBe(1)
+    unmount()
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: originalAudioContext,
+    })
+  })
+
   it('resumes a suspended context only when explicitly unlocked', () => {
     const resume = vi.fn().mockResolvedValue(undefined)
     class MockAudioContext {
