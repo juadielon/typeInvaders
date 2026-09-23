@@ -1,7 +1,13 @@
 ﻿import { describe, expect, it, vi } from 'vitest'
 import { LEVELS, variantsForLevel } from '../data/levels'
 import { ALIEN_SIZE, PLAYFIELD_WIDTH, PLASMA_BLOCK_WINDOW, PLASMA_BOLT_DAMAGE, SHIP_Y } from '../hooks/useGameLoop'
-import { ALIEN_VARIANTS, MOTHERSHIP_VARIANTS, type Alien, type Mothership } from '../types/game'
+import {
+  ALIEN_VARIANTS,
+  MOTHERSHIP_VARIANTS,
+  type Alien,
+  type GameState,
+  type Mothership,
+} from '../types/game'
 import { createInitialState, gameReducer, LEVEL_CLEAR_DELAY_MS } from './gameReducer'
 
 function testAlien(overrides: Partial<Alien> = {}): Alien {
@@ -283,7 +289,7 @@ describe('gameReducer', () => {
   })
 
   it('holds the exact LEVEL_CLEAR_DELAY_MS boundary using direct integer timestamps', () => {
-    const cleared = {
+    const cleared: GameState = {
       ...createInitialState(),
       status: 'levelComplete',
       levelCompletedAt: 2000,
