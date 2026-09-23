@@ -17,6 +17,8 @@ interface VisualKeyboardProps {
   showHints?: boolean
   /** Most recent physical keystroke, briefly flashed a hit/misfire colour. */
   lastKeyPress?: { id: string; key: string; correct: boolean } | null
+  /** Active Word Formation word shown above the keyboard. */
+  currentWord?: string | null
 }
 
 /**
@@ -31,6 +33,7 @@ export function VisualKeyboard({
   spaceActive = false,
   showHints = true,
   lastKeyPress,
+  currentWord = null,
 }: VisualKeyboardProps) {
   const previousTarget = useRef<{ id?: string; key?: string }>()
   const [suppressedKey, setSuppressedKey] = useState<string>()
@@ -80,6 +83,14 @@ export function VisualKeyboard({
 
   return (
     <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 p-3">
+      {currentWord && (
+        <div
+          aria-label={`Current word: ${currentWord}`}
+          className="rounded-md border border-violet-400/70 bg-violet-950/70 px-5 py-2 font-mono text-xl font-bold tracking-[0.25em] text-violet-200"
+        >
+          {currentWord}
+        </div>
+      )}
       {KEYBOARD_ROWS.map((row, rowIndex) => (
         <div key={rowIndex} className="flex gap-1.5">
           {row.map((key) => {

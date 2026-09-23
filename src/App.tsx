@@ -171,6 +171,7 @@ function App() {
             spaceActive={state.plasmaBolts.length > 0}
             showHints={state.status !== 'levelBriefing'}
             lastKeyPress={state.lastKeyPress}
+            currentWord={currentLevel.kind === 'wordFormation' ? state.currentWord : null}
           />
         </>
       )}

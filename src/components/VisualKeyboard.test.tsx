@@ -14,6 +14,13 @@ describe('VisualKeyboard', () => {
     expect(screen.getByLabelText('Spacebar')).toBeInTheDocument()
   })
 
+  it('shows the active Word Formation word above the keyboard', () => {
+    render(<VisualKeyboard activeKeys={['f', 'j']} currentWord="glassful" />)
+
+    expect(screen.getByLabelText('Current word: glassful')).toBeInTheDocument()
+    expect(screen.getByText('glassful')).toBeInTheDocument()
+  })
+
   it('shows finger guidance below the Spacebar', () => {
     render(<VisualKeyboard activeKeys={['f', 'j']} />)
 
