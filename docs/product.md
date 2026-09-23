@@ -70,9 +70,11 @@ The MVP includes:
   restore that highlight so learners recognise that another press is needed.
   Other visible alien keys remain available with a
   lighter amber background, and duplicate keys are collapsed.
-- The visual keyboard briefly flashes the physically pressed key green on a
-  hit or red on a misfire, giving immediate confirmation of what was typed
-  independent of the amber target highlighting.
+- The visual keyboard briefly flashes the physically pressed letter or
+  punctuation key green on a hit or red on a misfire, giving immediate
+  confirmation of what was typed independent of the amber target
+  highlighting. This does not yet extend to the Spacebar (plasma-missile
+  defence).
 - During a mission briefing, the visual keyboard highlights the full lesson
   key set equally so learners can locate every key before play begins.
   Screen-reader labels use spoken punctuation names so punctuation targets
