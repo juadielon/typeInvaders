@@ -79,6 +79,12 @@ describe('LEVELS pacing', () => {
       })
     })
   })
+
+  it('includes occasional semicolon-ending formations in the first word bank', () => {
+    const firstMission = formationMissions[0]
+    expect(firstMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
+    expect(firstMission.wordPool?.some((word) => !word.endsWith(';'))).toBe(true)
+  })
 })
 
 describe('alien species progression', () => {
