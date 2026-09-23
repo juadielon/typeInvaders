@@ -17,6 +17,14 @@ function getAudioContext(): AudioContext | null {
   return AudioContextConstructor ? new AudioContextConstructor() : null
 }
 
+function getActiveAudioContext(contextRef: { current: AudioContext | null }): AudioContext | null {
+  if (contextRef.current?.state === 'closed') {
+    contextRef.current = null
+  }
+  contextRef.current ??= getAudioContext()
+  return contextRef.current
+}
+
 const SOUND_NOTES: Record<SoundName, { frequency: number; duration: number; type: OscillatorType }> = {
   damage: { frequency: 130, duration: 0.16, type: 'sawtooth' },
   warning: { frequency: 260, duration: 0.12, type: 'triangle' },
@@ -180,7 +188,7 @@ export function useSoundEffects(
 
   const unlockAudio = useCallback(() => {
     if (!soundEnabled) return
-    const context = contextRef.current ?? getAudioContext()
+    const context = getActiveAudioContext(contextRef)
     if (!context) return
     contextRef.current = context
     void context.resume().catch(() => undefined)
@@ -191,7 +199,7 @@ export function useSoundEffects(
     previousState.current = state
     if (!soundEnabled || !previous) return
 
-    const context = contextRef.current ?? getAudioContext()
+    const context = getActiveAudioContext(contextRef)
     if (!context) return
     contextRef.current = context
     void context.resume().catch(() => undefined)
