@@ -1,5 +1,6 @@
 interface MissionCompleteScreenProps {
   levelNumber: number
+  nextLevelNumber?: number
   isLastLevel: boolean
   score: number
   wpm: number
@@ -10,6 +11,7 @@ interface MissionCompleteScreenProps {
 
 export function MissionCompleteScreen({
   levelNumber,
+  nextLevelNumber,
   isLastLevel,
   score,
   wpm,
@@ -45,7 +47,7 @@ export function MissionCompleteScreen({
           onClick={onContinue}
           className="rounded-md bg-emerald-500 px-6 py-2 font-semibold text-slate-900 transition-colors hover:bg-emerald-400"
         >
-          {isLastLevel ? 'Finish Curriculum' : `Continue to Mission ${levelNumber + 1}`}
+          {isLastLevel ? 'Finish Curriculum' : `Continue to Mission ${nextLevelNumber}`}
         </button>
       </div>
     </div>
