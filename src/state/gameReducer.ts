@@ -491,6 +491,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           // TICK handler then opens the mission results.
           status: 'levelComplete',
           levelCompletedAt: now,
+          audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
         }
       }
 

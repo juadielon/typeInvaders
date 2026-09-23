@@ -3,7 +3,7 @@ import type { AlienVariant, GameState } from '../types/game'
 
 export const SOUND_PREFERENCE_KEY = 'type-invaders-sound-enabled'
 
-type SoundName = 'damage' | 'warning' | 'complete' | 'gameOver'
+type SoundName = 'damage' | 'warning' | 'complete' | 'gameOver' | 'victory'
 
 interface AudioContextWindow extends Window {
   AudioContext?: typeof AudioContext
@@ -35,6 +35,7 @@ const SOUND_NOTES: Record<SoundName, { frequency: number; duration: number; type
   warning: { frequency: 260, duration: 0.12, type: 'triangle' },
   complete: { frequency: 780, duration: 0.24, type: 'sine' },
   gameOver: { frequency: 90, duration: 0.3, type: 'sawtooth' },
+  victory: { frequency: 660, duration: 0.3, type: 'triangle' },
 }
 
 function playTone(context: AudioContext, sound: SoundName): void {
@@ -198,15 +199,18 @@ export function useSoundEffects(
   const contextRef = useRef<AudioContext | null>(null)
   const previousState = useRef<GameState | null>(null)
 
+  // Callers only invoke this from explicit user interactions (Start, Space,
+  // letter keys, or enabling the Sound toggle), so it must not be gated on
+  // the current `soundEnabled` value - that value can still be stale/false
+  // at the exact moment the user is turning sound on.
   const unlockAudio = useCallback(() => {
-    if (!soundEnabled) return
     const context = getActiveAudioContext(contextRef)
     if (!context) return
     contextRef.current = context
     if (context.state === 'suspended') {
       void context.resume().catch(() => undefined)
     }
-  }, [soundEnabled])
+  }, [])
 
   useEffect(() => {
     const previous = previousState.current
@@ -238,7 +242,7 @@ export function useSoundEffects(
         playTone(context, 'complete')
       }
       if (state.status === 'gameOver' && previous.status !== 'gameOver') {
-        playTone(context, 'gameOver')
+        playTone(context, state.victory ? 'victory' : 'gameOver')
       }
     } catch {
       // Audio failures must never interrupt gameplay.

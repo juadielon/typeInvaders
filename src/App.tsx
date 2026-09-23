@@ -36,6 +36,10 @@ function App() {
     unlockAudio()
     dispatch({ type: 'KEY_PRESS', key })
   }, [unlockAudio])
+  const handleSoundToggle = useCallback((enabled: boolean) => {
+    if (enabled) unlockAudio()
+    setSoundEnabled(enabled)
+  }, [unlockAudio])
   const handleSpace = useCallback(() => {
     unlockAudio()
     dispatch({ type: 'SPACE_PRESS' })
@@ -58,7 +62,7 @@ function App() {
     <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100">
       <div className="flex w-full items-center justify-between px-4" style={{ maxWidth: 760 }}>
         <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
-        <SoundToggle enabled={soundEnabled} onChange={setSoundEnabled} />
+        <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
       </div>
 
       {state.status === 'idle' && (

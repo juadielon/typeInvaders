@@ -260,6 +260,12 @@ describe('gameReducer', () => {
     expect(state.kills).toBe(LEVELS[0].targetKills)
     expect(state.aliens).toHaveLength(0)
     expect(state.lasers).toHaveLength(1)
+    // The alien that completed the level must still trigger its explosion sound.
+    expect(state.audioEvent).toEqual({
+      id: expect.any(String),
+      type: 'alienHit',
+      variant: 'scout',
+    })
     expect(state.explosions).toHaveLength(1)
 
     // Pin the completion timestamp to a deterministic integer so the delay
