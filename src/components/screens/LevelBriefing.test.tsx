@@ -91,7 +91,7 @@ describe('LevelBriefing', () => {
     render(<LevelBriefing level={LEVELS[3]} onBegin={vi.fn()} />)
 
     expect(screen.getByText(/build 6 words from descending alien formations/i)).toBeInTheDocument()
-    expect(screen.getByText(/a\s+ad\s+add\s+dad\s+fad\s+fa\s+faff/)).toBeInTheDocument()
+    expect(screen.getByText(/a\s+faff\s+ad\s+add/)).toBeInTheDocument()
     expect(screen.getByText(/example english words include/i)).toBeInTheDocument()
     expect(screen.queryByText(/punctuation/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/your first alien species is/i)).not.toBeInTheDocument()
@@ -112,5 +112,14 @@ describe('LevelBriefing', () => {
     expect(briefing).toHaveTextContent('disqualifies')
     expect(briefing).not.toHaveTextContent('disqualified')
     expect(LEVELS[11].wordPool).toContain('disqualified')
+  })
+
+  it('varies example lengths instead of showing one length range', () => {
+    render(<LevelBriefing level={LEVELS[7]} onBegin={vi.fn()} />)
+
+    const briefing = screen.getByText(/example english words include/i).parentElement
+    const exampleText = briefing?.textContent ?? ''
+    expect(exampleText).toMatch(/\b[a-z]{1,3}\b/)
+    expect(exampleText).toMatch(/\b[a-z]{8,}\b/)
   })
 })

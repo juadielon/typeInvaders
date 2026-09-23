@@ -44,7 +44,7 @@ function exampleWordsFor(level: LevelConfig): string[] {
   const shownWordBases = new Set<string>()
   const shownWords: string[] = []
 
-  return words
+  const distinctWords = words
     .filter((word) => !word.endsWith('s') || !availableWords.has(word.slice(0, -1)))
     .filter((word) => {
       const base = word.endsWith('s') ? word.slice(0, -1) : word
@@ -60,7 +60,25 @@ function exampleWordsFor(level: LevelConfig): string[] {
       shownWords.push(word)
       return true
     })
-    .slice(0, 8)
+
+  const wordsByLength = new Map<number, string[]>()
+  distinctWords.forEach((word) => {
+    const wordsAtLength = wordsByLength.get(word.length) ?? []
+    wordsAtLength.push(word)
+    wordsByLength.set(word.length, wordsAtLength)
+  })
+
+  const lengths = [...wordsByLength.keys()].sort((first, second) => first - second)
+  const examples: string[] = []
+  let left = 0
+  let right = lengths.length - 1
+  while (examples.length < 8 && left <= right) {
+    const length = examples.length % 2 === 0 ? lengths[left++] : lengths[right--]
+    const wordsAtLength = wordsByLength.get(length)
+    if (wordsAtLength?.[0]) examples.push(wordsAtLength[0])
+  }
+
+  return examples
 }
 
 /** Pauses the action so learners can prepare their hands for each level. */
