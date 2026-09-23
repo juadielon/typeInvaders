@@ -432,6 +432,25 @@ describe('gameReducer', () => {
     expect(state.alarmEvent).toEqual({ id: expect.any(String) })
   })
 
+  it('does not launch a phantom missile/alarm when the impact already depleted shields to zero', () => {
+    let state = beginGame()
+    state = {
+      ...state,
+      shieldHp: PLASMA_BOLT_DAMAGE,
+      nextPlasmaCheckAt: 0,
+      aliens: [testAlien({ variant: 'warden', y: 100 })],
+      plasmaBolts: [{ id: 'p1', x: 10, y: SHIP_Y, createdAt: 0, sourceVariant: 'warden' }],
+    }
+
+    state = gameReducer(state, { type: 'TICK', dt: 0, now: 1000 })
+
+    // Shields hit zero from this same impact, so no replacement missile or
+    // alarm should be raised for a bolt the game-over return discards anyway.
+    expect(state.status).toBe('gameOver')
+    expect(state.plasmaBolts).toHaveLength(0)
+    expect(state.alarmEvent).toBeNull()
+  })
+
   it('fires a laser at an approaching plasma missile with Spacebar, destroying it without losing Shield HP', () => {
     let state = beginGame()
     state = {

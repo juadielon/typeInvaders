@@ -308,7 +308,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
         const launchers = survivors.filter(
           (alien) => alien.variant === 'trickster' || alien.variant === 'warden',
         )
-        if (launchers.length > 0 && plasmaBolts.length === 0) {
+        // Don't launch a new missile (or its alarm) once shields are already
+        // depleted - the bolt would be discarded immediately by the game-over
+        // return below, leaving a phantom alarm for a missile that never appears.
+        if (launchers.length > 0 && plasmaBolts.length === 0 && shieldHp > 0) {
           const launcher = launchers[Math.floor(Math.random() * launchers.length)]
           plasmaBolts = [...plasmaBolts, spawnPlasmaBolt(launcher, action.now)]
           alarmEvent = { id: nextId('audio') }
