@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useReducer } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { LEVELS } from './data/levels'
 import { useGameLoop } from './hooks/useGameLoop'
 import { useKeyboardInput } from './hooks/useKeyboardInput'
@@ -12,13 +12,21 @@ import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
 import { MissionCompleteScreen } from './components/screens/MissionCompleteScreen'
 import { getKeyboardHighlights } from './utils/alienTargets'
+import { SoundToggle } from './components/SoundToggle'
+import { readSoundPreference, SOUND_PREFERENCE_KEY, useSoundEffects } from './hooks/useSoundEffects'
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState)
+  const [soundEnabled, setSoundEnabled] = useState(readSoundPreference)
 
   const currentLevel = LEVELS[state.levelIndex]
 
   useGameLoop(state.status, currentLevel, state.levelStartedAt, dispatch)
+  useSoundEffects(state, soundEnabled)
+
+  useEffect(() => {
+    window.localStorage.setItem(SOUND_PREFERENCE_KEY, String(soundEnabled))
+  }, [soundEnabled])
 
   const handleKey = useCallback((key: string) => {
     dispatch({ type: 'KEY_PRESS', key })
@@ -42,7 +50,10 @@ function App() {
 
   return (
     <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100">
-      <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
+      <div className="flex w-full items-center justify-between px-4" style={{ maxWidth: 760 }}>
+        <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
+        <SoundToggle enabled={soundEnabled} onChange={setSoundEnabled} />
+      </div>
 
       {state.status === 'idle' && (
         <StartScreen onStart={() => dispatch({ type: 'START_GAME' })} />

@@ -74,6 +74,9 @@ The MVP includes:
   key set equally so learners can locate every key before play begins.
   Screen-reader labels use spoken punctuation names so punctuation targets
   cannot be confused with separators.
+- Optional sound effects provide feedback for successful hits, damage, plasma
+  warnings and mission outcomes. Sound is controlled by a visible toggle and
+  is disabled without affecting gameplay when muted.
 - Targeted unit and component tests covering reducer rules, lesson pacing,
   keyboard input and mapping, closest-alien priority, alien readability and
   key user-interface states.

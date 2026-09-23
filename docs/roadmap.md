@@ -31,6 +31,7 @@ affects the feature's behaviour or scope.
   targets briefly retrigger the primary highlight to prompt another press.
 - Plasma-missile defence that teaches Spacebar input and contributes to WPM
   and accuracy.
+- Optional sound effects with a visible mute control.
 - A short hold at the end of a level so the final shot and explosion are seen.
 - Exact-boundary reducer coverage for the final-shot hold and results transition.
 - Accessible target terminology and spoken punctuation names for screen readers.
@@ -86,12 +87,11 @@ The next lesson modules remain planned:
 
 1. Improve accessibility with reduced-motion support, clearer focus states,
    and options for colour and text size.
-2. Add optional sound effects with a visible mute control.
-3. Save optional lesson results and personal bests without making session
+2. Save optional lesson results and personal bests without making session
    resumption the primary progression model.
-4. Add number-row lessons, followed by pattern and word modules.
-5. Expand plasma defence with varied but beginner-friendly bolt patterns.
-6. Design responsive controls before adding phone or tablet support.
+3. Add number-row lessons, followed by pattern and word modules.
+4. Expand plasma defence with varied but beginner-friendly bolt patterns.
+5. Design responsive controls before adding phone or tablet support.
 
 ## Open decisions
 

@@ -52,6 +52,9 @@ Node.js/npm installation on your machine is required.
   Other available keys use a
   lighter amber background. It is a reference only — gameplay only responds
   to your physical keyboard.
+- Optional sound effects provide feedback for hits, shield damage, plasma
+  warnings, mission completion and game over. Use the Sound on/off control to
+  change the preference; it is saved in this browser.
 - Letting an alien reach the bottom costs 10 Shield HP (protection points).
   Your Shield starts at 100; reaching 0 ends the game.
 - Whenever your Shield has taken any damage, a rescuable "mothership" may
@@ -267,7 +270,8 @@ docker compose run --rm dev npm run test:watch
 Test coverage includes the reducer and level rules, exact mission-clear timing,
 keyboard input and finger mapping, closest-alien target priority, mission retry
 flows, spoken punctuation labels, and selected UI behaviour including alien
-labels, keyboard highlights, briefings, lesson selection and the HUD.
+labels, keyboard highlights, briefings, lesson selection, the HUD and the sound
+toggle.
 
 ## Running the linter
 
@@ -332,7 +336,8 @@ type-invaders/
 
 - Physical keyboard only — there is no touch/mobile input, so the game is
   not playable on phones or tablets in this version.
-- No sound effects and no persistence of scores/progress between sessions
+- Sound effects are optional and the mute preference is saved in this browser.
+  Scores and lesson progress are not persisted between sessions.
   (both are natural fast-follow additions).
 
 ## Product and roadmap
