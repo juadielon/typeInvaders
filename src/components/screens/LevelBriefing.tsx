@@ -42,13 +42,22 @@ function exampleWordsFor(level: LevelConfig): string[] {
   const words = level.wordPool?.filter((word) => !word.endsWith(';')) ?? []
   const availableWords = new Set(words)
   const shownWordBases = new Set<string>()
+  const shownWords: string[] = []
 
   return words
     .filter((word) => !word.endsWith('s') || !availableWords.has(word.slice(0, -1)))
     .filter((word) => {
       const base = word.endsWith('s') ? word.slice(0, -1) : word
       if (shownWordBases.has(base)) return false
+      const isNearDuplicate = shownWords.some((shownWord) => {
+        const sharedPrefixLength = [...shownWord].findIndex((char, index) => char !== word[index])
+        const commonPrefixLength =
+          sharedPrefixLength === -1 ? Math.min(shownWord.length, word.length) : sharedPrefixLength
+        return Math.min(shownWord.length, word.length) >= 7 && commonPrefixLength >= 6
+      })
+      if (isNearDuplicate) return false
       shownWordBases.add(base)
+      shownWords.push(word)
       return true
     })
     .slice(0, 8)

@@ -104,4 +104,13 @@ describe('LevelBriefing', () => {
     expect(screen.queryByText(/glassfuls/i)).not.toBeInTheDocument()
     expect(LEVELS[7].wordPool).toContain('glassfuls')
   })
+
+  it('avoids near-duplicate word families in examples', () => {
+    render(<LevelBriefing level={LEVELS[11]} onBegin={vi.fn()} />)
+
+    const briefing = screen.getByText(/example english words include/i).parentElement
+    expect(briefing).toHaveTextContent('disqualifies')
+    expect(briefing).not.toHaveTextContent('disqualified')
+    expect(LEVELS[11].wordPool).toContain('disqualified')
+  })
 })
