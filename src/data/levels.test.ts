@@ -85,6 +85,15 @@ describe('LEVELS pacing', () => {
     expect(firstMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
     expect(firstMission.wordPool?.some((word) => !word.endsWith(';'))).toBe(true)
   })
+
+  it('gives the second mission a longer practice target and punctuation variants', () => {
+    const secondMission = formationMissions[1]
+    expect(secondMission.wordTarget).toBe(12)
+    expect(secondMission.wordPool).toContain('glassfuls')
+    expect(secondMission.wordPool).toContain('rajah')
+    expect(secondMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
+    expect(secondMission.wordPool?.some((word) => word.length >= 8)).toBe(true)
+  })
 })
 
 describe('alien species progression', () => {
