@@ -22,7 +22,7 @@ function App() {
   const currentLevel = LEVELS[state.levelIndex]
 
   useGameLoop(state.status, currentLevel, state.levelStartedAt, dispatch)
-  useSoundEffects(state, soundEnabled)
+  const { unlockAudio } = useSoundEffects(state, soundEnabled)
 
   useEffect(() => {
     window.localStorage.setItem(SOUND_PREFERENCE_KEY, String(soundEnabled))
@@ -32,8 +32,9 @@ function App() {
     dispatch({ type: 'KEY_PRESS', key })
   }, [])
   const handleSpace = useCallback(() => {
+    unlockAudio()
     dispatch({ type: 'SPACE_PRESS' })
-  }, [])
+  }, [unlockAudio])
   useKeyboardInput(state.status, handleKey, handleSpace)
 
   const elapsedMinutes = Math.max((performance.now() - state.startedAt) / 60000, 1 / 60)
@@ -56,7 +57,12 @@ function App() {
       </div>
 
       {state.status === 'idle' && (
-        <StartScreen onStart={() => dispatch({ type: 'START_GAME' })} />
+        <StartScreen
+          onStart={() => {
+            unlockAudio()
+            dispatch({ type: 'START_GAME' })
+          }}
+        />
       )}
 
       {state.status === 'lessonSelect' && (

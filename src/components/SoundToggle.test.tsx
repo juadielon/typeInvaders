@@ -22,4 +22,10 @@ describe('SoundToggle', () => {
       'Sound off',
     )
   })
+
+  it('keeps the control keyboard accessible', () => {
+    render(<SoundToggle enabled onChange={vi.fn()} />)
+
+    expect(screen.getByRole('button')).toHaveAttribute('type', 'button')
+  })
 })

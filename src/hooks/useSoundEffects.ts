@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { GameState } from '../types/game'
 
 export const SOUND_PREFERENCE_KEY = 'type-invaders-sound-enabled'
@@ -42,9 +42,20 @@ function playTone(context: AudioContext, sound: SoundName): void {
   oscillator.stop(now + note.duration)
 }
 
-export function useSoundEffects(state: GameState, soundEnabled: boolean): void {
+export function useSoundEffects(
+  state: GameState,
+  soundEnabled: boolean,
+): { unlockAudio: () => void } {
   const contextRef = useRef<AudioContext | null>(null)
   const previousState = useRef<GameState | null>(null)
+
+  const unlockAudio = useCallback(() => {
+    if (!soundEnabled) return
+    const context = contextRef.current ?? getAudioContext()
+    if (!context) return
+    contextRef.current = context
+    void context.resume().catch(() => undefined)
+  }, [soundEnabled])
 
   useEffect(() => {
     const previous = previousState.current
@@ -76,6 +87,8 @@ export function useSoundEffects(state: GameState, soundEnabled: boolean): void {
       void contextRef.current?.close()
     }
   }, [])
+
+  return { unlockAudio }
 }
 
 export function readSoundPreference(): boolean {
