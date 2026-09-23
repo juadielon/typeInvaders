@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { KEYBOARD_ROWS, fingerLabel } from './keyboardLayout'
+import { KEYBOARD_ROWS, fingerLabel, spokenKeyName } from './keyboardLayout'
 
 describe('fingerLabel', () => {
+  it('provides spoken names for punctuation keys', () => {
+    expect(spokenKeyName(';')).toBe('semicolon')
+    expect(spokenKeyName(',')).toBe('comma')
+    expect(spokenKeyName('.')).toBe('full stop')
+    expect(spokenKeyName('/')).toBe('slash')
+    expect(spokenKeyName('f')).toBe('F')
+  })
+
   it('returns the hand and finger for known Home Row keys', () => {
     expect(fingerLabel('f')).toBe('Left Index')
     expect(fingerLabel('j')).toBe('Right Index')

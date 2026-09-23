@@ -48,6 +48,17 @@ export const KEYBOARD_ROWS: string[][] = [
   ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
 ]
 
+const SPOKEN_KEY_NAMES: Record<string, string> = {
+  ';': 'semicolon',
+  ',': 'comma',
+  '.': 'full stop',
+  '/': 'slash',
+}
+
+export function spokenKeyName(key: string): string {
+  return SPOKEN_KEY_NAMES[key] ?? key.toUpperCase()
+}
+
 export function fingerLabel(key: string): string {
   const info = KEY_FINGER_MAP[key]
   if (!info) return ''
