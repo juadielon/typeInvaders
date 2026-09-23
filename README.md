@@ -47,7 +47,9 @@ Node.js/npm installation on your machine is required.
 - The Visual Keyboard overlay below the playfield highlights the currently
   relevant key(s) and shows a hint such as "F → Left Index" or
   "J → Right Index". The alien closest to the spaceship determines the next
-  key and keeps the strong amber highlight; other available keys use a
+  key and keeps the strong amber highlight. When consecutive targets use the
+  same key, the highlight briefly clears and returns to prompt another press.
+  Other available keys use a
   lighter amber background. It is a reference only — gameplay only responds
   to your physical keyboard.
 - Letting an alien reach the bottom costs 10 Shield HP (protection points).

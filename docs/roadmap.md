@@ -27,7 +27,8 @@ affects the feature's behaviour or scope.
   becoming increasingly silly while remaining cosmetic, plus targeted
   readability refinements for the Giggler, Moustachio and Wobbly Cyclops.
 - Closest-alien keyboard priority: the next key keeps the strong amber
-  highlight while other visible keys use a lighter amber.
+  highlight while other visible keys use a lighter amber. Repeated consecutive
+  targets briefly retrigger the primary highlight to prompt another press.
 - Plasma-missile defence that teaches Spacebar input and contributes to WPM
   and accuracy.
 - A short hold at the end of a level so the final shot and explosion are seen.

@@ -35,7 +35,7 @@ function App() {
       ? 100
       : Math.round((state.correctKeystrokes / state.totalKeystrokes) * 100)
 
-  const { activeKeys, primaryKey } = useMemo(
+  const { activeKeys, primaryKey, primaryTargetId } = useMemo(
     () => getKeyboardHighlights(state.status, currentLevel.allowedKeys, state.aliens),
     [currentLevel.allowedKeys, state.aliens, state.status],
   )
@@ -115,6 +115,7 @@ function App() {
           <VisualKeyboard
             activeKeys={activeKeys}
             primaryKey={primaryKey}
+            primaryTargetId={primaryTargetId}
             spaceActive={state.plasmaBolts.length > 0}
             showHints={state.status !== 'levelBriefing'}
           />
