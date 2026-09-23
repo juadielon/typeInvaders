@@ -14,7 +14,12 @@ function getAudioContext(): AudioContext | null {
   if (typeof window === 'undefined') return null
   const audioWindow = window as AudioContextWindow
   const AudioContextConstructor = audioWindow.AudioContext ?? audioWindow.webkitAudioContext
-  return AudioContextConstructor ? new AudioContextConstructor() : null
+  if (!AudioContextConstructor) return null
+  try {
+    return new AudioContextConstructor()
+  } catch {
+    return null
+  }
 }
 
 function getActiveAudioContext(contextRef: { current: AudioContext | null }): AudioContext | null {
@@ -198,7 +203,9 @@ export function useSoundEffects(
     const context = getActiveAudioContext(contextRef)
     if (!context) return
     contextRef.current = context
-    void context.resume().catch(() => undefined)
+    if (context.state === 'suspended') {
+      void context.resume().catch(() => undefined)
+    }
   }, [soundEnabled])
 
   useEffect(() => {
@@ -209,27 +216,22 @@ export function useSoundEffects(
     const context = getActiveAudioContext(contextRef)
     if (!context) return
     contextRef.current = context
-    void context.resume().catch(() => undefined)
 
     try {
-      if (state.score > previous.score) {
-        const mothershipDestroyed =
-          previous.mothership !== null &&
-          state.mothership === null &&
-          state.score - previous.score >= 50
-        const destroyedAlien = previous.aliens.find(
-          (alien) => !state.aliens.some((remaining) => remaining.id === alien.id),
-        )
-        if (mothershipDestroyed) playMothershipExplosion(context)
-        else if (destroyedAlien) playExplosion(context, destroyedAlien.variant)
+      const newAudioEvent =
+        state.audioEvent && state.audioEvent.id !== previous.audioEvent?.id
+          ? state.audioEvent
+          : null
+      if (newAudioEvent) {
+        if (newAudioEvent.type === 'alienHit') playExplosion(context, newAudioEvent.variant)
+        if (newAudioEvent.type === 'mothershipHit') playMothershipExplosion(context)
+        if (newAudioEvent.type === 'plasmaMissileImpact') playShipExplosion(context)
       }
       if (state.plasmaBolts.length > previous.plasmaBolts.length) playAlarm(context)
       if (
-        state.plasmaBolts.length < previous.plasmaBolts.length &&
-        state.shieldHp < previous.shieldHp
+        state.shieldHp < previous.shieldHp &&
+        newAudioEvent?.type !== 'plasmaMissileImpact'
       ) {
-        playShipExplosion(context)
-      } else if (state.shieldHp < previous.shieldHp) {
         playTone(context, 'damage')
       }
       if (state.status === 'levelResults' && previous.status !== 'levelResults') {
@@ -254,5 +256,9 @@ export function useSoundEffects(
 
 export function readSoundPreference(): boolean {
   if (typeof window === 'undefined') return true
-  return window.localStorage.getItem(SOUND_PREFERENCE_KEY) !== 'false'
+  try {
+    return window.localStorage.getItem(SOUND_PREFERENCE_KEY) !== 'false'
+  } catch {
+    return true
+  }
 }

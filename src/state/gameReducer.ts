@@ -93,6 +93,7 @@ export function createInitialState(): GameState {
     nextPlasmaCheckAt: 0,
     targetWarning: null,
     targetWarningUntil: 0,
+    audioEvent: null,
   }
 }
 
@@ -324,6 +325,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
           nextPlasmaCheckAt,
           status: 'gameOver',
           mothership: null,
+          audioEvent: missedBolt
+            ? { id: nextId('audio'), type: 'plasmaMissileImpact' }
+            : state.audioEvent,
         }
       }
 
@@ -362,6 +366,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
         nextPlasmaCheckAt,
         mothership,
         mothershipNextCheckAt,
+        audioEvent: missedBolt
+          ? { id: nextId('audio'), type: 'plasmaMissileImpact' }
+          : state.audioEvent,
       }
     }
 
@@ -404,6 +411,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
             score: state.score + MOTHERSHIP_SCORE_BONUS,
             correctKeystrokes: state.correctKeystrokes + 1,
             totalKeystrokes,
+            audioEvent: { id: nextId('audio'), type: 'mothershipHit' },
           }
         }
 
@@ -455,6 +463,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           plasmaBolts: [],
           status: 'gameOver',
           mothership: null,
+          audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
         }
       }
 
@@ -498,6 +507,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shieldHp,
         targetWarning,
         targetWarningUntil,
+        audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
       }
     }
 
@@ -533,6 +543,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         score: state.score + 5,
         correctKeystrokes: state.correctKeystrokes + 1,
         totalKeystrokes,
+        audioEvent: { id: nextId('audio'), type: 'alienHit', variant: bolt.sourceVariant },
       }
     }
     default:

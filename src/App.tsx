@@ -25,12 +25,17 @@ function App() {
   const { unlockAudio } = useSoundEffects(state, soundEnabled)
 
   useEffect(() => {
-    window.localStorage.setItem(SOUND_PREFERENCE_KEY, String(soundEnabled))
+    try {
+      window.localStorage.setItem(SOUND_PREFERENCE_KEY, String(soundEnabled))
+    } catch {
+      // Sound preference persistence is optional and must not block gameplay.
+    }
   }, [soundEnabled])
 
   const handleKey = useCallback((key: string) => {
+    unlockAudio()
     dispatch({ type: 'KEY_PRESS', key })
-  }, [])
+  }, [unlockAudio])
   const handleSpace = useCallback(() => {
     unlockAudio()
     dispatch({ type: 'SPACE_PRESS' })
