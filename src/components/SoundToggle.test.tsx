@@ -9,6 +9,7 @@ describe('SoundToggle', () => {
 
     const button = screen.getByRole('button', { name: 'Mute sound effects' })
     expect(button).toHaveAttribute('aria-pressed', 'true')
+    expect(button).toHaveClass('bg-emerald-500')
 
     fireEvent.click(button)
 
@@ -18,9 +19,10 @@ describe('SoundToggle', () => {
   it('offers to unmute when sound is disabled', () => {
     render(<SoundToggle enabled={false} onChange={vi.fn()} />)
 
-    expect(screen.getByRole('button', { name: 'Unmute sound effects' })).toHaveTextContent(
-      'Sound off',
-    )
+    const button = screen.getByRole('button', { name: 'Unmute sound effects' })
+    expect(button).toHaveTextContent('Sound off')
+    expect(button).toHaveClass('bg-slate-900/80')
+    expect(button).not.toHaveClass('bg-emerald-500')
   })
 
   it('keeps the control keyboard accessible', () => {

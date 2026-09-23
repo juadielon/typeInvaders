@@ -3,7 +3,7 @@ import type { GameState } from '../types/game'
 
 export const SOUND_PREFERENCE_KEY = 'type-invaders-sound-enabled'
 
-type SoundName = 'hit' | 'damage' | 'warning' | 'complete' | 'gameOver'
+type SoundName = 'damage' | 'warning' | 'complete' | 'gameOver'
 
 interface AudioContextWindow extends Window {
   AudioContext?: typeof AudioContext
@@ -18,7 +18,6 @@ function getAudioContext(): AudioContext | null {
 }
 
 const SOUND_NOTES: Record<SoundName, { frequency: number; duration: number; type: OscillatorType }> = {
-  hit: { frequency: 620, duration: 0.08, type: 'square' },
   damage: { frequency: 130, duration: 0.16, type: 'sawtooth' },
   warning: { frequency: 260, duration: 0.12, type: 'triangle' },
   complete: { frequency: 780, duration: 0.24, type: 'sine' },
@@ -40,6 +39,36 @@ function playTone(context: AudioContext, sound: SoundName): void {
   gain.connect(context.destination)
   oscillator.start(now)
   oscillator.stop(now + note.duration)
+}
+
+function playExplosion(context: AudioContext): void {
+  const now = context.currentTime
+  const oscillator = context.createOscillator()
+  const oscillatorGain = context.createGain()
+  oscillator.type = 'sawtooth'
+  oscillator.frequency.setValueAtTime(180, now)
+  oscillator.frequency.exponentialRampToValueAtTime(42, now + 0.28)
+  oscillatorGain.gain.setValueAtTime(0.0001, now)
+  oscillatorGain.gain.exponentialRampToValueAtTime(0.2, now + 0.015)
+  oscillatorGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3)
+  oscillator.connect(oscillatorGain)
+  oscillatorGain.connect(context.destination)
+  oscillator.start(now)
+  oscillator.stop(now + 0.3)
+
+  const buffer = context.createBuffer(1, context.sampleRate * 0.24, context.sampleRate)
+  const noise = buffer.getChannelData(0)
+  for (let index = 0; index < noise.length; index += 1) {
+    noise[index] = (Math.random() * 2 - 1) * (1 - index / noise.length)
+  }
+  const source = context.createBufferSource()
+  const noiseGain = context.createGain()
+  source.buffer = buffer
+  noiseGain.gain.setValueAtTime(0.18, now)
+  noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24)
+  source.connect(noiseGain)
+  noiseGain.connect(context.destination)
+  source.start(now)
 }
 
 export function useSoundEffects(
@@ -68,7 +97,7 @@ export function useSoundEffects(
     void context.resume().catch(() => undefined)
 
     try {
-      if (state.score > previous.score) playTone(context, 'hit')
+      if (state.score > previous.score) playExplosion(context)
       if (state.shieldHp < previous.shieldHp) playTone(context, 'damage')
       if (state.plasmaBolts.length > previous.plasmaBolts.length) playTone(context, 'warning')
       if (state.status === 'levelResults' && previous.status !== 'levelResults') {
