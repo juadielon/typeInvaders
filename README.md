@@ -337,9 +337,9 @@ type-invaders/
 
 - Physical keyboard only — there is no touch/mobile input, so the game is
   not playable on phones or tablets in this version.
-- Sound effects are optional and the mute preference is saved in this browser.
-  Scores and lesson progress are not persisted between sessions.
-  (both are natural fast-follow additions).
+- Sound effects are optional and can be muted; only that on/off preference
+  is saved in this browser. Scores and lesson progress are not persisted
+  between sessions (a natural fast-follow addition).
 
 ## Product and roadmap
 

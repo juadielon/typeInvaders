@@ -25,8 +25,14 @@ function getAudioContext(): AudioContext | null {
 function getActiveAudioContext(
   contextRef: { current: AudioContext | null },
   unavailableRef: { current: boolean },
+  options: { allowRecreateClosed: boolean },
 ): AudioContext | null {
   if (contextRef.current?.state === 'closed') {
+    // Recreating a closed context is only safe from a genuine user gesture -
+    // browsers block resume()/output on a fresh context created outside one,
+    // so the automatic tick path leaves it closed and simply skips that
+    // sound rather than silently constructing (and never resuming) a new one.
+    if (!options.allowRecreateClosed) return null
     contextRef.current = null
   }
   // Once construction has failed (unsupported browser, or the browser rejects
@@ -219,7 +225,9 @@ export function useSoundEffects(
     // automatic attempt failed - conditions like output permissions can
     // change between interactions.
     contextUnavailableRef.current = false
-    const context = getActiveAudioContext(contextRef, contextUnavailableRef)
+    const context = getActiveAudioContext(contextRef, contextUnavailableRef, {
+      allowRecreateClosed: true,
+    })
     if (!context) return
     contextRef.current = context
     if (context.state === 'suspended') {
@@ -232,7 +240,9 @@ export function useSoundEffects(
     previousState.current = state
     if (!soundEnabled || !previous) return
 
-    const context = getActiveAudioContext(contextRef, contextUnavailableRef)
+    const context = getActiveAudioContext(contextRef, contextUnavailableRef, {
+      allowRecreateClosed: false,
+    })
     if (!context) return
     contextRef.current = context
 

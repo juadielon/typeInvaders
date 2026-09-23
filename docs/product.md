@@ -86,8 +86,10 @@ The MVP includes:
 
 ## Deliberate MVP exclusions
 
-- Sound effects and music.
-- Persistent scores, progress, accounts, or leaderboards.
+- Background music (arcade sound effects are implemented; see above).
+- Persistent scores, progress, accounts, or leaderboards. (The sound on/off
+  preference is a small UI setting persisted to `localStorage`, not gameplay
+  progress.)
 - Mobile and touch-screen input.
 - User-selectable accessibility settings such as reduced motion, colour
   themes, and text sizing. Semantic labels for current controls and

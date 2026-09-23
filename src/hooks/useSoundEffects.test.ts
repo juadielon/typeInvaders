@@ -149,4 +149,173 @@ describe('useSoundEffects', () => {
       value: originalAudioContext,
     })
   })
+
+  describe('audioEvent playback branches', () => {
+    function mockRunningAudioContext(frequencies: number[]) {
+      class MockOscillator {
+        type = 'sine'
+        frequency = { setValueAtTime: (value: number) => frequencies.push(value) }
+        connect = vi.fn()
+        start = vi.fn()
+        stop = vi.fn()
+      }
+      class MockGain {
+        gain = { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }
+        connect = vi.fn()
+      }
+      return class MockAudioContext {
+        state: AudioContextState = 'running'
+        currentTime = 0
+        sampleRate = 44100
+        destination = {}
+        resume = vi.fn().mockResolvedValue(undefined)
+        close = vi.fn().mockResolvedValue(undefined)
+        createOscillator = () => new MockOscillator()
+        createGain = () => new MockGain()
+        createBuffer = (channels: number, length: number, sampleRate: number) => ({
+          getChannelData: () => new Float32Array(length),
+          sampleRate,
+          numberOfChannels: channels,
+        })
+        createBufferSource = () => ({
+          buffer: null,
+          connect: vi.fn(),
+          start: vi.fn(),
+        })
+      }
+    }
+
+    it('plays the alien-voice explosion when a new alienHit audioEvent arrives', () => {
+      const frequencies: number[] = []
+      const originalAudioContext = window.AudioContext
+      Object.defineProperty(window, 'AudioContext', {
+        configurable: true,
+        value: mockRunningAudioContext(frequencies),
+      })
+      const initial = createInitialState()
+      const { rerender, unmount } = renderHook(
+        ({ state }) => useSoundEffects(state, true),
+        { initialProps: { state: initial } },
+      )
+      rerender({
+        state: {
+          ...initial,
+          audioEvent: { id: 'audio-1', type: 'alienHit', variant: 'giggler' },
+        },
+      })
+      // The giggler alien-voice profile plays 260 as its first note.
+      expect(frequencies).toContain(260)
+      unmount()
+      Object.defineProperty(window, 'AudioContext', {
+        configurable: true,
+        value: originalAudioContext,
+      })
+    })
+
+    it('plays the mothership explosion when a new mothershipHit audioEvent arrives', () => {
+      const frequencies: number[] = []
+      const originalAudioContext = window.AudioContext
+      Object.defineProperty(window, 'AudioContext', {
+        configurable: true,
+        value: mockRunningAudioContext(frequencies),
+      })
+      const initial = createInitialState()
+      const { rerender, unmount } = renderHook(
+        ({ state }) => useSoundEffects(state, true),
+        { initialProps: { state: initial } },
+      )
+      rerender({
+        state: { ...initial, audioEvent: { id: 'audio-1', type: 'mothershipHit' } },
+      })
+      // The mothership explosion's descending sweep starts at 180.
+      expect(frequencies).toContain(180)
+      unmount()
+      Object.defineProperty(window, 'AudioContext', {
+        configurable: true,
+        value: originalAudioContext,
+      })
+    })
+
+    it('plays the ship explosion when a new plasmaMissileImpact audioEvent arrives', () => {
+      const frequencies: number[] = []
+      const originalAudioContext = window.AudioContext
+      Object.defineProperty(window, 'AudioContext', {
+        configurable: true,
+        value: mockRunningAudioContext(frequencies),
+      })
+      const initial = createInitialState()
+      const { rerender, unmount } = renderHook(
+        ({ state }) => useSoundEffects(state, true),
+        { initialProps: { state: initial } },
+      )
+      rerender({
+        state: { ...initial, audioEvent: { id: 'audio-1', type: 'plasmaMissileImpact' } },
+      })
+      // The ship explosion's descending sweep starts at 260.
+      expect(frequencies).toContain(260)
+      unmount()
+      Object.defineProperty(window, 'AudioContext', {
+        configurable: true,
+        value: originalAudioContext,
+      })
+    })
+  })
+
+  it('skips an automatic sound (rather than recreating the context) once the context has closed', () => {
+    const oscillatorStarts: number[] = []
+    const instances: Array<{ state: AudioContextState }> = []
+    class MockAudioContext {
+      state: AudioContextState = 'running'
+      currentTime = 0
+      destination = {}
+      resume = vi.fn().mockResolvedValue(undefined)
+      close = vi.fn().mockResolvedValue(undefined)
+      createOscillator = () => ({
+        type: 'sine',
+        frequency: { setValueAtTime: vi.fn() },
+        connect: vi.fn(),
+        start: () => oscillatorStarts.push(1),
+        stop: vi.fn(),
+      })
+      createGain = () => ({
+        gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() },
+        connect: vi.fn(),
+      })
+      constructor() {
+        instances.push(this)
+      }
+    }
+    const originalAudioContext = window.AudioContext
+    Object.defineProperty(window, 'AudioContext', { configurable: true, value: MockAudioContext })
+    const initial = createInitialState()
+    const { result, rerender, unmount } = renderHook(
+      ({ state }) => useSoundEffects(state, true),
+      { initialProps: { state: initial } },
+    )
+    // A user gesture constructs the single context the hook will reuse.
+    result.current.unlockAudio()
+    expect(instances).toHaveLength(1)
+
+    // Simulate the browser closing the context outside any user gesture
+    // (e.g. after the tab is backgrounded for a long time).
+    instances[0].state = 'closed'
+
+    // An automatic tick carrying a new sound event must not recreate the
+    // closed context - it should just skip the sound.
+    rerender({
+      state: { ...initial, audioEvent: { id: 'audio-1', type: 'mothershipHit' } },
+    })
+    expect(instances).toHaveLength(1)
+    expect(oscillatorStarts).toHaveLength(0)
+
+    // A real user gesture is still allowed to recreate it.
+    result.current.unlockAudio()
+    expect(instances).toHaveLength(2)
+
+    unmount()
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: originalAudioContext,
+    })
+  })
 })
