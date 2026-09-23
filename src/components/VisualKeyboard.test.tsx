@@ -15,17 +15,24 @@ describe('VisualKeyboard', () => {
   })
 
   it('shows the active Word Formation word above the keyboard', () => {
-    render(<VisualKeyboard activeKeys={['f', 'j']} currentWord="glassful" />)
+    render(<VisualKeyboard activeKeys={['f', 'j']} currentWord="glassful" showWordHint />)
 
     expect(screen.getByLabelText('Current word: glassful')).toBeInTheDocument()
     expect(screen.getByText('glassful')).toBeInTheDocument()
   })
 
   it('uses compact responsive sizing for the keyboard and word hint', () => {
-    render(<VisualKeyboard activeKeys={['f']} currentWord="glassful" />)
+    render(<VisualKeyboard activeKeys={['f']} currentWord="glassful" showWordHint />)
 
     expect(screen.getByLabelText('Current word: glassful')).toHaveClass('max-[700px]:text-lg')
     expect(screen.getByText('f')).toHaveClass('max-[700px]:h-8', 'max-[700px]:w-8')
+  })
+
+  it('keeps the Word Formation hint row when no word is active', () => {
+    render(<VisualKeyboard activeKeys={['f']} showWordHint />)
+
+    expect(screen.queryByLabelText(/Current word:/i)).not.toBeInTheDocument()
+    expect(screen.getByText('f')).toBeInTheDocument()
   })
 
   it('shows finger guidance below the Spacebar', () => {

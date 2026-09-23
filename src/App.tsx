@@ -172,6 +172,7 @@ function App() {
             showHints={state.status !== 'levelBriefing'}
             lastKeyPress={state.lastKeyPress}
             currentWord={currentLevel.kind === 'wordFormation' ? state.currentWord : null}
+            showWordHint={currentLevel.kind === 'wordFormation'}
           />
         </>
       )}

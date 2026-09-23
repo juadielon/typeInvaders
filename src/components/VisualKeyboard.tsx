@@ -19,6 +19,8 @@ interface VisualKeyboardProps {
   lastKeyPress?: { id: string; key: string; correct: boolean } | null
   /** Active Word Formation word shown above the keyboard. */
   currentWord?: string | null
+  /** Keeps the Word Formation hint row mounted while words change. */
+  showWordHint?: boolean
 }
 
 /**
@@ -34,6 +36,7 @@ export function VisualKeyboard({
   showHints = true,
   lastKeyPress,
   currentWord = null,
+  showWordHint = false,
 }: VisualKeyboardProps) {
   const previousTarget = useRef<{ id?: string; key?: string }>()
   const [suppressedKey, setSuppressedKey] = useState<string>()
@@ -83,12 +86,16 @@ export function VisualKeyboard({
 
   return (
     <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 p-3 max-[700px]:gap-1 max-[700px]:p-2">
-      {currentWord && (
-        <div
-          aria-label={`Current word: ${currentWord}`}
-          className="rounded-md border border-violet-400/70 bg-violet-950/70 px-5 py-2 font-mono text-xl font-bold tracking-[0.25em] text-violet-200 max-[700px]:px-3 max-[700px]:py-1 max-[700px]:text-lg"
-        >
-          {currentWord}
+      {showWordHint && (
+        <div className="flex h-9 items-center max-[700px]:h-7">
+          {currentWord && (
+            <div
+              aria-label={`Current word: ${currentWord}`}
+              className="rounded-md border border-violet-400/70 bg-violet-950/70 px-2 py-0.5 font-mono text-xl font-bold tracking-[0.25em] text-violet-200 max-[700px]:px-1.5 max-[700px]:py-0 max-[700px]:text-lg"
+            >
+              {currentWord}
+            </div>
+          )}
         </div>
       )}
       {KEYBOARD_ROWS.map((row, rowIndex) => (
