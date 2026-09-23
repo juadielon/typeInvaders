@@ -1,10 +1,11 @@
-﻿import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   getAlienDescentSpeed,
   getSpawnInterval,
   INITIAL_ALIEN_DESCENT_SPEED,
 } from '../hooks/useGameLoop'
 import { ALIEN_VARIANT_LABELS, ALIEN_VARIANTS } from '../types/game'
+import { selectWordFormationWord } from '../state/gameReducer'
 import { LEVELS, variantsForLevel } from './levels'
 
 describe('LEVELS pacing', () => {
@@ -115,6 +116,35 @@ describe('LEVELS pacing', () => {
     expect(fourthMission.wordPool).not.toContain('movement')
     expect(fourthMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
     expect(fourthMission.wordPool?.some((word) => word.length >= 12)).toBe(true)
+  })
+
+  it('expands the final mission for extended practice', () => {
+    const finalMission = formationMissions[4]
+    expect(finalMission.wordTarget).toBe(20)
+    expect(finalMission.wordPool).toContain('keyboard')
+    expect(finalMission.wordPool).toContain('practice')
+    expect(finalMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
+  })
+
+  it('progresses each formation mission from shorter to longer words', () => {
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0)
+
+    formationMissions.forEach((mission) => {
+      const firstWord = selectWordFormationWord(
+        mission.wordPool ?? [],
+        0,
+        mission.wordTarget ?? 1,
+      )
+      const finalWord = selectWordFormationWord(
+        mission.wordPool ?? [],
+        (mission.wordTarget ?? 1) - 1,
+        mission.wordTarget ?? 1,
+      )
+
+      expect(firstWord?.length).toBeLessThan(finalWord?.length ?? 0)
+    })
+
+    randomSpy.mockRestore()
   })
 })
 

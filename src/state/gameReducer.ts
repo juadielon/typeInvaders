@@ -106,6 +106,25 @@ function randomChar(allowedKeys: string[]): string {
   return allowedKeys[Math.floor(Math.random() * allowedKeys.length)]
 }
 
+export function selectWordFormationWord(
+  wordPool: string[],
+  wordsCompleted: number,
+  wordTarget: number,
+): string | undefined {
+  if (wordPool.length === 0) return undefined
+
+  const orderedWords = [...wordPool].sort((first, second) => first.length - second.length)
+  const progressSteps = Math.max(wordTarget - 1, 1)
+  const progress = Math.min(Math.max(wordsCompleted, 0), progressSteps) / progressSteps
+  const windowSize = Math.max(1, Math.ceil(orderedWords.length / Math.max(wordTarget, 1)))
+  const windowStart = Math.min(
+    Math.floor(progress * (orderedWords.length - windowSize)),
+    orderedWords.length - windowSize,
+  )
+  const window = orderedWords.slice(windowStart, windowStart + windowSize)
+  return window[Math.floor(Math.random() * window.length)]
+}
+
 function randomVariant(levelIndex: number): AlienVariant {
   const variants = variantsForLevel(levelIndex)
   return variants[Math.floor(Math.random() * variants.length)]
@@ -224,7 +243,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
         if (state.aliens.length > 0 || state.wordsCompleted >= (level.wordTarget ?? 0)) {
           return state
         }
-        const word = level.wordPool?.[Math.floor(Math.random() * (level.wordPool?.length ?? 1))]
+        const word = selectWordFormationWord(
+          level.wordPool ?? [],
+          state.wordsCompleted,
+          level.wordTarget ?? 1,
+        )
         if (!word) return state
         const startX = PLAYFIELD_WIDTH / 2 - ((word.length - 1) * WORD_FORMATION_GAP) / 2
         const aliens = [...word].map((char, index) => ({

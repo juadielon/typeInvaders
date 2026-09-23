@@ -209,8 +209,10 @@ species, so the fleet grows throughout the full curriculum.
 | 15 | + B N | Party King | 134 | 2200 ms | 290 ms |
 
 Word Formation checkpoints follow Levels 3, 6, 9, 12 and 15. They use only
-keys released at that checkpoint and require six, twelve, fourteen, sixteen and ten
-complete formations respectively. The second, third and fourth missions emphasise longer words
+keys released at that checkpoint and require six, twelve, fourteen, sixteen and twenty
+complete formations respectively. Every Word Formation mission starts with shorter
+words and progressively introduces longer formations as its target is completed. The
+second, third, fourth and fifth missions emphasise longer words
 without increasing the descent pressure. Some formations also end with `;` so
 punctuation is practised naturally. The lesson selector marks them with an
 indigo `WORD FORMATION` badge.

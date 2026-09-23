@@ -28,7 +28,7 @@ const formationGoals: Record<number, string> = {
   17: 'Build longer words that mix home-row keys with your first reaches.',
   18: 'Build longer recognisable words using the full top-row set.',
   19: 'Build longer words that include your new bottom-row reaches.',
-  20: 'Build words using the complete letter and punctuation curriculum.',
+  20: 'Build a long sequence of words using the complete letter and punctuation curriculum.',
 }
 
 /** Lets learners choose a lesson before its finger-position briefing begins. */
