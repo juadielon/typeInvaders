@@ -85,13 +85,13 @@ export function VisualKeyboard({
     .filter((hint) => !hint.endsWith('→ '))
 
   return (
-    <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 p-3 max-[700px]:gap-1 max-[700px]:p-2">
+    <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 p-3 max-[940px]:gap-1 max-[940px]:p-2">
       {showWordHint && (
-        <div className="flex h-9 items-center max-[700px]:h-7">
+        <div className="flex h-9 items-center max-[940px]:h-7">
           {currentWord && (
             <div
               aria-label={`Current word: ${currentWord}`}
-              className="rounded-md border border-violet-400/70 bg-violet-950/70 px-2 py-0.5 font-mono text-xl font-bold tracking-[0.25em] text-violet-200 max-[700px]:px-1.5 max-[700px]:py-0 max-[700px]:text-lg"
+              className="rounded-md border border-violet-400/70 bg-violet-950/70 px-2 py-0.5 font-mono text-xl font-bold tracking-[0.25em] text-violet-200 max-[940px]:px-1.5 max-[940px]:py-0 max-[940px]:text-lg"
             >
               {currentWord}
             </div>
@@ -99,7 +99,7 @@ export function VisualKeyboard({
         </div>
       )}
       {KEYBOARD_ROWS.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex gap-1.5 max-[700px]:gap-1">
+        <div key={rowIndex} className="flex gap-1.5 max-[940px]:gap-1">
           {row.map((key) => {
             const isTemporarilySuppressed = key === suppressedKey
             const isActive = activeSet.has(key) && !isTemporarilySuppressed
@@ -110,7 +110,7 @@ export function VisualKeyboard({
               <div
                 key={key}
                 className={[
-                  'flex h-9 w-9 items-center justify-center rounded border font-mono text-sm uppercase transition-colors max-[700px]:h-8 max-[700px]:w-8 max-[700px]:text-xs',
+                  'flex h-9 w-9 items-center justify-center rounded border font-mono text-sm uppercase transition-colors max-[940px]:h-8 max-[940px]:w-8 max-[940px]:text-xs',
                   isPressed
                     ? pressFlash?.correct
                       ? 'border-emerald-400 bg-emerald-400 text-slate-900 shadow-[0_0_10px_rgba(52,211,153,0.85)]'
@@ -133,7 +133,7 @@ export function VisualKeyboard({
       <div
         aria-label={spaceActive ? 'Press Space to fire at the plasma missile' : 'Spacebar'}
         className={[
-          'flex h-9 w-40 items-center justify-center rounded border font-mono text-sm uppercase transition-colors max-[700px]:h-8 max-[700px]:w-32',
+          'flex h-9 w-40 items-center justify-center rounded border font-mono text-sm uppercase transition-colors max-[940px]:h-8 max-[940px]:w-32',
           spaceActive
             ? 'border-orange-400 bg-orange-400 text-slate-900 shadow-[0_0_10px_rgba(251,146,60,0.8)] animate-pulse'
             : 'border-slate-700 bg-slate-800/50 text-slate-500',
