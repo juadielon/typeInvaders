@@ -11,13 +11,15 @@ affects the feature's behaviour or scope.
   accuracy.
 - Fifteen-level Home, Top and Bottom Row curriculum covering every letter,
   comma, full stop, slash and semicolon.
-- Game-over, level-up, and victory screens.
+- Game-over, mission briefing, mission results, and victory screens.
 - A ship that glides to and fires from its target, redesigned to match the
   alien sprite aesthetic.
 - A brief hit explosion effect and a rescuable mothership bonus mechanic
   (multiple visual shapes, appears once the Shield has taken damage).
-- The screen clears of remaining aliens before a level-up transition.
+- The screen clears of remaining aliens before mission results appear.
 - Lesson selection and replay, so players choose the level they practise.
+- Retry choices after every completed mission and after game over, without
+  requiring a return through lesson selection.
 - Longer lessons with the same gentle opening spawn cadence and alien descent
   speed, ramping to a noticeably faster final wave.
 - A lesson progress bar showing cleared and remaining aliens.
@@ -25,10 +27,12 @@ affects the feature's behaviour or scope.
   becoming increasingly silly while remaining cosmetic, plus targeted
   readability refinements for the Giggler, Moustachio and Wobbly Cyclops.
 - Closest-alien keyboard priority: the next key keeps the strong amber
-  highlight while other visible letters use a lighter amber.
+  highlight while other visible keys use a lighter amber.
 - Plasma-missile defence that teaches Spacebar input and contributes to WPM
   and accuracy.
 - A short hold at the end of a level so the final shot and explosion are seen.
+- Exact-boundary reducer coverage for the final-shot hold and results transition.
+- Accessible target terminology and spoken punctuation names for screen readers.
 - A documented rule reference in the README.
 - Unit tests for the core rules and selected UI behaviour.
 - ESLint 9 flat configuration for TypeScript and React.
