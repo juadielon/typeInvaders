@@ -72,28 +72,35 @@ function playAlarm(context: AudioContext): void {
 
 function playAlienVoice(context: AudioContext, variant: AlienVariant): void {
   const now = context.currentTime
-  const oscillator = context.createOscillator()
-  const gain = context.createGain()
   const profile =
     variant === 'giggler'
-      ? { start: 280, peak: 980, end: 220, duration: 0.28, type: 'sawtooth' as OscillatorType }
+      ? { notes: [260, 880, 360, 1040, 220], duration: 0.42, type: 'sawtooth' as OscillatorType }
       : variant === 'toaster'
-        ? { start: 90, peak: 180, end: 70, duration: 0.2, type: 'square' as OscillatorType }
+        ? { notes: [90, 140, 90], duration: 0.3, type: 'square' as OscillatorType }
         : variant === 'disco' || variant === 'partyKing'
-          ? { start: 460, peak: 880, end: 520, duration: 0.16, type: 'triangle' as OscillatorType }
-          : { start: 220, peak: 520, end: 160, duration: 0.12, type: 'square' as OscillatorType }
+          ? { notes: [520, 780, 1040, 780], duration: 0.28, type: 'triangle' as OscillatorType }
+          : variant === 'crabster' || variant === 'cyclops'
+            ? { notes: [150, 110, 75], duration: 0.3, type: 'sawtooth' as OscillatorType }
+            : variant === 'noodle' || variant === 'jellybean'
+              ? { notes: [340, 520, 700], duration: 0.24, type: 'sine' as OscillatorType }
+              : { notes: [240, 480], duration: 0.16, type: 'square' as OscillatorType }
+  const noteDuration = profile.duration / profile.notes.length
 
-  oscillator.type = profile.type
-  oscillator.frequency.setValueAtTime(profile.start, now)
-  oscillator.frequency.exponentialRampToValueAtTime(profile.peak, now + profile.duration * 0.45)
-  oscillator.frequency.exponentialRampToValueAtTime(profile.end, now + profile.duration)
-  gain.gain.setValueAtTime(0.0001, now)
-  gain.gain.exponentialRampToValueAtTime(0.07, now + 0.01)
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + profile.duration)
-  oscillator.connect(gain)
-  gain.connect(context.destination)
-  oscillator.start(now)
-  oscillator.stop(now + profile.duration)
+  profile.notes.forEach((frequency, index) => {
+    const oscillator = context.createOscillator()
+    const gain = context.createGain()
+    const start = now + index * noteDuration
+    const end = start + noteDuration * 0.92
+    oscillator.type = profile.type
+    oscillator.frequency.setValueAtTime(frequency, start)
+    gain.gain.setValueAtTime(0.0001, start)
+    gain.gain.exponentialRampToValueAtTime(0.16, start + 0.008)
+    gain.gain.exponentialRampToValueAtTime(0.0001, end)
+    oscillator.connect(gain)
+    gain.connect(context.destination)
+    oscillator.start(start)
+    oscillator.stop(end)
+  })
 }
 
 function playExplosion(context: AudioContext, variant: AlienVariant): void {
