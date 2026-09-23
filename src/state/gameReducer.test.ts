@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+﻿import { describe, expect, it, vi } from 'vitest'
 import { LEVELS, variantsForLevel } from '../data/levels'
 import { ALIEN_SIZE, PLAYFIELD_WIDTH, PLASMA_BLOCK_WINDOW, PLASMA_BOLT_DAMAGE, SHIP_Y } from '../hooks/useGameLoop'
 import { ALIEN_VARIANTS, MOTHERSHIP_VARIANTS, type Alien, type Mothership } from '../types/game'
@@ -256,15 +256,55 @@ describe('gameReducer', () => {
     expect(state.lasers).toHaveLength(1)
     expect(state.explosions).toHaveLength(1)
 
+    // Pin the completion timestamp to a deterministic integer so the delay
+    // boundary below is exact, rather than inherited from a fractional
+    // performance.now() call inside the KEY_PRESS handler.
+    state = { ...state, levelCompletedAt: 1000 }
+
+    const beforeBoundary = gameReducer(state, {
+      type: 'TICK',
+      dt: 0.016,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS - 1,
+    })
+
+    // One millisecond before the delay elapses, the results screen must not appear yet.
+    expect(beforeBoundary.status).toBe('levelComplete')
+
     state = gameReducer(state, {
       type: 'TICK',
       dt: 0.016,
-      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS + 1,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS,
     })
 
+    // Exactly at the delay boundary, the level must transition to results.
     expect(state.status).toBe('levelResults')
     expect(state.levelIndex).toBe(0)
     expect(state.kills).toBe(LEVELS[0].targetKills)
+  })
+
+  it('holds the exact LEVEL_CLEAR_DELAY_MS boundary using direct integer timestamps', () => {
+    const cleared = {
+      ...createInitialState(),
+      status: 'levelComplete',
+      levelCompletedAt: 2000,
+    }
+
+    // One millisecond before the boundary, the mission must remain on levelComplete.
+    const oneMsEarly = gameReducer(cleared, {
+      type: 'TICK',
+      dt: 0.016,
+      now: cleared.levelCompletedAt + LEVEL_CLEAR_DELAY_MS - 1,
+    })
+    expect(oneMsEarly.status).toBe('levelComplete')
+
+    // Exactly at the boundary, the mission must transition to results.
+    const atBoundary = gameReducer(cleared, {
+      type: 'TICK',
+      dt: 0.016,
+      now: cleared.levelCompletedAt + LEVEL_CLEAR_DELAY_MS,
+    })
+    expect(atBoundary.status).toBe('levelResults')
+    expect(atBoundary.levelCompletedAt).toBe(0)
   })
 
   it('retries a completed mission with fresh gameplay progress', () => {
@@ -451,7 +491,7 @@ describe('gameReducer', () => {
     expect(state.status).toBe('playing')
   })
 
-  it('declares victory after clearing the final level', () => {
+  it('declares victory after clearing the final level, holding levelComplete until the exact delay boundary', () => {
     let state = beginGame()
     const lastIndex = LEVELS.length - 1
     const key = LEVELS[lastIndex].allowedKeys[0]
@@ -467,12 +507,27 @@ describe('gameReducer', () => {
     expect(state.status).toBe('levelComplete')
     expect(state.victory).toBe(false)
 
+    // Pin the completion timestamp to a deterministic integer so the delay
+    // boundary below is exact, rather than inherited from a fractional
+    // performance.now() call inside the KEY_PRESS handler.
+    state = { ...state, levelCompletedAt: 1000 }
+
+    const beforeBoundary = gameReducer(state, {
+      type: 'TICK',
+      dt: 0.016,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS - 1,
+    })
+
+    // One millisecond before the delay elapses, the final mission must still be held on levelComplete.
+    expect(beforeBoundary.status).toBe('levelComplete')
+
     state = gameReducer(state, {
       type: 'TICK',
       dt: 0.016,
-      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS + 1,
+      now: state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS,
     })
 
+    // Exactly at the delay boundary, the final mission must transition to results.
     expect(state.status).toBe('levelResults')
     expect(state.victory).toBe(false)
 
