@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+﻿import { describe, expect, it, vi } from 'vitest'
 import { LEVELS, variantsForLevel } from '../data/levels'
 import { ALIEN_SIZE, PLAYFIELD_WIDTH, PLASMA_BLOCK_WINDOW, PLASMA_BOLT_DAMAGE, SHIP_Y } from '../hooks/useGameLoop'
 import {
