@@ -231,6 +231,7 @@ describe('gameReducer', () => {
 
     expect(state.shieldHp).toBe(0)
     expect(state.status).toBe('gameOver')
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'f', correct: true })
   })
 
   it('registers a misfire without affecting shield HP when no alien matches', () => {
@@ -269,6 +270,7 @@ describe('gameReducer', () => {
       variant: 'scout',
     })
     expect(state.explosions).toHaveLength(1)
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'f', correct: true })
 
     // Pin the completion timestamp to a deterministic integer so the delay
     // boundary below is exact, rather than inherited from a fractional
@@ -645,6 +647,7 @@ describe('gameReducer', () => {
     expect(state.score).toBe(50)
     expect(state.kills).toBe(0)
     expect(state.explosions).toHaveLength(1)
+    expect(state.lastKeyPress).toEqual({ id: expect.any(String), key: 'f', correct: true })
   })
 
   it('caps the shield restore from the mothership at full health', () => {
