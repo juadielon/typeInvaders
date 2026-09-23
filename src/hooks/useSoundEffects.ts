@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
-import type { GameState } from '../types/game'
+import type { AlienVariant, GameState } from '../types/game'
 
 export const SOUND_PREFERENCE_KEY = 'type-invaders-sound-enabled'
 
@@ -41,7 +41,34 @@ function playTone(context: AudioContext, sound: SoundName): void {
   oscillator.stop(now + note.duration)
 }
 
-function playExplosion(context: AudioContext): void {
+function playAlienVoice(context: AudioContext, variant: AlienVariant): void {
+  const now = context.currentTime
+  const oscillator = context.createOscillator()
+  const gain = context.createGain()
+  const profile =
+    variant === 'giggler'
+      ? { start: 280, peak: 980, end: 220, duration: 0.28, type: 'sawtooth' as OscillatorType }
+      : variant === 'toaster'
+        ? { start: 90, peak: 180, end: 70, duration: 0.2, type: 'square' as OscillatorType }
+        : variant === 'disco' || variant === 'partyKing'
+          ? { start: 460, peak: 880, end: 520, duration: 0.16, type: 'triangle' as OscillatorType }
+          : { start: 220, peak: 520, end: 160, duration: 0.12, type: 'square' as OscillatorType }
+
+  oscillator.type = profile.type
+  oscillator.frequency.setValueAtTime(profile.start, now)
+  oscillator.frequency.exponentialRampToValueAtTime(profile.peak, now + profile.duration * 0.45)
+  oscillator.frequency.exponentialRampToValueAtTime(profile.end, now + profile.duration)
+  gain.gain.setValueAtTime(0.0001, now)
+  gain.gain.exponentialRampToValueAtTime(0.07, now + 0.01)
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + profile.duration)
+  oscillator.connect(gain)
+  gain.connect(context.destination)
+  oscillator.start(now)
+  oscillator.stop(now + profile.duration)
+}
+
+function playExplosion(context: AudioContext, variant: AlienVariant): void {
+  playAlienVoice(context, variant)
   const now = context.currentTime
   const oscillator = context.createOscillator()
   const oscillatorGain = context.createGain()
@@ -97,7 +124,12 @@ export function useSoundEffects(
     void context.resume().catch(() => undefined)
 
     try {
-      if (state.score > previous.score) playExplosion(context)
+      if (state.score > previous.score) {
+        const destroyedAlien = previous.aliens.find(
+          (alien) => !state.aliens.some((remaining) => remaining.id === alien.id),
+        )
+        if (destroyedAlien) playExplosion(context, destroyedAlien.variant)
+      }
       if (state.shieldHp < previous.shieldHp) playTone(context, 'damage')
       if (state.plasmaBolts.length > previous.plasmaBolts.length) playTone(context, 'warning')
       if (state.status === 'levelResults' && previous.status !== 'levelResults') {
