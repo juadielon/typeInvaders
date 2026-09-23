@@ -21,6 +21,13 @@ describe('VisualKeyboard', () => {
     expect(screen.getByText('glassful')).toBeInTheDocument()
   })
 
+  it('uses compact responsive sizing for the keyboard and word hint', () => {
+    render(<VisualKeyboard activeKeys={['f']} currentWord="glassful" />)
+
+    expect(screen.getByLabelText('Current word: glassful')).toHaveClass('max-[700px]:text-lg')
+    expect(screen.getByText('f')).toHaveClass('max-[700px]:h-8', 'max-[700px]:w-8')
+  })
+
   it('shows finger guidance below the Spacebar', () => {
     render(<VisualKeyboard activeKeys={['f', 'j']} />)
 
