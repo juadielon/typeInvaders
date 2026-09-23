@@ -249,11 +249,13 @@ export function gameReducer(state: GameState, action: Action): GameState {
           level.wordTarget ?? 1,
         )
         if (!word) return state
+        const formationVariants = variantsForLevel(state.levelIndex)
         const startX = PLAYFIELD_WIDTH / 2 - ((word.length - 1) * WORD_FORMATION_GAP) / 2
         const aliens = [...word].map((char, index) => ({
           id: nextId('alien'),
           char,
-          variant: level.newAlien,
+          variant:
+            formationVariants[(state.wordsCompleted + 1) % formationVariants.length] ?? level.newAlien,
           x: startX + index * WORD_FORMATION_GAP,
           y: -ALIEN_SIZE,
         }))

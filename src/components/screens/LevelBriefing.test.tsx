@@ -92,6 +92,8 @@ describe('LevelBriefing', () => {
 
     expect(screen.getByText(/build 6 words from descending alien formations/i)).toBeInTheDocument()
     expect(screen.getByText(/a\s+ad\s+add\s+dad\s+fad\s+fa\s+faff/)).toBeInTheDocument()
+    expect(screen.getByText(/example english words include/i)).toBeInTheDocument()
+    expect(screen.queryByText(/punctuation/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/your first alien species is/i)).not.toBeInTheDocument()
   })
 })

@@ -40,6 +40,10 @@ function movementInstruction(key: string): string {
 
 /** Pauses the action so learners can prepare their hands for each level. */
 export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
+  const exampleWords = level.wordPool
+    ?.filter((word) => !word.endsWith(';'))
+    .slice(0, 8)
+
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90">
       <section
@@ -80,11 +84,11 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
               <>
                 Your goal is to build {level.wordTarget} words from descending alien formations.
                 Each formation spells a word from left to right. Press the leftmost remaining alien
-                before the formation reaches your ship. Your word bank includes:{' '}
+                before the formation reaches your ship. Example English words include:{' '}
                 <span className="font-mono font-bold text-violet-300">
-                  {level.wordPool?.join('  ')}
+                  {exampleWords?.join('  ')}
                 </span>
-                .
+                . Other words using the keys released by this lesson may also appear.
               </>
             ) : (
               <>

@@ -94,6 +94,7 @@ describe('gameReducer', () => {
     expect(state.currentWord).toBe('a')
     expect(state.aliens.map((alien) => alien.char).join('')).toBe('a')
     expect(state.aliens.every((alien) => alien.y === state.aliens[0].y)).toBe(true)
+    expect(state.aliens[0].variant).not.toBe(LEVELS[3].newAlien)
     randomSpy.mockRestore()
   })
 
