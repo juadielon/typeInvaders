@@ -29,6 +29,9 @@ affects the feature's behaviour or scope.
 - Closest-alien keyboard priority: the next key keeps the strong amber
   highlight while other visible keys use a lighter amber. Repeated consecutive
   targets briefly retrigger the primary highlight to prompt another press.
+- A brief green/red flash on the on-screen keyboard confirming each physical
+  letter/punctuation keystroke as a hit or a misfire (not yet extended to
+  the Spacebar).
 - Plasma-missile defence that teaches Spacebar input and contributes to WPM
   and accuracy.
 - Optional sound effects with a visible mute control.
