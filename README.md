@@ -200,6 +200,8 @@ course of the level, so the pressure builds while you settle into the new keys.
 
 ## Installation
 
+The following commands can be run from either PowerShell or Bash.
+
 Clone the repository, then simply build the Docker image; all dependencies
 are installed inside the container, never on your host machine:
 
