@@ -27,7 +27,7 @@ const formationGoals: Record<number, string> = {
   16: 'Build short words from the home-row keys you have released.',
   17: 'Build longer words that mix home-row keys with your first reaches.',
   18: 'Build longer recognisable words using the full top-row set.',
-  19: 'Build words that include your new bottom-row reaches.',
+  19: 'Build longer words that include your new bottom-row reaches.',
   20: 'Build words using the complete letter and punctuation curriculum.',
 }
 
