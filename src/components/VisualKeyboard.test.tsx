@@ -145,4 +145,26 @@ describe('VisualKeyboard', () => {
     )
     expect(screen.getByText('f')).toHaveClass('bg-emerald-400')
   })
+
+  it('clears an in-progress flash immediately when lastKeyPress resets to null (e.g. on retry)', () => {
+    vi.useFakeTimers()
+    const { rerender } = render(
+      <VisualKeyboard activeKeys={['f']} lastKeyPress={{ id: 'key-1', key: 'f', correct: true }} />,
+    )
+
+    expect(screen.getByText('f')).toHaveClass('bg-emerald-400')
+
+    // Simulate a level retry/continue resetting lastKeyPress before the
+    // flash's own timeout has fired.
+    rerender(<VisualKeyboard activeKeys={['f']} lastKeyPress={null} />)
+
+    expect(screen.getByText('f')).not.toHaveClass('bg-emerald-400')
+
+    // The stale timeout must also be cancelled, so it can't reapply the
+    // flash after the fact once the new level is under way.
+    act(() => {
+      vi.advanceTimersByTime(150)
+    })
+    expect(screen.getByText('f')).not.toHaveClass('bg-emerald-400')
+  })
 })

@@ -37,7 +37,13 @@ export function VisualKeyboard({
   const [pressFlash, setPressFlash] = useState<{ key: string; correct: boolean }>()
 
   useEffect(() => {
-    if (!lastKeyPress) return
+    if (!lastKeyPress) {
+      // A level reset (retry/continue) clears lastKeyPress while this
+      // component stays mounted; without this the previous flash could
+      // persist indefinitely into the new level until another key is pressed.
+      setPressFlash(undefined)
+      return
+    }
     setPressFlash({ key: lastKeyPress.key, correct: lastKeyPress.correct })
     const timeoutId = window.setTimeout(() => setPressFlash(undefined), KEY_PRESS_FLASH_MS)
     return () => window.clearTimeout(timeoutId)
