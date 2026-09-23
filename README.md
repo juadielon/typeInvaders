@@ -25,6 +25,7 @@ Node.js/npm installation on your machine is required.
 - [Level progression](#level-progression)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Command-line instructions](#command-line-instructions)
 - [Running the game](#running-the-game)
 - [Running the tests](#running-the-tests)
 - [Running the linter](#running-the-linter)
@@ -200,10 +201,8 @@ course of the level, so the pressure builds while you settle into the new keys.
 
 ## Installation
 
-The following commands can be run from either PowerShell or Bash.
-
-Clone the repository, then simply build the Docker image; all dependencies
-are installed inside the container, never on your host machine:
+Clone the repository and build the development image. All dependencies are
+installed inside Docker, never on your host machine:
 
 ```powershell
 git clone https://github.com/juadielon/typeInvaders.git
@@ -211,9 +210,29 @@ cd typeInvaders
 docker compose build dev
 ```
 
+## Command-line instructions
+
+The following commands work in both PowerShell and Bash. Run them from the
+`typeInvaders` directory.
+
+| What you want to do | Command |
+| --- | --- |
+| Start the game | `docker compose up dev` |
+| Stop the game | `docker compose down` |
+| Run all tests once | `docker compose run --rm dev npm test` |
+| Run tests while editing | `docker compose run --rm dev npm run test:watch` |
+| Run the linter | `docker compose run --rm dev npm run lint` |
+| Install a dependency | `docker compose run --rm dev npm install <package-name>` |
+| Rebuild after changing dependencies or Docker setup | `docker compose build dev` |
+| Preview the production build | `docker compose --profile prod up --build prod` |
+
+For a first run after installation, use **Start the game**. You do not need
+`--build` each time because the source code is mounted into the development
+container and reloads automatically.
+
 ## Running the game
 
-Start the Vite dev server inside Docker:
+Start the Vite development server:
 
 ```powershell
 docker compose up dev
@@ -221,12 +240,6 @@ docker compose up dev
 
 Then open <http://localhost:5173> in your browser. Source changes under
 `src/` hot-reload automatically thanks to the bind-mounted volume.
-Rebuild the `dev` image only after changing the Dockerfile or dependency
-manifests:
-
-```powershell
-docker compose build dev
-```
 
 To stop the container:
 
@@ -265,12 +278,13 @@ docker compose run --rm dev npm run lint
 
 ## Adding a dependency
 
-Never run `npm install` on the host — always install through the
+Never run `npm install` on the host - always install through the
 container so `package.json`/`package-lock.json` and the container image
-stay in sync:
+stay in sync. After installation finishes, rebuild the development image:
 
 ```powershell
 docker compose run --rm dev npm install <package-name>
+docker compose build dev
 ```
 
 ## Production build preview
