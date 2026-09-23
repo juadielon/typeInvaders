@@ -38,11 +38,25 @@ function movementInstruction(key: string): string {
   return `Reach your ${finger.toLowerCase()} ${direction} from ${anchor.toUpperCase()} to ${key.toUpperCase()}, press it, then return to ${anchor.toUpperCase()}.`
 }
 
+function exampleWordsFor(level: LevelConfig): string[] {
+  const words = level.wordPool?.filter((word) => !word.endsWith(';')) ?? []
+  const availableWords = new Set(words)
+  const shownWordBases = new Set<string>()
+
+  return words
+    .filter((word) => !word.endsWith('s') || !availableWords.has(word.slice(0, -1)))
+    .filter((word) => {
+      const base = word.endsWith('s') ? word.slice(0, -1) : word
+      if (shownWordBases.has(base)) return false
+      shownWordBases.add(base)
+      return true
+    })
+    .slice(0, 8)
+}
+
 /** Pauses the action so learners can prepare their hands for each level. */
 export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
-  const exampleWords = level.wordPool
-    ?.filter((word) => !word.endsWith(';'))
-    .slice(0, 8)
+  const exampleWords = exampleWordsFor(level)
 
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90">

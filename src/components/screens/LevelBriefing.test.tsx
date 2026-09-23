@@ -96,4 +96,12 @@ describe('LevelBriefing', () => {
     expect(screen.queryByText(/punctuation/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/your first alien species is/i)).not.toBeInTheDocument()
   })
+
+  it('avoids duplicate plural examples while keeping them valid in the game pool', () => {
+    render(<LevelBriefing level={LEVELS[7]} onBegin={vi.fn()} />)
+
+    expect(screen.getByText(/glassful/i)).toBeInTheDocument()
+    expect(screen.queryByText(/glassfuls/i)).not.toBeInTheDocument()
+    expect(LEVELS[7].wordPool).toContain('glassfuls')
+  })
 })
