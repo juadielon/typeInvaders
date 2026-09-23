@@ -94,6 +94,17 @@ describe('LEVELS pacing', () => {
     expect(secondMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
     expect(secondMission.wordPool?.some((word) => word.length >= 8)).toBe(true)
   })
+
+  it('gives the third mission a longer practice target and valid top-row words', () => {
+    const thirdMission = formationMissions[2]
+    expect(thirdMission.wordTarget).toBe(14)
+    expect(thirdMission.wordPool).toContain('disqualified')
+    expect(thirdMission.wordPool).toContain('housekeepers')
+    expect(thirdMission.wordPool).toContain('praise')
+    expect(thirdMission.wordPool).not.toContain('quick')
+    expect(thirdMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
+    expect(thirdMission.wordPool?.some((word) => word.length >= 10)).toBe(true)
+  })
 })
 
 describe('alien species progression', () => {
