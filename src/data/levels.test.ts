@@ -22,13 +22,13 @@ describe('LEVELS pacing', () => {
 
   it('makes each lesson longer than the one before it', () => {
     combatLevels.slice(1).forEach((level, index) => {
-      expect(level.targetKills).toBeGreaterThan(LEVELS[index].targetKills)
+      expect(level.targetKills).toBeGreaterThan(combatLevels[index].targetKills)
     })
   })
 
   it('increases the fastest pressure as lessons progress', () => {
     combatLevels.slice(1).forEach((level, index) => {
-      expect(level.minSpawnIntervalMs).toBeLessThan(LEVELS[index].minSpawnIntervalMs)
+      expect(level.minSpawnIntervalMs).toBeLessThan(combatLevels[index].minSpawnIntervalMs)
     })
   })
 
@@ -40,7 +40,7 @@ describe('LEVELS pacing', () => {
 
   it('gives each lesson a longer ramp than the one before it', () => {
     combatLevels.slice(1).forEach((level, index) => {
-      expect(level.spawnRampDurationMs).toBeGreaterThan(LEVELS[index].spawnRampDurationMs)
+      expect(level.spawnRampDurationMs).toBeGreaterThan(combatLevels[index].spawnRampDurationMs)
     })
   })
 

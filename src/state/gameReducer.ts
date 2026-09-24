@@ -237,7 +237,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
     case 'SPAWN': {
       if (state.status !== 'playing') return state
-      if (state.aliens.length >= MAX_ALIENS) return state
       const level = LEVELS[state.levelIndex]
       if (level.kind === 'wordFormation') {
         if (state.aliens.length > 0 || state.wordsCompleted >= (level.wordTarget ?? 0)) {
@@ -261,6 +260,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
         }))
         return { ...state, aliens, currentWord: word, hasSpawnedIntroAlien: true }
       }
+      // Combat missions cap how many aliens can be in play at once; Word
+      // Formation missions spawn a whole formation atomically above, so this
+      // cap must not apply to them (a formation can be longer than MAX_ALIENS).
+      if (state.aliens.length >= MAX_ALIENS) return state
       // Stop feeding in new aliens once enough are already in play (destroyed
       // or on screen) to clear the level, so the screen empties out naturally
       // instead of levelling up with a wall of aliens still descending.
