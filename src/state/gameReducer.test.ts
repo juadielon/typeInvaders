@@ -419,6 +419,41 @@ describe('gameReducer', () => {
     expect(state.kills).toBe(0)
   })
 
+  it('resets Word Formation progress and leftover combat transients when continuing to the next mission', () => {
+    const wordFormationIndex = LEVELS.findIndex((level) => level.kind === 'wordFormation')
+    const state = gameReducer(
+      {
+        ...createInitialState(),
+        status: 'levelResults',
+        levelIndex: wordFormationIndex,
+        currentWord: 'dad',
+        wordsCompleted: LEVELS[wordFormationIndex].wordTarget ?? 0,
+        mothership: {
+          id: 'mothership-1',
+          char: 'f',
+          variant: 'cruiser',
+          direction: 1,
+          x: 100,
+        },
+        plasmaBolts: [{ id: 'plasma-1', x: 10, y: 20, createdAt: 0, sourceVariant: 'trickster' }],
+        shieldFeedback: 'missed',
+        shieldFeedbackUntil: 999,
+        targetWarning: 'outOfOrder',
+        targetWarningUntil: 999,
+      },
+      { type: 'CONTINUE_LEVEL' },
+    )
+
+    expect(state.currentWord).toBeNull()
+    expect(state.wordsCompleted).toBe(0)
+    expect(state.mothership).toBeNull()
+    expect(state.plasmaBolts).toHaveLength(0)
+    expect(state.shieldFeedback).toBeNull()
+    expect(state.shieldFeedbackUntil).toBe(0)
+    expect(state.targetWarning).toBeNull()
+    expect(state.targetWarningUntil).toBe(0)
+  })
+
   it('retries the current mission after game over', () => {
     const state = gameReducer(
       {

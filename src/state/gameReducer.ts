@@ -224,6 +224,20 @@ export function gameReducer(state: GameState, action: Action): GameState {
         ...state,
         levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
         kills: isLastLevel ? state.kills : 0,
+        // Word Formation progress and any leftover combat-only transients
+        // (mothership, plasma bolts, warning banners) must not carry over
+        // into the next mission — otherwise a stale wordsCompleted count can
+        // shrink or skip the next formation's word bank, and a leftover
+        // mothership/missile would sit frozen through a Word Formation
+        // mission, whose TICK branch intentionally doesn't move them.
+        currentWord: isLastLevel ? state.currentWord : null,
+        wordsCompleted: isLastLevel ? state.wordsCompleted : 0,
+        mothership: isLastLevel ? state.mothership : null,
+        plasmaBolts: isLastLevel ? state.plasmaBolts : [],
+        shieldFeedback: isLastLevel ? state.shieldFeedback : null,
+        shieldFeedbackUntil: isLastLevel ? state.shieldFeedbackUntil : 0,
+        targetWarning: isLastLevel ? state.targetWarning : null,
+        targetWarningUntil: isLastLevel ? state.targetWarningUntil : 0,
         hasSpawnedIntroAlien: isLastLevel ? state.hasSpawnedIntroAlien : false,
         status: isLastLevel ? 'gameOver' : 'levelBriefing',
         victory: isLastLevel,
