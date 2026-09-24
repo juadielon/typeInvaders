@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { LEVELS } from './data/levels'
 import { useGameLoop } from './hooks/useGameLoop'
 import { useKeyboardInput } from './hooks/useKeyboardInput'
@@ -18,6 +18,10 @@ import { readSoundPreference, SOUND_PREFERENCE_KEY, useSoundEffects } from './ho
 function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState)
   const [soundEnabled, setSoundEnabled] = useState(readSoundPreference)
+  const [quitConfirmOpen, setQuitConfirmOpen] = useState(false)
+  // Tracks whether the quit prompt is what paused the run, so cancelling can
+  // restore the exact state the player was in rather than always resuming.
+  const quitPausedRunRef = useRef(false)
 
   const currentLevel = LEVELS[state.levelIndex]
 
@@ -44,7 +48,49 @@ function App() {
     unlockAudio()
     dispatch({ type: 'SPACE_PRESS' })
   }, [unlockAudio])
-  useKeyboardInput(state.status, handleKey, handleSpace)
+  const handlePauseToggle = useCallback(() => {
+    // The quit prompt owns the paused state while it is open, so Escape must
+    // not resume the run underneath the modal.
+    if (quitConfirmOpen) {
+      return
+    }
+
+    if (state.status === 'paused') {
+      unlockAudio()
+      dispatch({ type: 'RESUME_GAME' })
+      return
+    }
+
+    if (state.status === 'playing') {
+      unlockAudio()
+      dispatch({ type: 'PAUSE_GAME' })
+    }
+  }, [quitConfirmOpen, state.status, unlockAudio])
+
+  const handleQuitGame = useCallback(() => {
+    unlockAudio()
+    dispatch({ type: 'QUIT_GAME' })
+    quitPausedRunRef.current = false
+    setQuitConfirmOpen(false)
+  }, [unlockAudio])
+
+  const handleQuitClick = useCallback(() => {
+    quitPausedRunRef.current = state.status === 'playing'
+    if (state.status === 'playing') {
+      dispatch({ type: 'PAUSE_GAME' })
+    }
+    setQuitConfirmOpen(true)
+  }, [dispatch, state.status])
+
+  const handleQuitCancel = useCallback(() => {
+    setQuitConfirmOpen(false)
+    if (quitPausedRunRef.current && state.status === 'paused') {
+      dispatch({ type: 'RESUME_GAME' })
+    }
+    quitPausedRunRef.current = false
+  }, [dispatch, state.status])
+
+  useKeyboardInput(state.status, handleKey, handleSpace, handlePauseToggle)
 
   const elapsedMinutes = Math.max((performance.now() - state.startedAt) / 60000, 1 / 60)
   const wpm = Math.round(state.correctKeystrokes / 5 / elapsedMinutes)
@@ -73,7 +119,27 @@ function App() {
         <h1 className="text-xl font-bold tracking-wide text-emerald-300 max-[940px]:text-base">
           🚀 Type Invaders
         </h1>
-        <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
+        <div className="flex items-center gap-2">
+          {(state.status === 'playing' || state.status === 'paused') && (
+            <>
+              <button
+                type="button"
+                onClick={handlePauseToggle}
+                className="rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-100 transition hover:border-emerald-400 hover:text-emerald-300"
+              >
+                {state.status === 'paused' ? 'Resume' : 'Pause'}
+              </button>
+              <button
+                type="button"
+                onClick={handleQuitClick}
+                className="rounded-full border border-red-500/60 bg-red-950/40 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-200 transition hover:border-red-300 hover:text-red-100"
+              >
+                Quit
+              </button>
+            </>
+          )}
+          <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
+        </div>
       </div>
 
       {state.status === 'idle' && (
@@ -116,6 +182,59 @@ function App() {
               shipX={state.shipX}
               targetWarning={state.targetWarning}
             />
+
+            {state.status === 'paused' && !quitConfirmOpen && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+                <div className="rounded-2xl border border-slate-700 bg-slate-900/95 px-8 py-6 text-center shadow-2xl">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">Paused</p>
+                  <p className="mt-3 text-2xl font-bold text-slate-50">Take a breath.</p>
+                  <div className="mt-5 flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handlePauseToggle}
+                      className="rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
+                    >
+                      Resume game
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleQuitClick}
+                      className="rounded-full border border-red-500/70 bg-red-950/40 px-5 py-2 text-sm font-semibold text-red-200 transition hover:border-red-300 hover:text-red-100"
+                    >
+                      Quit lesson
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {quitConfirmOpen && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-slate-950/85 backdrop-blur-sm">
+                <div className="w-[min(90vw,22rem)] rounded-2xl border border-slate-700 bg-slate-900/95 p-6 text-center shadow-2xl">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-red-300">Quit lesson</p>
+                  <h3 className="mt-3 text-2xl font-bold text-slate-50">Leave this mission?</h3>
+                  <p className="mt-2 text-sm text-slate-300">
+                    Your score and progress for this run will be cleared and you will return to the lesson menu.
+                  </p>
+                  <div className="mt-5 flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handleQuitCancel}
+                      className="rounded-full border border-slate-600 bg-slate-800 px-5 py-2 text-sm font-semibold text-slate-100 transition hover:border-slate-400"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleQuitGame}
+                      className="rounded-full bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-400"
+                    >
+                      Quit mission
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {state.status === 'levelBriefing' && (
               <LevelBriefing

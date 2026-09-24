@@ -68,6 +68,8 @@ Contributing to it:
   Pausing freezes the loop and keeps the mission timers aligned when play resumes.
 - The `Quit` action is always confirmed before abandoning a run.
   Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the current run.
+  Cancelling the prompt restores whatever you were doing beforehand: it resumes play if Quit was what paused the run, or leaves you on the pause overlay if you had already paused manually.
+  The `Escape` shortcut is ignored while the confirmation is open, so it cannot resume the run behind the prompt.
 - Clearing the required number of aliens, or completing the required Word Formation set, opens a mission-results screen.
   You can retry the mission for more practice or continue to the next level, which unlocks additional keys and increases difficulty (longer practice targets, a gentle opening spawn cadence that becomes faster during the level, and faster descent); the screen is cleared of aliens before the next level begins.
   A briefing then pauses the game until you choose to continue.
@@ -121,7 +123,7 @@ A quick reference to every rule the game currently applies.
 | --- | --- |
 | Starting a game | Choose any lesson from the lesson selector. |
 | Pausing and resuming | Use the top-right Pause button or the `Escape` key to pause and resume; the shortcut is intentionally Escape-only to avoid colliding with letter input. |
-| Quitting a lesson | Quit always opens a confirmation prompt and returns to the lesson selector after clearing the run. |
+| Quitting a lesson | Quit always opens a confirmation prompt and returns to the lesson selector after clearing the run. Cancelling restores the previous state, resuming play only if Quit was what paused it. |
 | Before each level | A briefing pauses the game until you choose to continue. |
 | Replaying a lesson | Available after completing a mission or reaching game over; resets score, Shield, kills and the playfield. |
 | Clearing a level | Destroy the level's target number of aliens, or complete the Word Formation word target. |
@@ -146,7 +148,7 @@ A quick reference to every rule the game currently applies.
 | Missile path | Curves towards the spaceship's current position. |
 | Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
 | Tab switching | The game loop pauses while the browser tab is hidden. |
-| Quit flow | Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the run. |
+| Quit flow | Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the run. Cancelling resumes play only when Quit is what paused the run. |
 ### Scoring statistics
 
 | Rule | Detail |

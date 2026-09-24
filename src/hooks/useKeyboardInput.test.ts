@@ -42,4 +42,22 @@ describe('useKeyboardInput', () => {
 
     expect(onKey).not.toHaveBeenCalled()
   })
+
+  it('toggles pause with the Escape key while in play', () => {
+    const onPauseToggle = vi.fn()
+    renderHook(() => useKeyboardInput('playing', vi.fn(), vi.fn(), onPauseToggle))
+
+    pressKey('Escape')
+
+    expect(onPauseToggle).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not treat letter keys as pause shortcuts', () => {
+    const onPauseToggle = vi.fn()
+    renderHook(() => useKeyboardInput('playing', vi.fn(), vi.fn(), onPauseToggle))
+
+    pressKey('p')
+
+    expect(onPauseToggle).not.toHaveBeenCalled()
+  })
 })
