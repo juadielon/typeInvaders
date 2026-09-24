@@ -14,7 +14,7 @@ affects the feature's behaviour or scope.
 - Five Word Formation missions after Levels 3, 6, 9, 12 and 15. Each mission
   lays a word out as a horizontal alien formation that descends as one unit
   and is cleared from left to right. The word under construction is shown
-  above the visual keyboard for the whole mission.
+  above the visual keyboard while its aliens are on screen.
 - Game-over, mission briefing, mission results, and victory screens.
 - A ship that glides to and fires from its target, redesigned to match the
   alien sprite aesthetic.
