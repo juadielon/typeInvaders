@@ -4,23 +4,32 @@
 the matching key on their physical keyboard; the on-screen ship glides to the closest matching alien and fires the shot from its own position. A Visual Keyboard overlay highlights the target key and the correct
 hand/finger to use, and a 15-level combat curriculum plus five Word Formation missions gradually introduces every letter plus semicolon, comma, full stop and slash across the Home, Top and Bottom Rows as the player improves. A rescuable "mothership" occasionally drifts across a lane above the aliens whenever your Shield has taken damage — destroying it restores some Shield HP and a score bonus.
 
-It is built with **React + TypeScript**, bundled with **Vite**, and styled with **Tailwind CSS**. The entire toolchain runs inside **Docker** — no Node.js/npm installation on your machine is required. User-facing game copy and mission word banks use Australian English spelling where a variant exists, such as `practise`, `flavour` and `humour`.
+It is built with **React + TypeScript**, bundled with **Vite**, and styled with **Tailwind CSS**. The entire toolchain runs inside **Docker** — no Node.js/npm installation on your machine is required.
 
 ## Table of contents
+
+Playing the game:
 
 - [How the game works](#how-the-game-works)
 - [Game rules](#game-rules)
 - [Level progression](#level-progression)
+- [Known MVP limitations](#known-mvp-limitations)
+
+Setting up and running it:
+
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Command-line instructions](#command-line-instructions)
 - [Running the game](#running-the-game)
 - [Running the tests](#running-the-tests)
 - [Running the linter](#running-the-linter)
-- [Commit message conventions](#commit-message-conventions)
 - [Adding a dependency](#adding-a-dependency)
 - [Production build preview](#production-build-preview)
+
+Contributing to it:
+
 - [Project structure](#project-structure)
+- [Contributing conventions](#contributing-conventions)
 - [Product and roadmap](#product-and-roadmap)
 
 ## How the game works
@@ -142,6 +151,11 @@ Word Formation checkpoints follow Levels 3, 6, 9, 12 and 15. They use only keys 
 
 The spawn rate eases from the opening cadence to the fastest cadence over the course of the level, so the pressure builds while you settle into the new keys.
 
+## Known MVP limitations
+
+- Physical keyboard only — there is no touch/mobile input, so the game is not playable on phones or tablets in this version.
+- Sound effects are optional and can be muted; only that on/off preference is saved in this browser. Scores and lesson progress are not persisted between sessions (a natural fast-follow addition).
+
 ## Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or any Docker Engine with the Compose plugin) installed and running.
@@ -214,11 +228,6 @@ ESLint 9 checks the TypeScript and React source using the flat configuration in 
 docker compose run --rm dev npm run lint
 ```
 
-## Commit message conventions
-
-This project follows [Conventional Commits](https://www.conventionalcommits.org/) for commit messages: `<type>: <description>`, for example `feat: add mothership bonus` or `fix: reset word progress between missions`. Common types used here are `feat` (new feature), `fix` (bug fix), `docs` (documentation only), `test` (adding or updating tests), `refactor`, `style`, and `chore` (tooling/maintenance).
-This keeps `git log` easy to scan by category and matches a widely used industry convention for changelog and release tooling.
-
 ## Adding a dependency
 
 Never run `npm install` on the host - always install through the container so `package.json`/`package-lock.json` and the container image stay in sync. After installation finishes, rebuild the development image:
@@ -266,10 +275,16 @@ type-invaders/
 └── ...config files (Vite, Tailwind, TypeScript)
 ```
 
-## Known MVP limitations
+## Contributing conventions
 
-- Physical keyboard only — there is no touch/mobile input, so the game is not playable on phones or tablets in this version.
-- Sound effects are optional and can be muted; only that on/off preference is saved in this browser. Scores and lesson progress are not persisted between sessions (a natural fast-follow addition).
+### Commit messages
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) for commit messages: `<type>: <description>`, for example `feat: add mothership bonus` or `fix: reset word progress between missions`. Common types used here are `feat` (new feature), `fix` (bug fix), `docs` (documentation only), `test` (adding or updating tests), `refactor`, `style`, and `chore` (tooling/maintenance).
+This keeps `git log` easy to scan by category and matches a widely used industry convention for changelog and release tooling.
+
+### Australian English
+
+Documentation, user-facing game copy and the Word Formation word banks use Australian English spelling wherever a variant exists, such as `practise`, `flavour` and `humour`. Keep third-party API names as they are — `transition-colors` and similar framework identifiers stay untouched.
 
 ## Product and roadmap
 
