@@ -13,7 +13,8 @@ affects the feature's behaviour or scope.
   letter, comma, full stop, slash and semicolon.
 - Five Word Formation missions after Levels 3, 6, 9, 12 and 15. Each mission
   lays a word out as a horizontal alien formation that descends as one unit
-  and is cleared from left to right.
+  and is cleared from left to right. The word under construction is shown
+  above the visual keyboard for the whole mission.
 - Game-over, mission briefing, mission results, and victory screens.
 - A ship that glides to and fires from its target, redesigned to match the
   alien sprite aesthetic.
