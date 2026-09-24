@@ -29,6 +29,7 @@ Node.js/npm installation on your machine is required.
 - [Running the game](#running-the-game)
 - [Running the tests](#running-the-tests)
 - [Running the linter](#running-the-linter)
+- [Commit message conventions](#commit-message-conventions)
 - [Adding a dependency](#adding-a-dependency)
 - [Production build preview](#production-build-preview)
 - [Project structure](#project-structure)
@@ -305,6 +306,16 @@ in `eslint.config.js`:
 ```powershell
 docker compose run --rm dev npm run lint
 ```
+
+## Commit message conventions
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/)
+for commit messages: `<type>: <description>`, for example `feat: add mothership
+bonus` or `fix: reset word progress between missions`. Common types used here
+are `feat` (new feature), `fix` (bug fix), `docs` (documentation only), `test`
+(adding or updating tests), `refactor`, `style`, and `chore` (tooling/maintenance).
+This keeps `git log` easy to scan by category and matches a widely used
+industry convention for changelog and release tooling.
 
 ## Adding a dependency
 
