@@ -499,7 +499,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
           explosions: [...state.explosions, explosion],
           shipX: target.x,
           score: state.score + 10,
-          kills: completed ? level.targetKills : state.kills,
+          // Word Formation missions track progress via wordsCompleted, not
+          // combat kills, so leave kills untouched here — otherwise a
+          // completed formation would falsely report a full combat tally.
           correctKeystrokes: state.correctKeystrokes + 1,
           totalKeystrokes,
           wordsCompleted,

@@ -48,7 +48,8 @@ Node.js/npm installation on your machine is required.
   9, 12 and 15. Each word appears as a horizontal alien formation that
   descends as one unit. Press the leftmost remaining character to destroy it,
   then continue from left to right until the word is complete. The first
-  formation checkpoint uses the released `A S D F J K ;` keys and includes
+  formation checkpoint uses the keys released by combat Level 3 (`A D F J K ;`)
+  and includes
   short entries such as `a`, `ad`, `dad`, `fad`, `faff`, `dada` and `kaf`.
   Some formations add a semicolon at the end, such as `dad;`, so punctuation
   is practised in a natural word-ending position.

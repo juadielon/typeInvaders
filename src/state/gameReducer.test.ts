@@ -142,6 +142,9 @@ describe('gameReducer', () => {
     expect(state.status).toBe('levelComplete')
     expect(state.wordsCompleted).toBe(LEVELS[3].wordTarget)
     expect(state.aliens).toHaveLength(0)
+    // Word Formation progress must be tracked via wordsCompleted, not by
+    // repurposing the combat kill counter.
+    expect(state.kills).toBe(0)
   })
 
   it('only spawns alien species unlocked by the current level', () => {

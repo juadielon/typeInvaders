@@ -62,9 +62,10 @@ The MVP includes:
 - **WPM meaning:** Words Per Minute treats five correct keystrokes as one
   standard word. The current estimate is `correctKeystrokes / 5 / elapsedMinutes`,
   calculated from the start of the game and updated live. Incorrect keys do not
-  increase WPM, and the value is not saved. Because the MVP practises individual
-  keys rather than complete words, this is an estimated practice WPM; word and
-  phrase lessons can later calculate it from completed text and spaces.
+  increase WPM, and the value is not saved. Because the MVP (including Word
+  Formation missions) practises individual keystrokes rather than completed
+  text, this is an estimated practice WPM; future phrase lessons can calculate
+  it from completed text and spaces instead.
 - A visual keyboard that identifies the relevant key and finger. The alien
   closest to the spaceship receives the strong amber "type next"
   keyboard highlight. Consecutive targets with the same key briefly clear and
