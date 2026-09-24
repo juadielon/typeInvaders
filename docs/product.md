@@ -83,7 +83,9 @@ The MVP includes:
   cannot be confused with separators.
 - Word Formation missions target the leftmost remaining character in a word
   formation. Correct presses remove that alien from left to right, while a
-  mistake leaves the current character in place.
+  mistake leaves the current character in place. The word under construction
+  is displayed above the visual keyboard while its aliens are on screen,
+  briefly clearing between words.
 - Optional sound effects provide arcade feedback for successful hits, including
   variant-specific alien voices, mothership and ship explosions, damage, plasma
   warnings and mission outcomes. Sound is controlled by a visible toggle and is
