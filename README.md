@@ -4,7 +4,7 @@
 the matching key on their physical keyboard; the on-screen ship glides to the closest matching alien and fires the shot from its own position. A Visual Keyboard overlay highlights the target key and the correct
 hand/finger to use, and a 15-level combat curriculum plus five Word Formation missions gradually introduces every letter plus semicolon, comma, full stop and slash across the Home, Top and Bottom Rows as the player improves. A rescuable "mothership" occasionally drifts across a lane above the aliens whenever your Shield has taken damage — destroying it restores some Shield HP and a score bonus.
 
-It is built with **React + TypeScript**, bundled with **Vite**, and styled with **Tailwind CSS**. The entire toolchain runs inside **Docker** — no Node.js/npm installation on your machine is required.
+It is built with **React + TypeScript**, bundled with **Vite**, and styled with **Tailwind CSS**. The entire toolchain runs inside **Docker** — no Node.js/npm installation on your machine is required. User-facing game copy and mission word banks use Australian English spelling where a variant exists, such as `practise`, `flavour` and `humour`.
 
 ## Table of contents
 
@@ -217,7 +217,7 @@ docker compose run --rm dev npm run lint
 ## Commit message conventions
 
 This project follows [Conventional Commits](https://www.conventionalcommits.org/) for commit messages: `<type>: <description>`, for example `feat: add mothership bonus` or `fix: reset word progress between missions`. Common types used here are `feat` (new feature), `fix` (bug fix), `docs` (documentation only), `test` (adding or updating tests), `refactor`, `style`, and `chore` (tooling/maintenance).
-This keeps `git log` easy to scan by category and matches a widely used industry convention for changelog and release tooling. User-facing game copy and mission word banks also use Australian English spelling where a variant is involved, such as `practise`, `flavour` and `humour`.
+This keeps `git log` easy to scan by category and matches a widely used industry convention for changelog and release tooling.
 
 ## Adding a dependency
 
