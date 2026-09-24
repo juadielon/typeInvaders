@@ -81,6 +81,15 @@ describe('LEVELS pacing', () => {
     })
   })
 
+  it('keeps every Word Formation word bank free of duplicates', () => {
+    formationMissions.forEach((mission) => {
+      const pool = mission.wordPool ?? []
+      const duplicates = pool.filter((word, index) => pool.indexOf(word) !== index)
+
+      expect(duplicates).toEqual([])
+    })
+  })
+
   it('includes occasional semicolon-ending formations in the first word bank', () => {
     const firstMission = formationMissions[0]
     expect(firstMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
