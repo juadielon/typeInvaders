@@ -65,7 +65,7 @@ Contributing to it:
   During the briefing, the on-screen keyboard highlights every key used in that lesson so you can find them before the aliens arrive.
 - Press `Escape`, or use the Pause button in the top-right, to pause or resume a run without losing progress.
   The pause shortcut is intentionally Escape-only so it does not conflict with letter keys in the game.
-  Pausing freezes the loop and keeps the mission timers aligned when play resumes.
+  Pausing freezes the loop, holds the WPM clock at the moment you paused, and keeps both the mission timers and the alien spawn cadence aligned when play resumes.
 - The `Quit` action is always confirmed before abandoning a run.
   Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the current run.
   Cancelling the prompt restores whatever you were doing beforehand: it resumes play if Quit was what paused the run, or leaves you on the pause overlay if you had already paused manually.
@@ -82,6 +82,7 @@ Contributing to it:
   Species are cosmetic only: every alien is still destroyed by typing the key it carries.
 - Live Words Per Minute (WPM) and accuracy are shown throughout the round, but are not saved between sessions in this MVP.
   WPM is an estimate based on five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
+  The elapsed clock stops while the game is paused, so sitting on the pause overlay does not erode your reported speed.
   Since the MVP practises individual keys, it is a practice estimate rather than a completed-word speed; future word and phrase lessons can use completed text and spaces for a more natural calculation.
 
 ## Game rules
@@ -122,7 +123,7 @@ A quick reference to every rule the game currently applies.
 | Rule | Detail |
 | --- | --- |
 | Starting a game | Choose any lesson from the lesson selector. |
-| Pausing and resuming | Use the top-right Pause button or the `Escape` key to pause and resume; the shortcut is intentionally Escape-only to avoid colliding with letter input. |
+| Pausing and resuming | Use the top-right Pause button or the `Escape` key to pause and resume; the shortcut is intentionally Escape-only to avoid colliding with letter input. Pausing also holds the WPM clock and preserves the spawn cadence. |
 | Quitting a lesson | Quit always opens a confirmation prompt and returns to the lesson selector after clearing the run. Cancelling restores the previous state, resuming play only if Quit was what paused it. |
 | Before each level | A briefing pauses the game until you choose to continue. |
 | Replaying a lesson | Available after completing a mission or reaching game over; resets score, Shield, kills and the playfield. |
@@ -314,7 +315,8 @@ type-invaders/
 │   │   └── useKeyboardInput.ts # Global keydown capture & dedupe
 │   ├── utils/
 │   │   ├── alienTargets.ts     # Closest-alien keyboard priority
-│   │   └── keyboardLayout.ts   # Key → hand/finger lookup table
+│   │   ├── keyboardLayout.ts   # Key → hand/finger lookup table
+│   │   └── stats.ts            # Pause-aware WPM calculation
 │   └── components/
 │       ├── GameArea.tsx         # Aliens, lasers, player ship
 │       ├── VisualKeyboard.tsx   # On-screen keyboard with hints

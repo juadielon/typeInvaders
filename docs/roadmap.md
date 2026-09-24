@@ -63,8 +63,11 @@ The next lesson modules remain planned:
 
 ## Next priorities
 
-1. Save optional lesson results and personal bests without making session resumption the primary progression model.
-2. Add number-row lessons.
+1. Improve accessibility with reduced-motion support, clearer focus states, and options for colour and text size.
+2. Save optional lesson results and personal bests without making session resumption the primary progression model.
+3. Add number-row lessons, followed by pattern and word modules.
+4. Expand plasma defence with varied but beginner-friendly bolt patterns.
+5. Design responsive controls before adding phone or tablet support.
 
 ## Open decisions
 

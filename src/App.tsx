@@ -12,6 +12,7 @@ import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
 import { MissionCompleteScreen } from './components/screens/MissionCompleteScreen'
 import { getKeyboardHighlights } from './utils/alienTargets'
+import { calculateWpm } from './utils/stats'
 import { SoundToggle } from './components/SoundToggle'
 import { readSoundPreference, SOUND_PREFERENCE_KEY, useSoundEffects } from './hooks/useSoundEffects'
 
@@ -92,8 +93,7 @@ function App() {
 
   useKeyboardInput(state.status, handleKey, handleSpace, handlePauseToggle)
 
-  const elapsedMinutes = Math.max((performance.now() - state.startedAt) / 60000, 1 / 60)
-  const wpm = Math.round(state.correctKeystrokes / 5 / elapsedMinutes)
+  const wpm = calculateWpm(state, performance.now())
   const accuracy =
     state.totalKeystrokes === 0
       ? 100
@@ -161,7 +161,7 @@ function App() {
             shieldHp={state.shieldHp}
             score={state.score}
             levelLabel={currentLevel.label}
-            wpm={Math.max(wpm, 0)}
+            wpm={wpm}
             accuracy={accuracy}
             kills={state.kills}
             targetKills={currentLevel.targetKills}
@@ -251,7 +251,7 @@ function App() {
                 <GameOverScreen
                   victory={state.victory}
                   score={state.score}
-                  wpm={Math.max(wpm, 0)}
+                  wpm={wpm}
                   accuracy={accuracy}
                   onRetry={() => {
                     unlockAudio()
@@ -272,7 +272,7 @@ function App() {
                   nextLevelLabel={LEVELS[state.levelIndex + 1]?.label}
                   isLastLevel={state.levelIndex === LEVELS.length - 1}
                   score={state.score}
-                  wpm={Math.max(wpm, 0)}
+                  wpm={wpm}
                   accuracy={accuracy}
                   onRetry={() => {
                     unlockAudio()
