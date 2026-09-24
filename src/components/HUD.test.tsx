@@ -51,15 +51,13 @@ describe('HUD', () => {
         kills={0}
         targetKills={6}
         missionKind="wordFormation"
-        currentWord="dad"
         wordsCompleted={2}
         wordTarget={6}
       />,
     )
 
     expect(screen.getByText('Word Formation')).toBeInTheDocument()
-    expect(screen.getByText('dad')).toBeInTheDocument()
-    expect(screen.getByText(/2 \/ 6 words/i)).toBeInTheDocument()
+    expect(screen.getByText((_, element) => element?.textContent === '2 / 6 words')).toBeInTheDocument()
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2')
   })
 })

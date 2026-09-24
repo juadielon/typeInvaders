@@ -11,7 +11,7 @@ export function SoundToggle({ enabled, onChange }: SoundToggleProps) {
       aria-label={enabled ? 'Mute sound effects' : 'Unmute sound effects'}
       onClick={() => onChange(!enabled)}
       className={[
-        'rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors',
+        'rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors max-[940px]:px-2 max-[940px]:py-0.5',
         enabled
           ? 'border-emerald-400 bg-emerald-500 text-slate-950 shadow-[0_0_12px_rgba(52,211,153,0.55)] hover:border-emerald-300'
           : 'border-slate-600 bg-slate-900/80 text-slate-400 hover:border-emerald-400 hover:text-emerald-300',

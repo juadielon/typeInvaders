@@ -24,8 +24,8 @@ describe('VisualKeyboard', () => {
   it('uses compact responsive sizing for the keyboard and word hint', () => {
     render(<VisualKeyboard activeKeys={['f']} currentWord="glassful" showWordHint />)
 
-    expect(screen.getByLabelText('Current word: glassful')).toHaveClass('max-[940px]:text-lg')
-    expect(screen.getByText('f')).toHaveClass('max-[940px]:h-8', 'max-[940px]:w-8')
+    expect(screen.getByLabelText('Current word: glassful')).toHaveClass('max-[940px]:text-xs')
+    expect(screen.getByText('f')).toHaveClass('max-[940px]:h-6', 'max-[940px]:w-6')
   })
 
   it('keeps the Word Formation hint row when no word is active', () => {

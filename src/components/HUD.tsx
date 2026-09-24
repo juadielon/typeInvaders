@@ -7,7 +7,6 @@ interface HUDProps {
   kills: number
   targetKills: number
   missionKind?: 'combat' | 'wordFormation'
-  currentWord?: string | null
   wordsCompleted?: number
   wordTarget?: number
 }
@@ -26,7 +25,6 @@ export function HUD({
   kills,
   targetKills,
   missionKind = 'combat',
-  currentWord = null,
   wordsCompleted = 0,
   wordTarget = 0,
 }: HUDProps) {
@@ -39,7 +37,7 @@ export function HUD({
 
   return (
     <div
-      className="flex w-full flex-col gap-2 rounded-lg border border-slate-700 bg-slate-900/60 px-4 py-2 text-slate-200"
+      className="flex w-full flex-col gap-2 rounded-lg border border-slate-700 bg-slate-900/60 px-4 py-2 text-slate-200 max-[940px]:gap-0.5 max-[940px]:px-3 max-[940px]:py-1"
       style={{ maxWidth: 760 }}
     >
       <div className="flex items-center justify-between">
@@ -100,17 +98,6 @@ export function HUD({
           {remaining === 0 ? 'Lesson complete' : `${remaining} to finish`}
         </span>
       </div>
-      {missionKind === 'wordFormation' && (
-        <div className="flex items-center justify-center gap-3 text-sm">
-          <span className="uppercase tracking-wider text-violet-300">Formation</span>
-          <span className="font-mono text-lg font-bold tracking-[0.35em] text-violet-100">
-            {currentWord ?? '...'}
-          </span>
-          <span className="text-xs text-slate-400">
-            {wordsCompleted} / {wordTarget} words
-          </span>
-        </div>
-      )}
     </div>
   )
 }

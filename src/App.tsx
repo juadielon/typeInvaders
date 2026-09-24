@@ -65,9 +65,14 @@ function App() {
   )
 
   return (
-    <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100 max-[940px]:gap-2 max-[940px]:py-2">
-      <div className="flex w-full items-center justify-between px-4" style={{ maxWidth: 760 }}>
-        <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
+    <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100 max-[940px]:gap-0 max-[940px]:py-0.5">
+      <div
+        className="flex w-full items-center justify-between px-4 max-[940px]:px-3"
+        style={{ maxWidth: 760 }}
+      >
+        <h1 className="text-xl font-bold tracking-wide text-emerald-300 max-[940px]:text-base">
+          🚀 Type Invaders
+        </h1>
         <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
       </div>
 
@@ -95,7 +100,6 @@ function App() {
             kills={state.kills}
             targetKills={currentLevel.targetKills}
             missionKind={currentLevel.kind}
-            currentWord={state.currentWord}
             wordsCompleted={state.wordsCompleted}
             wordTarget={currentLevel.wordTarget}
           />
