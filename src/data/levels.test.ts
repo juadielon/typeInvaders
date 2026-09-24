@@ -118,11 +118,11 @@ describe('LEVELS pacing', () => {
     expect(fourthMission.wordPool?.some((word) => word.length >= 12)).toBe(true)
   })
 
-  it('expands the final mission for extended practice', () => {
+  it('expands the final mission for extended practise', () => {
     const finalMission = formationMissions[4]
     expect(finalMission.wordTarget).toBe(20)
     expect(finalMission.wordPool).toContain('keyboard')
-    expect(finalMission.wordPool).toContain('practice')
+    expect(finalMission.wordPool).toContain('practise')
     expect(finalMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
   })
 
