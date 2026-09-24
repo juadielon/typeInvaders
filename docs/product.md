@@ -33,10 +33,11 @@ The game must be enjoyable without assuming they already type quickly.
 
 The MVP includes:
 
-- Fifteen progressively harder lessons covering the Home, Top and Bottom Rows,
-  with lesson selection and replay available before each briefing. Every
-  lesson starts with the same gentle spawn cadence and alien descent speed,
-  then builds to a faster cadence and descent speed before advancing.
+- Fifteen progressively harder combat lessons covering the Home, Top and
+  Bottom Rows, with five Word Formation missions inserted after Levels 3, 6,
+  9, 12 and 15. Every Word Formation mission uses only keys released so far
+  and displays each word as a horizontal alien formation descending as one
+  unit.
 - A lesson progress bar showing cleared and remaining aliens, so learners can
   see when the level will end.
 - A brief hold at the end of a level so the final shot and explosion play out
@@ -50,7 +51,7 @@ The MVP includes:
   inbound. Learners fire the ship's laser at the missile, just like shooting
   a labelled alien, or absorb a small Shield loss if it reaches the ship.
 - Descending single-key aliens with one new visual species introduced in
-  every mission. The first spawn guarantees that mission's new species, then
+  every combat level. The first spawn guarantees that level's new species, then
   later spawns use the cumulative unlocked roster regardless of whether the
   first alien was destroyed or reached the ship. Later species become
   increasingly playful, while remaining cosmetic so typing rules stay consistent.
@@ -61,9 +62,10 @@ The MVP includes:
 - **WPM meaning:** Words Per Minute treats five correct keystrokes as one
   standard word. The current estimate is `correctKeystrokes / 5 / elapsedMinutes`,
   calculated from the start of the game and updated live. Incorrect keys do not
-  increase WPM, and the value is not saved. Because the MVP practises individual
-  keys rather than complete words, this is an estimated practice WPM; word and
-  phrase lessons can later calculate it from completed text and spaces.
+  increase WPM, and the value is not saved. Because the MVP (including Word
+  Formation missions) practises individual keystrokes rather than completed
+  text, this is an estimated practice WPM; future phrase lessons can calculate
+  it from completed text and spaces instead.
 - A visual keyboard that identifies the relevant key and finger. The alien
   closest to the spaceship receives the strong amber "type next"
   keyboard highlight. Consecutive targets with the same key briefly clear and
@@ -79,6 +81,9 @@ The MVP includes:
   key set equally so learners can locate every key before play begins.
   Screen-reader labels use spoken punctuation names so punctuation targets
   cannot be confused with separators.
+- Word Formation missions target the leftmost remaining character in a word
+  formation. Correct presses remove that alien from left to right, while a
+  mistake leaves the current character in place.
 - Optional sound effects provide arcade feedback for successful hits, including
   variant-specific alien voices, mothership and ship explosions, damage, plasma
   warnings and mission outcomes. Sound is controlled by a visible toggle and is

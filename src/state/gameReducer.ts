@@ -30,6 +30,7 @@ const EXPLOSION_LIFETIME_MS = 300
 /** Shield HP cost for destroying an alien that wasn't the closest one to the ship. */
 const PRIORITY_PENALTY = 5
 const TARGET_WARNING_DURATION_MS = 900
+const WORD_FORMATION_GAP = 52
 /**
  * How long the playfield is held after the final alien of a level dies. Without
  * it the level would end on the same action that fires the shot, so the last
@@ -82,6 +83,8 @@ export function createInitialState(): GameState {
     score: 0,
     kills: 0,
     hasSpawnedIntroAlien: false,
+    currentWord: null,
+    wordsCompleted: 0,
     correctKeystrokes: 0,
     totalKeystrokes: 0,
     victory: false,
@@ -101,6 +104,25 @@ export function createInitialState(): GameState {
 
 function randomChar(allowedKeys: string[]): string {
   return allowedKeys[Math.floor(Math.random() * allowedKeys.length)]
+}
+
+export function selectWordFormationWord(
+  wordPool: string[],
+  wordsCompleted: number,
+  wordTarget: number,
+): string | undefined {
+  if (wordPool.length === 0) return undefined
+
+  const orderedWords = [...wordPool].sort((first, second) => first.length - second.length)
+  const progressSteps = Math.max(wordTarget - 1, 1)
+  const progress = Math.min(Math.max(wordsCompleted, 0), progressSteps) / progressSteps
+  const windowSize = Math.max(1, Math.ceil(orderedWords.length / Math.max(wordTarget, 1)))
+  const windowStart = Math.min(
+    Math.floor(progress * (orderedWords.length - windowSize)),
+    orderedWords.length - windowSize,
+  )
+  const window = orderedWords.slice(windowStart, windowStart + windowSize)
+  return window[Math.floor(Math.random() * window.length)]
 }
 
 function randomVariant(levelIndex: number): AlienVariant {
@@ -202,6 +224,20 @@ export function gameReducer(state: GameState, action: Action): GameState {
         ...state,
         levelIndex: isLastLevel ? state.levelIndex : state.levelIndex + 1,
         kills: isLastLevel ? state.kills : 0,
+        // Word Formation progress and any leftover combat-only transients
+        // (mothership, plasma bolts, warning banners) must not carry over
+        // into the next mission — otherwise a stale wordsCompleted count can
+        // shrink or skip the next formation's word bank, and a leftover
+        // mothership/missile would sit frozen through a Word Formation
+        // mission, whose TICK branch intentionally doesn't move them.
+        currentWord: isLastLevel ? state.currentWord : null,
+        wordsCompleted: isLastLevel ? state.wordsCompleted : 0,
+        mothership: isLastLevel ? state.mothership : null,
+        plasmaBolts: isLastLevel ? state.plasmaBolts : [],
+        shieldFeedback: isLastLevel ? state.shieldFeedback : null,
+        shieldFeedbackUntil: isLastLevel ? state.shieldFeedbackUntil : 0,
+        targetWarning: isLastLevel ? state.targetWarning : null,
+        targetWarningUntil: isLastLevel ? state.targetWarningUntil : 0,
         hasSpawnedIntroAlien: isLastLevel ? state.hasSpawnedIntroAlien : false,
         status: isLastLevel ? 'gameOver' : 'levelBriefing',
         victory: isLastLevel,
@@ -215,8 +251,33 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
     case 'SPAWN': {
       if (state.status !== 'playing') return state
-      if (state.aliens.length >= MAX_ALIENS) return state
       const level = LEVELS[state.levelIndex]
+      if (level.kind === 'wordFormation') {
+        if (state.aliens.length > 0 || state.wordsCompleted >= (level.wordTarget ?? 0)) {
+          return state
+        }
+        const word = selectWordFormationWord(
+          level.wordPool ?? [],
+          state.wordsCompleted,
+          level.wordTarget ?? 1,
+        )
+        if (!word) return state
+        const formationVariants = variantsForLevel(state.levelIndex)
+        const startX = PLAYFIELD_WIDTH / 2 - ((word.length - 1) * WORD_FORMATION_GAP) / 2
+        const aliens = [...word].map((char, index) => ({
+          id: nextId('alien'),
+          char,
+          variant:
+            formationVariants[(state.wordsCompleted + 1) % formationVariants.length] ?? level.newAlien,
+          x: startX + index * WORD_FORMATION_GAP,
+          y: -ALIEN_SIZE,
+        }))
+        return { ...state, aliens, currentWord: word, hasSpawnedIntroAlien: true }
+      }
+      // Combat missions cap how many aliens can be in play at once; Word
+      // Formation missions spawn a whole formation atomically above, so this
+      // cap must not apply to them (a formation can be longer than MAX_ALIENS).
+      if (state.aliens.length >= MAX_ALIENS) return state
       // Stop feeding in new aliens once enough are already in play (destroyed
       // or on screen) to clear the level, so the screen empties out naturally
       // instead of levelling up with a wall of aliens still descending.
@@ -265,6 +326,22 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const dyPx = descentSpeed * action.dt
 
       let shieldHp = state.shieldHp
+      if (level.kind === 'wordFormation') {
+        const y = state.aliens.map((alien) => ({ ...alien, y: alien.y + dyPx }))
+        const reachedShip = y.some((alien) => alien.y + ALIEN_SIZE >= SHIP_Y)
+        if (!reachedShip) return { ...state, aliens: y, lasers, explosions }
+        shieldHp = Math.max(0, shieldHp - HIT_DAMAGE)
+        return {
+          ...state,
+          aliens: [],
+          currentWord: null,
+          lasers,
+          explosions,
+          shieldHp,
+          status: shieldHp <= 0 ? 'gameOver' : 'playing',
+          wordsCompleted: state.wordsCompleted,
+        }
+      }
       const survivors: Alien[] = []
       for (const alien of state.aliens) {
         const y = alien.y + dyPx
@@ -385,6 +462,55 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.status !== 'playing') return state
       const { key } = action
       const now = performance.now()
+      const level = LEVELS[state.levelIndex]
+      const totalKeystrokes = state.totalKeystrokes + 1
+
+      if (level.kind === 'wordFormation') {
+        const target = state.aliens.reduce<Alien | null>(
+          (current, alien) => (!current || alien.x < current.x ? alien : current),
+          null,
+        )
+        if (!target || target.char !== key) {
+          return {
+            ...state,
+            totalKeystrokes,
+            lastKeyPress: { id: nextId('key'), key, correct: false },
+          }
+        }
+
+        const impactY = target.y + ALIEN_SIZE / 2
+        const laser: Laser = {
+          id: nextId('laser'),
+          x: target.x,
+          fromY: SHIP_Y,
+          toY: impactY,
+          createdAt: now,
+        }
+        const explosion = explosionAt(target.x, impactY, now)
+        const aliens = state.aliens.filter((alien) => alien.id !== target.id)
+        const wordComplete = aliens.length === 0
+        const wordsCompleted = wordComplete ? state.wordsCompleted + 1 : state.wordsCompleted
+        const completed = wordComplete && wordsCompleted >= (level.wordTarget ?? 0)
+        return {
+          ...state,
+          aliens,
+          currentWord: wordComplete ? null : state.currentWord,
+          lasers: [...state.lasers, laser],
+          explosions: [...state.explosions, explosion],
+          shipX: target.x,
+          score: state.score + 10,
+          // Word Formation missions track progress via wordsCompleted, not
+          // combat kills, so leave kills untouched here — otherwise a
+          // completed formation would falsely report a full combat tally.
+          correctKeystrokes: state.correctKeystrokes + 1,
+          totalKeystrokes,
+          wordsCompleted,
+          status: completed ? 'levelComplete' : 'playing',
+          levelCompletedAt: completed ? now : state.levelCompletedAt,
+          audioEvent: { id: nextId('audio'), type: 'alienHit', variant: target.variant },
+          lastKeyPress: { id: nextId('key'), key, correct: true },
+        }
+      }
 
       // Target the lowest (closest to the ship) alien matching this key.
       let targetIndex = -1
@@ -395,8 +521,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
           targetIndex = index
         }
       })
-
-      const totalKeystrokes = state.totalKeystrokes + 1
 
       if (targetIndex === -1) {
         // No descending alien matches; see if the mothership does instead.
@@ -454,8 +578,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const kills = state.kills + 1
       const score = state.score + 10
       const correctKeystrokes = state.correctKeystrokes + 1
-      const level = LEVELS[state.levelIndex]
-
       if (shieldHp <= 0) {
         return {
           ...state,

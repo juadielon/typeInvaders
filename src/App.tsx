@@ -54,14 +54,25 @@ function App() {
       : Math.round((state.correctKeystrokes / state.totalKeystrokes) * 100)
 
   const { activeKeys, primaryKey, primaryTargetId } = useMemo(
-    () => getKeyboardHighlights(state.status, currentLevel.allowedKeys, state.aliens),
-    [currentLevel.allowedKeys, state.aliens, state.status],
+    () =>
+      getKeyboardHighlights(
+        state.status,
+        currentLevel.allowedKeys,
+        state.aliens,
+        currentLevel.kind === 'wordFormation',
+      ),
+    [currentLevel.allowedKeys, currentLevel.kind, state.aliens, state.status],
   )
 
   return (
-    <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100">
-      <div className="flex w-full items-center justify-between px-4" style={{ maxWidth: 760 }}>
-        <h1 className="text-xl font-bold tracking-wide text-emerald-300">🚀 Type Invaders</h1>
+    <div className="flex min-h-screen flex-col items-center gap-4 bg-slate-950 py-8 text-slate-100 max-[940px]:gap-0 max-[940px]:py-0.5">
+      <div
+        className="flex w-full items-center justify-between px-4 max-[940px]:px-3"
+        style={{ maxWidth: 760 }}
+      >
+        <h1 className="text-xl font-bold tracking-wide text-emerald-300 max-[940px]:text-base">
+          🚀 Type Invaders
+        </h1>
         <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
       </div>
 
@@ -88,6 +99,9 @@ function App() {
             accuracy={accuracy}
             kills={state.kills}
             targetKills={currentLevel.targetKills}
+            missionKind={currentLevel.kind}
+            wordsCompleted={state.wordsCompleted}
+            wordTarget={currentLevel.wordTarget}
           />
 
           <div className="relative">
@@ -135,7 +149,8 @@ function App() {
             {state.status === 'levelResults' && (
               <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80">
                 <MissionCompleteScreen
-                  levelNumber={state.levelIndex + 1}
+                  levelLabel={currentLevel.label}
+                  nextLevelLabel={LEVELS[state.levelIndex + 1]?.label}
                   isLastLevel={state.levelIndex === LEVELS.length - 1}
                   score={state.score}
                   wpm={Math.max(wpm, 0)}
@@ -160,6 +175,8 @@ function App() {
             spaceActive={state.plasmaBolts.length > 0}
             showHints={state.status !== 'levelBriefing'}
             lastKeyPress={state.lastKeyPress}
+            currentWord={currentLevel.kind === 'wordFormation' ? state.currentWord : null}
+            showWordHint={currentLevel.kind === 'wordFormation'}
           />
         </>
       )}

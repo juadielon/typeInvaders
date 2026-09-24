@@ -17,6 +17,10 @@ interface VisualKeyboardProps {
   showHints?: boolean
   /** Most recent physical keystroke, briefly flashed a hit/misfire colour. */
   lastKeyPress?: { id: string; key: string; correct: boolean } | null
+  /** Active Word Formation word shown above the keyboard. */
+  currentWord?: string | null
+  /** Keeps the Word Formation hint row mounted while words change. */
+  showWordHint?: boolean
 }
 
 /**
@@ -31,6 +35,8 @@ export function VisualKeyboard({
   spaceActive = false,
   showHints = true,
   lastKeyPress,
+  currentWord = null,
+  showWordHint = false,
 }: VisualKeyboardProps) {
   const previousTarget = useRef<{ id?: string; key?: string }>()
   const [suppressedKey, setSuppressedKey] = useState<string>()
@@ -79,9 +85,21 @@ export function VisualKeyboard({
     .filter((hint) => !hint.endsWith('→ '))
 
   return (
-    <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 p-3">
+    <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 p-3 max-[940px]:gap-0.5 max-[940px]:p-1">
+      {showWordHint && (
+        <div className="flex h-9 items-center max-[940px]:h-4">
+          {currentWord && (
+            <div
+              aria-label={`Current word: ${currentWord}`}
+              className="rounded border border-violet-400/70 bg-violet-950/70 px-2 py-0.5 font-mono text-xl font-bold tracking-[0.25em] text-violet-200 max-[940px]:px-1 max-[940px]:py-0 max-[940px]:text-xs max-[940px]:tracking-[0.1em]"
+            >
+              {currentWord}
+            </div>
+          )}
+        </div>
+      )}
       {KEYBOARD_ROWS.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex gap-1.5">
+        <div key={rowIndex} className="flex gap-1.5 max-[940px]:gap-0.5">
           {row.map((key) => {
             const isTemporarilySuppressed = key === suppressedKey
             const isActive = activeSet.has(key) && !isTemporarilySuppressed
@@ -92,7 +110,7 @@ export function VisualKeyboard({
               <div
                 key={key}
                 className={[
-                  'flex h-9 w-9 items-center justify-center rounded border font-mono text-sm uppercase transition-colors',
+                  'flex h-9 w-9 items-center justify-center rounded border font-mono text-sm uppercase transition-colors max-[940px]:h-6 max-[940px]:w-6 max-[940px]:text-[10px]',
                   isPressed
                     ? pressFlash?.correct
                       ? 'border-emerald-400 bg-emerald-400 text-slate-900 shadow-[0_0_10px_rgba(52,211,153,0.85)]'
@@ -115,7 +133,7 @@ export function VisualKeyboard({
       <div
         aria-label={spaceActive ? 'Press Space to fire at the plasma missile' : 'Spacebar'}
         className={[
-          'flex h-9 w-40 items-center justify-center rounded border font-mono text-sm uppercase transition-colors',
+          'flex h-9 w-40 items-center justify-center rounded border font-mono text-sm uppercase transition-colors max-[940px]:h-6 max-[940px]:w-24',
           spaceActive
             ? 'border-orange-400 bg-orange-400 text-slate-900 shadow-[0_0_10px_rgba(251,146,60,0.8)] animate-pulse'
             : 'border-slate-700 bg-slate-800/50 text-slate-500',
@@ -124,7 +142,7 @@ export function VisualKeyboard({
         space
       </div>
       {showHints && (
-        <div className="h-5 text-xs text-slate-400">
+        <div className="h-5 text-xs text-slate-400 max-[940px]:hidden">
           {hints.length > 0 ? hints.join('   |   ') : 'Watch for highlighted keys above'}
         </div>
       )}

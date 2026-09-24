@@ -84,6 +84,69 @@ describe('gameReducer', () => {
     randomSpy.mockRestore()
   })
 
+  it('spawns Word Formation missions as left-to-right character formations', () => {
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0)
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 3 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+    state = gameReducer(state, { type: 'SPAWN' })
+
+    expect(state.currentWord).toBe('a')
+    expect(state.aliens.map((alien) => alien.char).join('')).toBe('a')
+    expect(state.aliens.every((alien) => alien.y === state.aliens[0].y)).toBe(true)
+    expect(state.aliens[0].variant).not.toBe(LEVELS[3].newAlien)
+    randomSpy.mockRestore()
+  })
+
+  it('targets only the leftmost character in a Word Formation', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 3 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+    state = {
+      ...state,
+      currentWord: 'dad',
+      aliens: [
+        testAlien({ id: 'first', char: 'd', x: 100 }),
+        testAlien({ id: 'second', char: 'a', x: 152 }),
+      ],
+    }
+
+    const misfire = gameReducer(state, { type: 'KEY_PRESS', key: 'a' })
+    expect(misfire.aliens).toHaveLength(2)
+    expect(misfire.lastKeyPress?.correct).toBe(false)
+
+    const hit = gameReducer(state, { type: 'KEY_PRESS', key: 'd' })
+    expect(hit.aliens.map((alien) => alien.id)).toEqual(['second'])
+    expect(hit.lastKeyPress?.correct).toBe(true)
+  })
+
+  it('completes a Word Formation when its final word is destroyed', () => {
+    let state = gameReducer(createInitialState(), { type: 'START_GAME' })
+    state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 3 })
+    state = gameReducer(state, { type: 'BEGIN_LEVEL' })
+    state = {
+      ...state,
+      currentWord: 'dad',
+      wordsCompleted: (LEVELS[3].wordTarget ?? 1) - 1,
+      aliens: [
+        testAlien({ id: 'first', char: 'd', x: 100 }),
+        testAlien({ id: 'second', char: 'a', x: 152 }),
+        testAlien({ id: 'third', char: 'd', x: 204 }),
+      ],
+    }
+
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'd' })
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'a' })
+    state = gameReducer(state, { type: 'KEY_PRESS', key: 'd' })
+
+    expect(state.status).toBe('levelComplete')
+    expect(state.wordsCompleted).toBe(LEVELS[3].wordTarget)
+    expect(state.aliens).toHaveLength(0)
+    // Word Formation progress must be tracked via wordsCompleted, not by
+    // repurposing the combat kill counter.
+    expect(state.kills).toBe(0)
+  })
+
   it('only spawns alien species unlocked by the current level', () => {
     let state = gameReducer(createInitialState(), { type: 'START_GAME' })
     state = gameReducer(state, { type: 'SELECT_LEVEL', levelIndex: 0 })
@@ -359,6 +422,41 @@ describe('gameReducer', () => {
     expect(state.kills).toBe(0)
   })
 
+  it('resets Word Formation progress and leftover combat transients when continuing to the next mission', () => {
+    const wordFormationIndex = LEVELS.findIndex((level) => level.kind === 'wordFormation')
+    const state = gameReducer(
+      {
+        ...createInitialState(),
+        status: 'levelResults',
+        levelIndex: wordFormationIndex,
+        currentWord: 'dad',
+        wordsCompleted: LEVELS[wordFormationIndex].wordTarget ?? 0,
+        mothership: {
+          id: 'mothership-1',
+          char: 'f',
+          variant: 'cruiser',
+          direction: 1,
+          x: 100,
+        },
+        plasmaBolts: [{ id: 'plasma-1', x: 10, y: 20, createdAt: 0, sourceVariant: 'trickster' }],
+        shieldFeedback: 'missed',
+        shieldFeedbackUntil: 999,
+        targetWarning: 'outOfOrder',
+        targetWarningUntil: 999,
+      },
+      { type: 'CONTINUE_LEVEL' },
+    )
+
+    expect(state.currentWord).toBeNull()
+    expect(state.wordsCompleted).toBe(0)
+    expect(state.mothership).toBeNull()
+    expect(state.plasmaBolts).toHaveLength(0)
+    expect(state.shieldFeedback).toBeNull()
+    expect(state.shieldFeedbackUntil).toBe(0)
+    expect(state.targetWarning).toBeNull()
+    expect(state.targetWarningUntil).toBe(0)
+  })
+
   it('retries the current mission after game over', () => {
     const state = gameReducer(
       {
@@ -555,6 +653,8 @@ describe('gameReducer', () => {
       ...state,
       levelIndex: lastIndex,
       kills: LEVELS[lastIndex].targetKills - 1,
+      wordsCompleted: (LEVELS[lastIndex].wordTarget ?? 1) - 1,
+      currentWord: key,
       aliens: [testAlien({ char: key })],
     }
 

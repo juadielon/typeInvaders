@@ -9,7 +9,8 @@ describe('MissionCompleteScreen', () => {
 
     render(
       <MissionCompleteScreen
-        levelNumber={3}
+        levelLabel="Word Formation 1: Home Row Basics"
+        nextLevelLabel="Level 4: + S & L"
         isLastLevel={false}
         score={420}
         wpm={18}
@@ -21,7 +22,10 @@ describe('MissionCompleteScreen', () => {
 
     const buttons = screen.getAllByRole('button')
     expect(buttons[0]).toHaveTextContent('Retry Mission')
-    expect(buttons[1]).toHaveTextContent('Continue to Mission 4')
+    expect(buttons[1]).toHaveTextContent('Continue to Level 4: + S & L')
+    expect(
+      screen.getByRole('heading', { name: 'Word Formation 1: Home Row Basics Complete!' }),
+    ).toBeInTheDocument()
 
     fireEvent.click(buttons[0])
     fireEvent.click(buttons[1])
@@ -33,7 +37,7 @@ describe('MissionCompleteScreen', () => {
   it('finishes the curriculum after the final mission', () => {
     render(
       <MissionCompleteScreen
-        levelNumber={15}
+        levelLabel="Level 15: + B & N"
         isLastLevel
         score={1500}
         wpm={25}

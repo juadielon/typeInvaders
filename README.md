@@ -2,14 +2,14 @@
 
 **Type Invaders** is a Space Invaders–style arcade game that doubles as a
 touch-typing tutor for complete beginners. Alien "invaders" — with one
-new visual species introduced in every mission — descend from the top of the screen, each
+new visual species introduced in every combat level — descend from the top of the screen, each
 labelled with a single keyboard key. The player destroys aliens by pressing
 the matching key on their physical keyboard; the on-screen ship glides to
 the closest matching alien and fires the shot from its own position. A
 Visual Keyboard overlay highlights the target key and the correct
-hand/finger to use, and a 15-level lesson plan gradually introduces every
-letter plus semicolon, comma, full stop and slash across the Home, Top and
-Bottom Rows as the player improves. A rescuable
+hand/finger to use, and a 15-level combat curriculum plus five Word Formation
+missions gradually introduces every letter plus semicolon, comma, full stop
+and slash across the Home, Top and Bottom Rows as the player improves. A rescuable
 "mothership" occasionally drifts across a lane above the aliens whenever
 your Shield has taken damage — destroying it restores some Shield HP and a
 score bonus.
@@ -29,6 +29,7 @@ Node.js/npm installation on your machine is required.
 - [Running the game](#running-the-game)
 - [Running the tests](#running-the-tests)
 - [Running the linter](#running-the-linter)
+- [Commit message conventions](#commit-message-conventions)
 - [Adding a dependency](#adding-a-dependency)
 - [Production build preview](#production-build-preview)
 - [Project structure](#project-structure)
@@ -36,14 +37,23 @@ Node.js/npm installation on your machine is required.
 
 ## How the game works
 
-- Aliens descend from the top of the playfield, each labelled with a keyboard key
-  (Level 1 starts with `F` and `J` only). Every mission introduces a new
+- Combat aliens descend from the top of the playfield, each labelled with a keyboard key
+  (Level 1 starts with `F` and `J` only). Every combat level introduces a new
   visual species, from the Scout to increasingly silly invaders such as
   Noodle Doodle, Moustachio, Cosmic Toaster and Party King. Species are
   purely cosmetic - the displayed key is all that matters for gameplay.
 - Press the key shown on an alien to destroy it with a laser — the ship
   glides to and fires from the position of the lowest (most urgent)
   on-screen alien matching that key, with a small explosion on a hit.
+- Word Formation missions interrupt the combat curriculum after Levels 3, 6,
+  9, 12 and 15. Each word appears as a horizontal alien formation that
+  descends as one unit. Press the leftmost remaining character to destroy it,
+  then continue from left to right until the word is complete. The first
+  formation checkpoint uses the keys released by combat Level 3 (`A D F J K ;`)
+  and includes
+  short entries such as `a`, `ad`, `dad`, `fad`, `faff`, `dada` and `kaf`.
+  Some formations add a semicolon at the end, such as `dad;`, so punctuation
+  is practised in a natural word-ending position.
 - The Visual Keyboard overlay below the playfield highlights the currently
   relevant key(s) and shows a hint such as "F → Left Index" or
   "J → Right Index". The alien closest to the spaceship determines the next
@@ -67,11 +77,12 @@ Node.js/npm installation on your machine is required.
   earn a score bonus. It doesn't count toward a level's kill target, so it's
   a bonus rather than a requirement.
 - Starting a game opens a lesson selector so you can choose any current
-  mission, from the Home Row through the Top and Bottom Rows. The selected
+  mission, including the indigo Word Formation checkpoints. The selected
   lesson then shows its finger-position briefing before play begins. During
   the briefing, the on-screen keyboard highlights every key used in that
   lesson so you can find them before the aliens arrive.
-- Clearing the required number of aliens opens a mission-results screen.
+- Clearing the required number of aliens, or completing the required Word
+  Formation set, opens a mission-results screen.
   You can retry the mission for more practice or continue to the next
   level, which unlocks additional keys and increases difficulty
   (longer practice targets, a gentle opening spawn cadence that becomes
@@ -84,7 +95,7 @@ Node.js/npm installation on your machine is required.
 - A lesson progress bar in the status bar shows how many aliens you have
   cleared and how many remain before the level ends, so a longer lesson
   never feels open-ended.
-- Every level introduces one new alien species. Earlier species keep
+- Every combat level introduces one new alien species. Earlier species keep
   appearing, so the fleet becomes more varied and ridiculous as you
   progress. The first alien always shows the mission's new species; later
   spawns use the full unlocked roster even if that first alien reaches the
@@ -106,7 +117,7 @@ A quick reference to every rule the game currently applies.
 | Rule | Detail |
 | --- | --- |
 | Destroying an alien | Press the key shown on the alien. |
-| Which alien is hit | The lowest (most urgent) alien carrying that key. |
+| Which alien is hit | The lowest (most urgent) matching alien in combat; the leftmost remaining character in Word Formation. |
 | Score per alien | 10 points. |
 | Priority penalty | Destroying an alien while a closer one is still descending costs 5 Shield HP, so you can't dodge the most urgent threat by picking an easier key. |
 | Wrong key | Counts as a misfire against accuracy, but costs no Shield HP. |
@@ -137,11 +148,11 @@ A quick reference to every rule the game currently applies.
 | Starting a game | Choose any lesson from the lesson selector. |
 | Before each level | A briefing pauses the game until you choose to continue. |
 | Replaying a lesson | Available after completing a mission or reaching game over; resets score, Shield, kills and the playfield. |
-| Clearing a level | Destroy the level's target number of aliens. |
+| Clearing a level | Destroy the level's target number of aliens, or complete the Word Formation word target. |
 | Spawn pacing | Starts gently and speeds up as the level progresses. |
 | Alien descent | Starts at the same gentle speed in every level, then ramps towards the level's faster final speed. |
-| Keyboard priority | The closest alien's key uses the strong amber highlight; other visible keys use lighter amber. |
-| Progress indicator | The lesson bar shows cleared and remaining aliens. |
+| Keyboard priority | The closest alien's key uses the strong amber highlight in combat; the leftmost formation character is primary in Word Formation. |
+| Progress indicator | The lesson bar shows cleared and remaining aliens or words. |
 | End-of-level pause | The playfield is held briefly so the final shot is visible, then offers Retry Mission before continuing. |
 | Winning | Clearing the final level offers a retry before finishing the curriculum in victory. |
 
@@ -169,7 +180,7 @@ A quick reference to every rule the game currently applies.
 
 ## Level progression
 
-Each level unlocks two more keys, raises the practice target, and ends at a
+Each combat level unlocks two more keys, raises the practice target, and ends at a
 faster spawn cadence than the one before it. Every level opens at the same
 gentle 2200 ms cadence, so a longer, later lesson never feels harder to
 start than an earlier one. Alien descent also begins at the same gentle
@@ -178,7 +189,7 @@ faster minimum cadence and a faster final descent speed as the lesson goes
 on. Levels 1-5 cover the Home Row, levels 6-10 add the Top Row and levels
 11-15 add the Bottom Row, completing every letter plus the four punctuation
 keys used by the curriculum. Every
-mission introduces one new alien species while retaining all earlier
+combat mission introduces one new alien species while retaining all earlier
 species, so the fleet grows throughout the full curriculum.
 
 | Level | Keys | New alien | Aliens to clear | Opening spawn | Fastest spawn |
@@ -198,6 +209,15 @@ species, so the fleet grows throughout the full curriculum.
 | 13 | + Z / | Crabster | 122 | 2200 ms | 340 ms |
 | 14 | + X . | Cosmic Toaster | 128 | 2200 ms | 315 ms |
 | 15 | + B N | Party King | 134 | 2200 ms | 290 ms |
+
+Word Formation checkpoints follow Levels 3, 6, 9, 12 and 15. They use only
+keys released at that checkpoint and require six, twelve, fourteen, sixteen and twenty
+complete formations respectively. Every Word Formation mission starts with shorter
+words and progressively introduces longer formations as its target is completed. The
+second, third, fourth and fifth missions emphasise longer words
+without increasing the descent pressure. Some formations also end with `;` so
+punctuation is practised naturally. The lesson selector marks them with an
+indigo `WORD FORMATION` badge.
 
 
 The spawn rate eases from the opening cadence to the fastest cadence over the
@@ -286,6 +306,16 @@ in `eslint.config.js`:
 ```powershell
 docker compose run --rm dev npm run lint
 ```
+
+## Commit message conventions
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/)
+for commit messages: `<type>: <description>`, for example `feat: add mothership
+bonus` or `fix: reset word progress between missions`. Common types used here
+are `feat` (new feature), `fix` (bug fix), `docs` (documentation only), `test`
+(adding or updating tests), `refactor`, `style`, and `chore` (tooling/maintenance).
+This keeps `git log` easy to scan by category and matches a widely used
+industry convention for changelog and release tooling.
 
 ## Adding a dependency
 

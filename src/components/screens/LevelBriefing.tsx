@@ -1,5 +1,6 @@
 import { ALIEN_VARIANT_LABELS, type LevelConfig } from '../../types/game'
 import { KEYBOARD_ROWS, fingerLabel, spokenKeyName } from '../../utils/keyboardLayout'
+import { LEVELS } from '../../data/levels'
 
 interface LevelBriefingProps {
   level: LevelConfig
@@ -38,8 +39,63 @@ function movementInstruction(key: string): string {
   return `Reach your ${finger.toLowerCase()} ${direction} from ${anchor.toUpperCase()} to ${key.toUpperCase()}, press it, then return to ${anchor.toUpperCase()}.`
 }
 
+function exampleWordsFor(level: LevelConfig): string[] {
+  const previousWords = new Set(
+    LEVELS.filter(
+      (previousLevel) =>
+        previousLevel.kind === 'wordFormation' && previousLevel.id < level.id,
+    ).flatMap((previousLevel) =>
+      (previousLevel.wordPool ?? []).map((word) => word.replace(/;$/, '')),
+    ),
+  )
+  const words = (level.wordPool ?? [])
+    .filter((word) => !word.endsWith(';'))
+    .filter((word) => !previousWords.has(word))
+  const availableWords = new Set(words)
+  const shownWordBases = new Set<string>()
+  const shownWords: string[] = []
+
+  const distinctWords = words
+    .filter((word) => !word.endsWith('s') || !availableWords.has(word.slice(0, -1)))
+    .filter((word) => {
+      const base = word.endsWith('s') ? word.slice(0, -1) : word
+      if (shownWordBases.has(base)) return false
+      const isNearDuplicate = shownWords.some((shownWord) => {
+        const sharedPrefixLength = [...shownWord].findIndex((char, index) => char !== word[index])
+        const commonPrefixLength =
+          sharedPrefixLength === -1 ? Math.min(shownWord.length, word.length) : sharedPrefixLength
+        return Math.min(shownWord.length, word.length) >= 7 && commonPrefixLength >= 6
+      })
+      if (isNearDuplicate) return false
+      shownWordBases.add(base)
+      shownWords.push(word)
+      return true
+    })
+
+  const wordsByLength = new Map<number, string[]>()
+  distinctWords.forEach((word) => {
+    const wordsAtLength = wordsByLength.get(word.length) ?? []
+    wordsAtLength.push(word)
+    wordsByLength.set(word.length, wordsAtLength)
+  })
+
+  const lengths = [...wordsByLength.keys()].sort((first, second) => first - second)
+  const examples: string[] = []
+  let left = 0
+  let right = lengths.length - 1
+  while (examples.length < 8 && left <= right) {
+    const length = examples.length % 2 === 0 ? lengths[left++] : lengths[right--]
+    const wordsAtLength = wordsByLength.get(length)
+    if (wordsAtLength?.[0]) examples.push(wordsAtLength[0])
+  }
+
+  return examples
+}
+
 /** Pauses the action so learners can prepare their hands for each level. */
 export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
+  const exampleWords = exampleWordsFor(level)
+
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90">
       <section
@@ -76,11 +132,23 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
         <div className="mt-3 rounded-md border border-slate-700 bg-slate-950/60 p-3">
           <h3 className="font-semibold text-amber-300">What to expect</h3>
           <p className="mt-1 text-sm text-slate-300">
-            Your goal is to destroy {level.targetKills} aliens. Each alien will show one of
-            these keyboard keys:{' '}
-            <span
-              aria-label={`Lesson keys: ${level.allowedKeys
-                .map(spokenKeyName)
+            {level.kind === 'wordFormation' ? (
+              <>
+                Your goal is to build {level.wordTarget} words from descending alien formations.
+                Each formation spells a word from left to right. Press the leftmost remaining alien
+                before the formation reaches your ship. Example English words include:{' '}
+                <span className="font-mono font-bold text-violet-300">
+                  {exampleWords?.join('  ')}
+                </span>
+                . Other words using the keys released by this lesson may also appear.
+              </>
+            ) : (
+              <>
+                Your goal is to destroy {level.targetKills} aliens. Each alien will show one of
+                these keyboard keys:{' '}
+              <span
+                aria-label={`Lesson keys: ${level.allowedKeys
+                  .map(spokenKeyName)
                 .join(', ')}`}
             >
               {level.allowedKeys.map((key, index) => (
@@ -94,8 +162,10 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
             </span>
             . Press the key it shows before it reaches your ship. Aliens appear slowly at first
             and more quickly later; the lesson bar shows how many remain.
+            </>
+          )}
           </p>
-          <p className="mt-1.5 text-sm text-slate-300">
+          {level.kind !== 'wordFormation' && <p className="mt-1.5 text-sm text-slate-300">
             {level.id === 1 ? (
               <>
                 Your first alien species is the{' '}
@@ -113,10 +183,10 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
                 aliens join the species from earlier missions.
               </>
             )}
-          </p>
+          </p>}
         </div>
 
-        <div className="mt-3">
+        {level.kind !== 'wordFormation' && <div className="mt-3">
           <h3 className="font-semibold text-amber-300">How to press this level's keys</h3>
           <ul className="mt-1.5 grid gap-1.5 text-xs text-slate-300 sm:grid-cols-2">
             {level.allowedKeys.map((key) => (
@@ -127,7 +197,7 @@ export function LevelBriefing({ level, onBegin }: LevelBriefingProps) {
               </li>
             ))}
           </ul>
-        </div>
+        </div>}
 
         <button
           type="button"

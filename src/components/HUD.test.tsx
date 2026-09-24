@@ -39,4 +39,25 @@ describe('HUD', () => {
     expect(progress).toHaveAttribute('aria-valuenow', '42')
     expect(screen.getByText(/lesson complete/i)).toBeInTheDocument()
   })
+
+  it('shows Word Formation progress and the active word', () => {
+    render(
+      <HUD
+        shieldHp={90}
+        score={80}
+        levelLabel="Word Formation 1"
+        wpm={10}
+        accuracy={96}
+        kills={0}
+        targetKills={6}
+        missionKind="wordFormation"
+        wordsCompleted={2}
+        wordTarget={6}
+      />,
+    )
+
+    expect(screen.getByText('Word Formation')).toBeInTheDocument()
+    expect(screen.getByText((_, element) => element?.textContent === '2 / 6 words')).toBeInTheDocument()
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2')
+  })
 })
