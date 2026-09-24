@@ -69,7 +69,8 @@ Contributing to it:
 - The `Quit` action is always confirmed before abandoning a run.
   Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the current run.
   Cancelling the prompt restores whatever you were doing beforehand: it resumes play if Quit was what paused the run, or leaves you on the pause overlay if you had already paused manually.
-  The `Escape` shortcut is ignored while the confirmation is open, so it cannot resume the run behind the prompt.
+  While the confirmation is open, `Escape` dismisses the prompt rather than toggling the pause beneath it, so it can never resume the run behind the dialog.
+  Both the pause overlay and the quit prompt are exposed as labelled modal dialogs and move keyboard focus to their primary action when they open.
 - Clearing the required number of aliens, or completing the required Word Formation set, opens a mission-results screen.
   You can retry the mission for more practice or continue to the next level, which unlocks additional keys and increases difficulty (longer practice targets, a gentle opening spawn cadence that becomes faster during the level, and faster descent); the screen is cleared of aliens before the next level begins.
   A briefing then pauses the game until you choose to continue.

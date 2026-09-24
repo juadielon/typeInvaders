@@ -40,15 +40,50 @@ describe('App pause and quit flow', () => {
     expect(screen.getByText(/take a breath\./i)).toBeInTheDocument()
   })
 
-  it('ignores the Escape shortcut while the quit prompt is open', () => {
+  it('dismisses the quit prompt with Escape and restores the prior state', () => {
     render(<App />)
     startFirstMission()
 
     fireEvent.click(screen.getByRole('button', { name: /^quit$/i }))
     fireEvent.keyDown(window, { key: 'Escape' })
 
-    expect(screen.getByText(/leave this mission\?/i)).toBeInTheDocument()
+    // Escape cancels the prompt rather than resuming the run behind it.
+    expect(screen.queryByText(/leave this mission\?/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/take a breath\./i)).not.toBeInTheDocument()
+  })
+
+  it('keeps a manual pause when Escape dismisses the quit prompt', () => {
+    render(<App />)
+    startFirstMission()
+
+    fireEvent.click(screen.getByRole('button', { name: /^pause$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /quit lesson/i }))
+    fireEvent.keyDown(window, { key: 'Escape' })
+
+    expect(screen.queryByText(/leave this mission\?/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/take a breath\./i)).toBeInTheDocument()
+  })
+
+  it('exposes the quit prompt as a labelled modal dialog', () => {
+    render(<App />)
+    startFirstMission()
+
+    fireEvent.click(screen.getByRole('button', { name: /^quit$/i }))
+
+    const dialog = screen.getByRole('dialog', { name: /leave this mission\?/i })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(screen.getByRole('button', { name: /^cancel$/i })).toHaveFocus()
+  })
+
+  it('exposes the pause overlay as a labelled modal dialog', () => {
+    render(<App />)
+    startFirstMission()
+
+    fireEvent.click(screen.getByRole('button', { name: /^pause$/i }))
+
+    const dialog = screen.getByRole('dialog', { name: /take a breath\./i })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(screen.getByRole('button', { name: /resume game/i })).toHaveFocus()
   })
 
   it('returns to the lesson selector when the quit is confirmed', () => {
