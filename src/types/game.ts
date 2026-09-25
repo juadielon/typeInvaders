@@ -7,6 +7,7 @@ export type GameStatus =
   | 'lessonSelect'
   | 'levelBriefing'
   | 'playing'
+  | 'paused'
   | 'levelComplete'
   | 'levelResults'
   | 'gameOver'
@@ -174,6 +175,8 @@ export interface GameState {
   victory: boolean
   /** Timestamp (ms) the current game started, used for WPM calc. */
   startedAt: number
+  /** Timestamp (ms) when the current pause began, or 0 while active. */
+  pausedAt: number
   /** Timestamp (ms) the current level started, used for spawn pacing. */
   levelStartedAt: number
   /**

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { LEVELS } from './data/levels'
 import { useGameLoop } from './hooks/useGameLoop'
 import { useKeyboardInput } from './hooks/useKeyboardInput'
@@ -12,12 +12,23 @@ import { LevelBriefing } from './components/screens/LevelBriefing'
 import { GameOverScreen } from './components/screens/GameOverScreen'
 import { MissionCompleteScreen } from './components/screens/MissionCompleteScreen'
 import { getKeyboardHighlights } from './utils/alienTargets'
+import { calculateWpm } from './utils/stats'
 import { SoundToggle } from './components/SoundToggle'
 import { readSoundPreference, SOUND_PREFERENCE_KEY, useSoundEffects } from './hooks/useSoundEffects'
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState)
   const [soundEnabled, setSoundEnabled] = useState(readSoundPreference)
+  const [quitConfirmOpen, setQuitConfirmOpen] = useState(false)
+  // Tracks whether the quit prompt is what paused the run, so cancelling can
+  // restore the exact state the player was in rather than always resuming.
+  const quitPausedRunRef = useRef(false)
+  const quitCancelButtonRef = useRef<HTMLButtonElement | null>(null)
+  const resumeButtonRef = useRef<HTMLButtonElement | null>(null)
+  const quitDialogRef = useRef<HTMLDivElement | null>(null)
+  // Where focus sat before an overlay opened, so it can be handed back when
+  // every overlay has closed.
+  const focusBeforeOverlayRef = useRef<HTMLElement | null>(null)
 
   const currentLevel = LEVELS[state.levelIndex]
 
@@ -44,10 +55,103 @@ function App() {
     unlockAudio()
     dispatch({ type: 'SPACE_PRESS' })
   }, [unlockAudio])
-  useKeyboardInput(state.status, handleKey, handleSpace)
+  const handleQuitCancel = useCallback(() => {
+    setQuitConfirmOpen(false)
+    if (quitPausedRunRef.current && state.status === 'paused') {
+      dispatch({ type: 'RESUME_GAME' })
+    }
+    quitPausedRunRef.current = false
+  }, [dispatch, state.status])
 
-  const elapsedMinutes = Math.max((performance.now() - state.startedAt) / 60000, 1 / 60)
-  const wpm = Math.round(state.correctKeystrokes / 5 / elapsedMinutes)
+  const handlePauseToggle = useCallback(() => {
+    // Escape dismisses the quit prompt rather than toggling the pause beneath
+    // it, which is both the expected dialog behaviour and avoids resuming the
+    // run behind an open modal.
+    if (quitConfirmOpen) {
+      handleQuitCancel()
+      return
+    }
+
+    if (state.status === 'paused') {
+      unlockAudio()
+      dispatch({ type: 'RESUME_GAME' })
+      return
+    }
+
+    if (state.status === 'playing') {
+      unlockAudio()
+      dispatch({ type: 'PAUSE_GAME' })
+    }
+  }, [handleQuitCancel, quitConfirmOpen, state.status, unlockAudio])
+
+  const handleQuitGame = useCallback(() => {
+    unlockAudio()
+    dispatch({ type: 'QUIT_GAME' })
+    quitPausedRunRef.current = false
+    setQuitConfirmOpen(false)
+  }, [unlockAudio])
+
+  const handleQuitClick = useCallback(() => {
+    quitPausedRunRef.current = state.status === 'playing'
+    if (state.status === 'playing') {
+      dispatch({ type: 'PAUSE_GAME' })
+    }
+    setQuitConfirmOpen(true)
+  }, [dispatch, state.status])
+
+  const overlayOpen = quitConfirmOpen || state.status === 'paused'
+
+  // Hand focus back to whatever opened the first overlay once they have all
+  // closed, rather than dropping the user at the top of the document. This must
+  // run before the focus-move effect below, or it would record the dialog's own
+  // button as the element to return to.
+  useEffect(() => {
+    if (overlayOpen) {
+      focusBeforeOverlayRef.current ??= document.activeElement as HTMLElement | null
+      return
+    }
+
+    const previous = focusBeforeOverlayRef.current
+    focusBeforeOverlayRef.current = null
+    if (previous?.isConnected) {
+      previous.focus()
+    }
+  }, [overlayOpen])
+
+  // Move focus into whichever overlay just opened so keyboard and screen-reader
+  // users land on the primary action instead of staying behind the dialog.
+  useEffect(() => {
+    if (quitConfirmOpen) {
+      quitCancelButtonRef.current?.focus()
+    } else if (state.status === 'paused') {
+      resumeButtonRef.current?.focus()
+    }
+  }, [quitConfirmOpen, state.status])
+
+  // The quit prompt claims aria-modal, so Tab must not escape it. The header
+  // controls are disabled while it is open, but the sound toggle and anything
+  // else behind it would otherwise still be reachable by keyboard.
+  const handleQuitDialogKeyDown = useCallback((event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Tab') return
+
+    const focusable = quitDialogRef.current?.querySelectorAll<HTMLElement>('button')
+    if (!focusable?.length) return
+
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }, [])
+
+  useKeyboardInput(state.status, handleKey, handleSpace, handlePauseToggle)
+
+  const wpm = calculateWpm(state, performance.now())
   const accuracy =
     state.totalKeystrokes === 0
       ? 100
@@ -73,7 +177,29 @@ function App() {
         <h1 className="text-xl font-bold tracking-wide text-emerald-300 max-[940px]:text-base">
           🚀 Type Invaders
         </h1>
-        <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
+        <div className="flex items-center gap-2">
+          {(state.status === 'playing' || state.status === 'paused') && (
+            <>
+              <button
+                type="button"
+                onClick={handlePauseToggle}
+                disabled={quitConfirmOpen}
+                className="rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-100 transition hover:border-emerald-400 hover:text-emerald-300 disabled:pointer-events-none disabled:opacity-40"
+              >
+                {state.status === 'paused' ? 'Resume' : 'Pause'}
+              </button>
+              <button
+                type="button"
+                onClick={handleQuitClick}
+                disabled={quitConfirmOpen}
+                className="rounded-full border border-red-500/60 bg-red-950/40 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-200 transition hover:border-red-300 hover:text-red-100 disabled:pointer-events-none disabled:opacity-40"
+              >
+                Quit
+              </button>
+            </>
+          )}
+          <SoundToggle enabled={soundEnabled} onChange={handleSoundToggle} />
+        </div>
       </div>
 
       {state.status === 'idle' && (
@@ -95,7 +221,7 @@ function App() {
             shieldHp={state.shieldHp}
             score={state.score}
             levelLabel={currentLevel.label}
-            wpm={Math.max(wpm, 0)}
+            wpm={wpm}
             accuracy={accuracy}
             kills={state.kills}
             targetKills={currentLevel.targetKills}
@@ -117,6 +243,77 @@ function App() {
               targetWarning={state.targetWarning}
             />
 
+            {state.status === 'paused' && !quitConfirmOpen && (
+              <div
+                role="dialog"
+                aria-labelledby="pause-overlay-title"
+                className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"
+              >
+                <div className="rounded-2xl border border-slate-700 bg-slate-900/95 px-8 py-6 text-center shadow-2xl">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">Paused</p>
+                  <h2 id="pause-overlay-title" className="mt-3 text-2xl font-bold text-slate-50">
+                    Take a breath.
+                  </h2>
+                  <div className="mt-5 flex items-center justify-center gap-3">
+                    <button
+                      ref={resumeButtonRef}
+                      type="button"
+                      onClick={handlePauseToggle}
+                      className="rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
+                    >
+                      Resume game
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleQuitClick}
+                      className="rounded-full border border-red-500/70 bg-red-950/40 px-5 py-2 text-sm font-semibold text-red-200 transition hover:border-red-300 hover:text-red-100"
+                    >
+                      Quit lesson
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {quitConfirmOpen && (
+              <div
+                ref={quitDialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="quit-confirm-title"
+                aria-describedby="quit-confirm-description"
+                onKeyDown={handleQuitDialogKeyDown}
+                className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-sm"
+              >
+                <div className="w-[min(90vw,22rem)] rounded-2xl border border-slate-700 bg-slate-900/95 p-6 text-center shadow-2xl">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-red-300">Quit lesson</p>
+                  <h3 id="quit-confirm-title" className="mt-3 text-2xl font-bold text-slate-50">
+                    Leave this mission?
+                  </h3>
+                  <p id="quit-confirm-description" className="mt-2 text-sm text-slate-300">
+                    Your score and progress for this run will be cleared and you will return to the lesson menu.
+                  </p>
+                  <div className="mt-5 flex items-center justify-center gap-3">
+                    <button
+                      ref={quitCancelButtonRef}
+                      type="button"
+                      onClick={handleQuitCancel}
+                      className="rounded-full border border-slate-600 bg-slate-800 px-5 py-2 text-sm font-semibold text-slate-100 transition hover:border-slate-400"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleQuitGame}
+                      className="rounded-full bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-400"
+                    >
+                      Quit mission
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {state.status === 'levelBriefing' && (
               <LevelBriefing
                 level={currentLevel}
@@ -132,7 +329,7 @@ function App() {
                 <GameOverScreen
                   victory={state.victory}
                   score={state.score}
-                  wpm={Math.max(wpm, 0)}
+                  wpm={wpm}
                   accuracy={accuracy}
                   onRetry={() => {
                     unlockAudio()
@@ -153,7 +350,7 @@ function App() {
                   nextLevelLabel={LEVELS[state.levelIndex + 1]?.label}
                   isLastLevel={state.levelIndex === LEVELS.length - 1}
                   score={state.score}
-                  wpm={Math.max(wpm, 0)}
+                  wpm={wpm}
                   accuracy={accuracy}
                   onRetry={() => {
                     unlockAudio()

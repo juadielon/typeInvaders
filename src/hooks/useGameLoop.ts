@@ -50,6 +50,9 @@ export function useGameLoop(
   const rafRef = useRef<number | null>(null)
   const lastFrameRef = useRef<number | null>(null)
   const lastSpawnRef = useRef<number>(0)
+  // Progress accrued toward the next spawn when a pause interrupted the loop,
+  // so resuming does not hand back a full fresh spawn interval.
+  const spawnDebtRef = useRef(0)
   const pausedRef = useRef(false)
 
   useEffect(() => {
@@ -67,10 +70,12 @@ export function useGameLoop(
   useEffect(() => {
     if (status !== 'playing' && status !== 'levelComplete') {
       lastFrameRef.current = null
+      spawnDebtRef.current = status === 'paused' ? performance.now() - lastSpawnRef.current : 0
       return
     }
 
-    lastSpawnRef.current = performance.now()
+    lastSpawnRef.current = performance.now() - spawnDebtRef.current
+    spawnDebtRef.current = 0
 
     const step = (now: number) => {
       if (pausedRef.current) {

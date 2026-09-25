@@ -40,6 +40,86 @@ describe('gameReducer', () => {
     expect(state.levelIndex).toBe(0)
   })
 
+  it('pauses and resumes the current round without losing level timing', () => {
+    const nowSpy = vi.spyOn(performance, 'now')
+    nowSpy.mockReturnValue(1500)
+
+    let state = createInitialState()
+    state = {
+      ...state,
+      status: 'playing',
+      startedAt: 1000,
+      levelStartedAt: 1000,
+      nextPlasmaCheckAt: 2000,
+      mothershipNextCheckAt: 2200,
+      shieldFeedbackUntil: 3000,
+      targetWarningUntil: 3200,
+      levelCompletedAt: 4000,
+    }
+
+    state = gameReducer(state, { type: 'PAUSE_GAME' })
+    expect(state.status).toBe('paused')
+    expect(state.pausedAt).toBe(1500)
+
+    nowSpy.mockReturnValue(4500)
+    state = gameReducer(state, { type: 'RESUME_GAME' })
+    expect(state.status).toBe('playing')
+    expect(state.startedAt).toBe(1000 + 3000)
+    expect(state.levelStartedAt).toBe(1000 + 3000)
+    expect(state.nextPlasmaCheckAt).toBe(2000 + 3000)
+    expect(state.mothershipNextCheckAt).toBe(2200 + 3000)
+    expect(state.shieldFeedbackUntil).toBe(6000)
+    expect(state.targetWarningUntil).toBe(6200)
+    expect(state.levelCompletedAt).toBe(7000)
+
+    nowSpy.mockRestore()
+  })
+
+  it('does not revive deadlines that had already lapsed before the pause', () => {
+    const nowSpy = vi.spyOn(performance, 'now')
+    nowSpy.mockReturnValue(5000)
+
+    let state = createInitialState()
+    state = {
+      ...state,
+      status: 'playing',
+      startedAt: 1000,
+      levelStartedAt: 1000,
+      // Both lapsed well before the pause began at 5000.
+      shieldFeedbackUntil: 2000,
+      targetWarningUntil: 2500,
+    }
+
+    state = gameReducer(state, { type: 'PAUSE_GAME' })
+    nowSpy.mockReturnValue(65_000)
+    state = gameReducer(state, { type: 'RESUME_GAME' })
+
+    // Shifting them would replay a finished flash for the length of the pause.
+    expect(state.shieldFeedbackUntil).toBe(2000)
+    expect(state.targetWarningUntil).toBe(2500)
+
+    nowSpy.mockRestore()
+  })
+
+  it('clears the run and returns to lesson select when quitting', () => {
+    let state = createInitialState()
+    state = {
+      ...state,
+      status: 'paused',
+      score: 480,
+      shieldHp: 40,
+      levelIndex: 3,
+      aliens: [testAlien()],
+    }
+
+    const quit = gameReducer(state, { type: 'QUIT_GAME' })
+
+    expect(quit.status).toBe('lessonSelect')
+    expect(quit.score).toBe(0)
+    expect(quit.aliens).toHaveLength(0)
+    expect(quit.levelIndex).toBe(0)
+  })
+
   function beginGame() {
     const selection = gameReducer(createInitialState(), { type: 'START_GAME' })
     const briefing = gameReducer(selection, { type: 'SELECT_LEVEL', levelIndex: 0 })

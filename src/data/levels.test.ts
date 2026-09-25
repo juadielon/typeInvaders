@@ -81,6 +81,15 @@ describe('LEVELS pacing', () => {
     })
   })
 
+  it('keeps every Word Formation word bank free of duplicates', () => {
+    formationMissions.forEach((mission) => {
+      const pool = mission.wordPool ?? []
+      const duplicates = pool.filter((word, index) => pool.indexOf(word) !== index)
+
+      expect(duplicates).toEqual([])
+    })
+  })
+
   it('includes occasional semicolon-ending formations in the first word bank', () => {
     const firstMission = formationMissions[0]
     expect(firstMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
@@ -118,11 +127,11 @@ describe('LEVELS pacing', () => {
     expect(fourthMission.wordPool?.some((word) => word.length >= 12)).toBe(true)
   })
 
-  it('expands the final mission for extended practice', () => {
+  it('expands the final mission for extended practise', () => {
     const finalMission = formationMissions[4]
     expect(finalMission.wordTarget).toBe(20)
     expect(finalMission.wordPool).toContain('keyboard')
-    expect(finalMission.wordPool).toContain('practice')
+    expect(finalMission.wordPool).toContain('practise')
     expect(finalMission.wordPool?.some((word) => word.endsWith(';'))).toBe(true)
   })
 

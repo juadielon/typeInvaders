@@ -12,13 +12,22 @@ export function useKeyboardInput(
   status: GameStatus,
   onKey: (key: string) => void,
   onSpace: () => void,
+  onPauseToggle?: () => void,
 ) {
   useEffect(() => {
-    if (status !== 'playing') return
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.repeat) return
       if (event.ctrlKey || event.altKey || event.metaKey) return
+
+      if (event.key === 'Escape') {
+        if (status === 'playing' || status === 'paused') {
+          event.preventDefault()
+          onPauseToggle?.()
+        }
+        return
+      }
+
+      if (status !== 'playing') return
 
       if (event.key === ' ') {
         event.preventDefault()
@@ -35,5 +44,5 @@ export function useKeyboardInput(
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [status, onKey, onSpace])
+  }, [status, onKey, onSpace, onPauseToggle])
 }

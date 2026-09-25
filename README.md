@@ -1,113 +1,92 @@
 # Type Invaders
 
-**Type Invaders** is a Space Invaders–style arcade game that doubles as a
-touch-typing tutor for complete beginners. Alien "invaders" — with one
-new visual species introduced in every combat level — descend from the top of the screen, each
-labelled with a single keyboard key. The player destroys aliens by pressing
-the matching key on their physical keyboard; the on-screen ship glides to
-the closest matching alien and fires the shot from its own position. A
-Visual Keyboard overlay highlights the target key and the correct
-hand/finger to use, and a 15-level combat curriculum plus five Word Formation
-missions gradually introduces every letter plus semicolon, comma, full stop
-and slash across the Home, Top and Bottom Rows as the player improves. A rescuable
-"mothership" occasionally drifts across a lane above the aliens whenever
-your Shield has taken damage — destroying it restores some Shield HP and a
-score bonus.
+**Type Invaders** is a Space Invaders–style arcade game that doubles as a touch-typing tutor for complete beginners.
+Alien "invaders" — with one new visual species introduced in every combat level — descend from the top of the screen, each labelled with a single keyboard key.
+The player destroys aliens by pressing the matching key on their physical keyboard; the on-screen ship glides to the closest matching alien and fires the shot from its own position.
+A Visual Keyboard overlay highlights the target key and the correct hand/finger to use, and a 15-level combat curriculum plus five Word Formation missions gradually introduces every letter plus semicolon, comma, full stop and slash across the Home, Top and Bottom Rows as the player improves.
+A rescuable "mothership" occasionally drifts across a lane above the aliens whenever your Shield has taken damage — destroying it restores some Shield HP and a score bonus.
 
-It is built with **React + TypeScript**, bundled with **Vite**, and styled
-with **Tailwind CSS**. The entire toolchain runs inside **Docker** — no
-Node.js/npm installation on your machine is required.
+It is built with **React + TypeScript**, bundled with **Vite**, and styled with **Tailwind CSS**.
+The entire toolchain runs inside **Docker** — no Node.js/npm installation on your machine is required.
 
 ## Table of contents
+
+Playing the game:
 
 - [How the game works](#how-the-game-works)
 - [Game rules](#game-rules)
 - [Level progression](#level-progression)
+- [Known MVP limitations](#known-mvp-limitations)
+
+Setting up and running it:
+
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Command-line instructions](#command-line-instructions)
 - [Running the game](#running-the-game)
 - [Running the tests](#running-the-tests)
 - [Running the linter](#running-the-linter)
-- [Commit message conventions](#commit-message-conventions)
 - [Adding a dependency](#adding-a-dependency)
 - [Production build preview](#production-build-preview)
+
+Contributing to it:
+
 - [Project structure](#project-structure)
+- [Contributing conventions](#contributing-conventions)
 - [Product and roadmap](#product-and-roadmap)
 
 ## How the game works
 
-- Combat aliens descend from the top of the playfield, each labelled with a keyboard key
-  (Level 1 starts with `F` and `J` only). Every combat level introduces a new
-  visual species, from the Scout to increasingly silly invaders such as
-  Noodle Doodle, Moustachio, Cosmic Toaster and Party King. Species are
-  purely cosmetic - the displayed key is all that matters for gameplay.
-- Press the key shown on an alien to destroy it with a laser — the ship
-  glides to and fires from the position of the lowest (most urgent)
-  on-screen alien matching that key, with a small explosion on a hit.
-- Word Formation missions interrupt the combat curriculum after Levels 3, 6,
-  9, 12 and 15. Each word appears as a horizontal alien formation that
-  descends as one unit. Press the leftmost remaining character to destroy it,
-  then continue from left to right until the word is complete. The first
-  formation checkpoint uses the keys released by combat Level 3 (`A D F J K ;`)
-  and includes short entries such as `a`, `ad`, `dad`, `fad`, `faff`, `dada`
-  and `kaf`. Some formations add a semicolon at the end, such as `dad;`, so
-  punctuation is practised in a natural word-ending position. Above the
-  visual keyboard, the word currently being built is shown while its aliens
-  are on screen, briefly clearing between words.
-- The Visual Keyboard overlay below the playfield highlights the currently
-  relevant key(s) and shows a hint such as "F → Left Index" or
-  "J → Right Index". The alien closest to the spaceship determines the next
-  key and keeps the strong amber highlight. When consecutive targets use the
-  same key, the highlight briefly clears and returns to prompt another press.
-  Other available keys use a
-  lighter amber background. It is a reference only — gameplay only responds
-  to your physical keyboard. Whichever letter or punctuation key you actually
-  press also briefly flashes green on a hit or red on a misfire, so you get
-  instant confirmation of what was typed as well as what to type next
-  (the Spacebar does not yet have this flash feedback).
-- Optional sound effects provide arcade feedback for hits, including
-  variant-specific alien voices, mothership and ship explosions, incoming
-  plasma alarms, shield damage, mission completion and game over. Use the Sound on/off control to
-  change the preference; it is saved in this browser.
+- Combat aliens descend from the top of the playfield, each labelled with a keyboard key (Level 1 starts with `F` and `J` only).
+  Every combat level introduces a new visual species, from the Scout to increasingly silly invaders such as Noodle Doodle, Moustachio, Cosmic Toaster and Party King.
+  Species are purely cosmetic - the displayed key is all that matters for gameplay.
+- Press the key shown on an alien to destroy it with a laser — the ship glides to and fires from the position of the lowest (most urgent) on-screen alien matching that key, with a small explosion on a hit.
+- Word Formation missions interrupt the combat curriculum after Levels 3, 6, 9, 12 and 15.
+  Each word appears as a horizontal alien formation that descends as one unit.
+  Press the leftmost remaining character to destroy it, then continue from left to right until the word is complete.
+  The first formation checkpoint uses the keys released by combat Level 3 (`A D F J K ;`) and includes short entries such as `a`, `ad`, `dad`, `fad`, `faff`, `dada` and `kaf`.
+  Some formations add a semicolon at the end, such as `dad;`, so punctuation is practised in a natural word-ending position.
+  Above the visual keyboard, the word currently being built is shown while its aliens are on screen, briefly clearing between words.
+- The Visual Keyboard overlay below the playfield highlights the currently relevant key(s) and shows a hint such as "F → Left Index" or "J → Right Index".
+  The alien closest to the spaceship determines the next key and keeps the strong amber highlight.
+  When consecutive targets use the same key, the highlight briefly clears and returns to prompt another press.
+  Other available keys use a lighter amber background.
+  It is a reference only — gameplay only responds to your physical keyboard.
+  Whichever letter or punctuation key you actually press also briefly flashes green on a hit or red on a misfire, so you get instant confirmation of what was typed as well as what to type next (the Spacebar does not yet have this flash feedback).
+- Optional sound effects provide arcade feedback for hits, including variant-specific alien voices, mothership and ship explosions, incoming plasma alarms, shield damage, mission completion and game over.
+  Use the Sound on/off control to change the preference; it is saved in this browser.
 - Letting an alien reach the bottom costs 10 Shield HP (protection points).
   Your Shield starts at 100; reaching 0 ends the game.
-- Whenever your Shield has taken any damage, a rescuable "mothership" may
-  drift across a lane above the aliens from time to time. It carries one of
-  the level's practice keys — destroy it to restore some Shield HP and
-  earn a score bonus. It doesn't count toward a level's kill target, so it's
-  a bonus rather than a requirement.
-- Starting a game opens a lesson selector so you can choose any current
-  mission, including the indigo Word Formation checkpoints. The selected
-  lesson then shows its finger-position briefing before play begins. During
-  the briefing, the on-screen keyboard highlights every key used in that
-  lesson so you can find them before the aliens arrive.
-- Clearing the required number of aliens, or completing the required Word
-  Formation set, opens a mission-results screen.
-  You can retry the mission for more practice or continue to the next
-  level, which unlocks additional keys and increases difficulty
-  (longer practice targets, a gentle opening spawn cadence that becomes
-  faster during the level, and faster descent); the screen is cleared of aliens before
-  the next level begins. A briefing then pauses the game until you choose
-  to continue. It shows the correct hand positions, each key's
-  finger movement, and the new level's objective.
-- If your Shield reaches 0%, the game-over screen lets you retry the same
-  mission immediately or return to the lesson selector.
-- A lesson progress bar in the status bar shows how many aliens you have
-  cleared and how many remain before the level ends, so a longer lesson
-  never feels open-ended.
-- Every combat level introduces one new alien species. Earlier species keep
-  appearing, so the fleet becomes more varied and ridiculous as you
-  progress. The first alien always shows the mission's new species; later
-  spawns use the full unlocked roster even if that first alien reaches the
-  ship. Species are cosmetic only: every alien is still destroyed by typing
-  the key it carries.
-- Live Words Per Minute (WPM) and accuracy are shown throughout the round,
-  but are not saved between sessions in this MVP. WPM is an estimate based on
-  five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
-  Since the MVP practises individual keys, it is a practice estimate rather
-  than a completed-word speed; future word and phrase lessons can use completed
-  text and spaces for a more natural calculation.
+- Whenever your Shield has taken any damage, a rescuable "mothership" may drift across a lane above the aliens from time to time.
+  It carries one of the level's practice keys — destroy it to restore some Shield HP and earn a score bonus.
+  It doesn't count toward a level's kill target, so it's a bonus rather than a requirement.
+- Starting a game opens a lesson selector so you can choose any current mission, including the indigo Word Formation checkpoints.
+  The selected lesson then shows its finger-position briefing before play begins.
+  During the briefing, the on-screen keyboard highlights every key used in that lesson so you can find them before the aliens arrive.
+- Press `Escape`, or use the Pause button in the top-right, to pause or resume a run without losing progress.
+  The pause shortcut is intentionally Escape-only so it does not conflict with letter keys in the game.
+  Pausing freezes the loop, holds the WPM clock at the moment you paused, and keeps both the mission timers and the alien spawn cadence aligned when play resumes.
+- The `Quit` action is always confirmed before abandoning a run.
+  Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the current run.
+  Cancelling the prompt restores whatever you were doing beforehand: it resumes play if Quit was what paused the run, or leaves you on the pause overlay if you had already paused manually.
+  While the confirmation is open, `Escape` dismisses the prompt rather than toggling the pause beneath it, so it can never resume the run behind the dialog.
+  The prompt is genuinely modal: it covers the whole viewport, the header Pause and Quit controls are disabled beneath it, and `Tab` cycles within the prompt.
+  Both the pause overlay and the quit prompt are exposed as labelled dialogs that move keyboard focus to their primary action when they open, then hand focus back to the control that opened them on close.
+  Only the quit prompt is marked `aria-modal`, because the header controls stay usable while the game is merely paused.
+- Clearing the required number of aliens, or completing the required Word Formation set, opens a mission-results screen.
+  You can retry the mission for more practice or continue to the next level, which unlocks additional keys and increases difficulty (longer practice targets, a gentle opening spawn cadence that becomes faster during the level, and faster descent); the screen is cleared of aliens before the next level begins.
+  A briefing then pauses the game until you choose to continue.
+  It shows the correct hand positions, each key's finger movement, and the new level's objective.
+- If your Shield reaches 0%, the game-over screen lets you retry the same mission immediately or return to the lesson selector.
+- A lesson progress bar in the status bar shows how many aliens you have cleared and how many remain before the level ends, so a longer lesson never feels open-ended.
+- Every combat level introduces one new alien species.
+  Earlier species keep appearing, so the fleet becomes more varied and ridiculous as you progress.
+  The first alien always shows the mission's new species; later spawns use the full unlocked roster even if that first alien reaches the ship.
+  Species are cosmetic only: every alien is still destroyed by typing the key it carries.
+- Live Words Per Minute (WPM) and accuracy are shown throughout the round, but are not saved between sessions in this MVP.
+  WPM is an estimate based on five correct keystrokes per standard word: `correctKeystrokes / 5 / elapsedMinutes`.
+  The elapsed clock stops while the game is paused, so sitting on the pause overlay does not erode your reported speed.
+  Since the MVP practises individual keys, it is a practice estimate rather than a completed-word speed; future word and phrase lessons can use completed text and spaces for a more natural calculation.
 
 ## Game rules
 
@@ -147,6 +126,8 @@ A quick reference to every rule the game currently applies.
 | Rule | Detail |
 | --- | --- |
 | Starting a game | Choose any lesson from the lesson selector. |
+| Pausing and resuming | Use the top-right Pause button or the `Escape` key to pause and resume; the shortcut is intentionally Escape-only to avoid colliding with letter input. Pausing also holds the WPM clock and preserves the spawn cadence. |
+| Quitting a lesson | Quit always opens a confirmation prompt and returns to the lesson selector after clearing the run. The prompt is modal, so the header controls are disabled beneath it. Cancelling restores the previous state, resuming play only if Quit was what paused it. |
 | Before each level | A briefing pauses the game until you choose to continue. |
 | Replaying a lesson | Available after completing a mission or reaching game over; resets score, Shield, kills and the playfield. |
 | Clearing a level | Destroy the level's target number of aliens, or complete the Word Formation word target. |
@@ -171,6 +152,7 @@ A quick reference to every rule the game currently applies.
 | Missile path | Curves towards the spaceship's current position. |
 | Impact | Creates an explosion at the ship and visibly weakens the ship as Shield HP falls. |
 | Tab switching | The game loop pauses while the browser tab is hidden. |
+| Quit flow | Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the run. Cancelling resumes play only when Quit is what paused the run. |
 ### Scoring statistics
 
 | Rule | Detail |
@@ -181,17 +163,12 @@ A quick reference to every rule the game currently applies.
 
 ## Level progression
 
-Each combat level unlocks two more keys, raises the practice target, and ends at a
-faster spawn cadence than the one before it. Every level opens at the same
-gentle 2200 ms cadence, so a longer, later lesson never feels harder to
-start than an earlier one. Alien descent also begins at the same gentle
-speed in every level. The pressure instead builds from a longer ramp, a
-faster minimum cadence and a faster final descent speed as the lesson goes
-on. Levels 1-5 cover the Home Row, levels 6-10 add the Top Row and levels
-11-15 add the Bottom Row, completing every letter plus the four punctuation
-keys used by the curriculum. Every
-combat mission introduces one new alien species while retaining all earlier
-species, so the fleet grows throughout the full curriculum.
+Each combat level unlocks two more keys, raises the practice target, and ends at a faster spawn cadence than the one before it.
+Every level opens at the same gentle 2200 ms cadence, so a longer, later lesson never feels harder to start than an earlier one.
+Alien descent also begins at the same gentle speed in every level.
+The pressure instead builds from a longer ramp, a faster minimum cadence and a faster final descent speed as the lesson goes on.
+Levels 1-5 cover the Home Row, levels 6-10 add the Top Row and levels 11-15 add the Bottom Row, completing every letter plus the four punctuation keys used by the curriculum.
+Every combat mission introduces one new alien species while retaining all earlier species, so the fleet grows throughout the full curriculum.
 
 | Level | Keys | New alien | Aliens to clear | Opening spawn | Fastest spawn |
 | --- | --- | --- | --- | --- | --- |
@@ -211,29 +188,30 @@ species, so the fleet grows throughout the full curriculum.
 | 14 | + X . | Cosmic Toaster | 128 | 2200 ms | 315 ms |
 | 15 | + B N | Party King | 134 | 2200 ms | 290 ms |
 
-Word Formation checkpoints follow Levels 3, 6, 9, 12 and 15. They use only
-keys released at that checkpoint and require six, twelve, fourteen, sixteen and twenty
-complete formations respectively. Every Word Formation mission starts with shorter
-words and progressively introduces longer formations as its target is completed. The
-second, third, fourth and fifth missions emphasise longer words
-without increasing the descent pressure. Some formations also end with `;` so
-punctuation is practised naturally. The lesson selector marks them with an
-indigo `WORD FORMATION` badge.
+Word Formation checkpoints follow Levels 3, 6, 9, 12 and 15.
+They use only keys released at that checkpoint and require six, twelve, fourteen, sixteen and twenty complete formations respectively.
+Every Word Formation mission starts with shorter words and progressively introduces longer formations as its target is completed.
+The second, third, fourth and fifth missions emphasise longer words without increasing the descent pressure.
+Some formations also end with `;` so punctuation is practised naturally.
+The lesson selector marks them with an indigo `WORD FORMATION` badge.
 
+The spawn rate eases from the opening cadence to the fastest cadence over the course of the level, so the pressure builds while you settle into the new keys.
 
-The spawn rate eases from the opening cadence to the fastest cadence over the
-course of the level, so the pressure builds while you settle into the new keys.
+## Known MVP limitations
+
+- Physical keyboard only — there is no touch/mobile input, so the game is not playable on phones or tablets in this version.
+- Sound effects are optional and can be muted; only that on/off preference is saved in this browser.
+  Scores and lesson progress are not persisted between sessions (a natural fast-follow addition).
 
 ## Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or any
-  Docker Engine with the Compose plugin) installed and running.
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or any Docker Engine with the Compose plugin) installed and running.
 - That's it — no Node.js, npm, or other local toolchain is required.
 
 ## Installation
 
-Clone the repository and build the development image. All dependencies are
-installed inside Docker, never on your host machine:
+Clone the repository and build the development image.
+All dependencies are installed inside Docker, never on your host machine:
 
 ```powershell
 git clone https://github.com/juadielon/typeInvaders.git
@@ -243,8 +221,8 @@ docker compose build dev
 
 ## Command-line instructions
 
-The following commands work in both PowerShell and Bash. Run them from the
-`typeInvaders` directory.
+The following commands work in both PowerShell and Bash.
+Run them from the `typeInvaders` directory.
 
 | What you want to do | Command |
 | --- | --- |
@@ -257,9 +235,8 @@ The following commands work in both PowerShell and Bash. Run them from the
 | Rebuild after changing dependencies or Docker setup | `docker compose build dev` |
 | Preview the production build | `docker compose --profile prod up --build prod` |
 
-For a first run after installation, use **Start the game**. You do not need
-`--build` each time because the source code is mounted into the development
-container and reloads automatically.
+For a first run after installation, use **Start the game**.
+You do not need `--build` each time because the source code is mounted into the development container and reloads automatically.
 
 ## Running the game
 
@@ -269,8 +246,8 @@ Start the Vite development server:
 docker compose up dev
 ```
 
-Then open <http://localhost:5173> in your browser. Source changes under
-`src/` hot-reload automatically thanks to the bind-mounted volume.
+Then open <http://localhost:5173> in your browser.
+Source changes under `src/` hot-reload automatically thanks to the bind-mounted volume.
 
 To stop the container:
 
@@ -280,8 +257,7 @@ docker compose down
 
 ## Running the tests
 
-Unit tests use [Vitest](https://vitest.dev/) with React Testing Library and
-also run entirely inside the container:
+Unit tests use [Vitest](https://vitest.dev/) with React Testing Library and also run entirely inside the container:
 
 ```powershell
 docker compose run --rm dev npm test
@@ -293,36 +269,20 @@ For a watch-mode loop while developing:
 docker compose run --rm dev npm run test:watch
 ```
 
-Test coverage includes the reducer and level rules, exact mission-clear timing,
-keyboard input and finger mapping, closest-alien target priority, mission retry
-flows, spoken punctuation labels, and selected UI behaviour including alien
-labels, keyboard highlights, keystroke hit/misfire flashing, briefings, lesson
-selection, the HUD and the sound toggle.
+Test coverage includes the reducer and level rules, exact mission-clear timing, keyboard input and finger mapping, closest-alien target priority, mission retry flows, spoken punctuation labels, and selected UI behaviour including alien labels, keyboard highlights, keystroke hit/misfire flashing, briefings, lesson selection, the HUD and the sound toggle.
 
 ## Running the linter
 
-ESLint 9 checks the TypeScript and React source using the flat configuration
-in `eslint.config.js`:
+ESLint 9 checks the TypeScript and React source using the flat configuration in `eslint.config.js`:
 
 ```powershell
 docker compose run --rm dev npm run lint
 ```
 
-## Commit message conventions
-
-This project follows [Conventional Commits](https://www.conventionalcommits.org/)
-for commit messages: `<type>: <description>`, for example `feat: add mothership
-bonus` or `fix: reset word progress between missions`. Common types used here
-are `feat` (new feature), `fix` (bug fix), `docs` (documentation only), `test`
-(adding or updating tests), `refactor`, `style`, and `chore` (tooling/maintenance).
-This keeps `git log` easy to scan by category and matches a widely used
-industry convention for changelog and release tooling.
-
 ## Adding a dependency
 
-Never run `npm install` on the host - always install through the
-container so `package.json`/`package-lock.json` and the container image
-stay in sync. After installation finishes, rebuild the development image:
+Never run `npm install` on the host - always install through the container so `package.json`/`package-lock.json` and the container image stay in sync.
+After installation finishes, rebuild the development image:
 
 ```powershell
 docker compose run --rm dev npm install <package-name>
@@ -335,8 +295,7 @@ docker compose build dev
 docker compose --profile prod up --build prod
 ```
 
-Then open <http://localhost:8080> to preview the production (nginx-served)
-build.
+Then open <http://localhost:8080> to preview the production (nginx-served) build.
 
 ## Project structure
 
@@ -359,7 +318,8 @@ type-invaders/
 │   │   └── useKeyboardInput.ts # Global keydown capture & dedupe
 │   ├── utils/
 │   │   ├── alienTargets.ts     # Closest-alien keyboard priority
-│   │   └── keyboardLayout.ts   # Key → hand/finger lookup table
+│   │   ├── keyboardLayout.ts   # Key → hand/finger lookup table
+│   │   └── stats.ts            # Pause-aware WPM calculation
 │   └── components/
 │       ├── GameArea.tsx         # Aliens, lasers, player ship
 │       ├── VisualKeyboard.tsx   # On-screen keyboard with hints
@@ -368,18 +328,27 @@ type-invaders/
 └── ...config files (Vite, Tailwind, TypeScript)
 ```
 
-## Known MVP limitations
+## Contributing conventions
 
-- Physical keyboard only — there is no touch/mobile input, so the game is
-  not playable on phones or tablets in this version.
-- Sound effects are optional and can be muted; only that on/off preference
-  is saved in this browser. Scores and lesson progress are not persisted
-  between sessions (a natural fast-follow addition).
+### Commit messages
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) for commit messages: `<type>: <description>`, for example `feat: add mothership bonus` or `fix: reset word progress between missions`.
+Common types used here are `feat` (new feature), `fix` (bug fix), `docs` (documentation only), `test` (adding or updating tests), `refactor`, `style`, and `chore` (tooling/maintenance).
+This keeps `git log` easy to scan by category and matches a widely used industry convention for changelog and release tooling.
+
+### Australian English
+
+Documentation, user-facing game copy and the Word Formation word banks use Australian English spelling wherever a variant exists, such as `practise`, `flavour` and `humour`.
+Keep third-party API names as they are — `transition-colors` and similar framework identifiers stay untouched.
+
+### Markdown line breaks
+
+Markdown prose uses [semantic line breaks](https://sembr.org/): start each sentence on its own line rather than hard-wrapping at a fixed width or putting a whole paragraph on one line.
+Markdown joins consecutive lines into a single paragraph, so this changes nothing about how the page renders.
+It keeps diffs sentence-granular, so editing one sentence shows as one changed line instead of reflowing the rest of the paragraph.
+Table rows must each stay on a single line, so the rule does not apply inside tables or fenced code blocks.
 
 ## Product and roadmap
 
-Read [the product guide](docs/product.md) for the intended learner,
-gameplay principles, current scope, and established technical decisions.
-Read [the roadmap](docs/roadmap.md) before planning new work; it records
-completed milestones, prioritised next steps, and decisions that still need
-input.
+Read [the product guide](docs/product.md) for the intended learner, gameplay principles, current scope, and established technical decisions.
+Read [the roadmap](docs/roadmap.md) before planning new work; it records completed milestones, prioritised next steps, and decisions that still need input.

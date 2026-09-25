@@ -57,6 +57,9 @@ export type Action =
   | { type: 'SPAWN' }
   | { type: 'KEY_PRESS'; key: string }
   | { type: 'SPACE_PRESS' }
+  | { type: 'PAUSE_GAME' }
+  | { type: 'RESUME_GAME' }
+  | { type: 'QUIT_GAME' }
   | { type: 'BEGIN_LEVEL' }
   | { type: 'RETRY_LEVEL' }
   | { type: 'CONTINUE_LEVEL' }
@@ -89,6 +92,7 @@ export function createInitialState(): GameState {
     totalKeystrokes: 0,
     victory: false,
     startedAt: 0,
+    pausedAt: 0,
     mothership: null,
     mothershipNextCheckAt: 0,
     levelStartedAt: 0,
@@ -245,6 +249,50 @@ export function gameReducer(state: GameState, action: Action): GameState {
         levelCompletedAt: 0,
       }
     }
+
+    case 'PAUSE_GAME': {
+      if (state.status !== 'playing') return state
+      return {
+        ...state,
+        status: 'paused',
+        pausedAt: performance.now(),
+      }
+    }
+
+    case 'RESUME_GAME': {
+      if (state.status !== 'paused') return state
+      const now = performance.now()
+      const elapsedPaused = Math.max(0, now - state.pausedAt)
+      // Only deadlines still pending when the pause began may slide forward.
+      // Shifting one that had already lapsed would resurrect a finished flash
+      // or warning and replay it for the whole length of the pause.
+      const shiftPending = (deadline: number) =>
+        deadline > state.pausedAt ? deadline + elapsedPaused : deadline
+      return {
+        ...state,
+        status: 'playing',
+        pausedAt: 0,
+        startedAt: state.startedAt + elapsedPaused,
+        levelStartedAt: state.levelStartedAt + elapsedPaused,
+        nextPlasmaCheckAt: state.nextPlasmaCheckAt + elapsedPaused,
+        mothershipNextCheckAt: state.mothershipNextCheckAt + elapsedPaused,
+        shieldFeedbackUntil: shiftPending(state.shieldFeedbackUntil),
+        targetWarningUntil: shiftPending(state.targetWarningUntil),
+        // A start timestamp rather than a deadline: the hold is still running
+        // while less than LEVEL_CLEAR_DELAY_MS has passed since it began.
+        levelCompletedAt:
+          state.levelCompletedAt > 0 && state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS > state.pausedAt
+            ? state.levelCompletedAt + elapsedPaused
+            : state.levelCompletedAt,
+      }
+    }
+
+    case 'QUIT_GAME':
+      return {
+        ...createInitialState(),
+        status: 'lessonSelect',
+        startedAt: performance.now(),
+      }
 
     case 'RESET':
       return createInitialState()
