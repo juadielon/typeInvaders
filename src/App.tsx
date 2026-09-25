@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { LEVELS } from './data/levels'
 import { useGameLoop } from './hooks/useGameLoop'
 import { useKeyboardInput } from './hooks/useKeyboardInput'
@@ -25,6 +25,10 @@ function App() {
   const quitPausedRunRef = useRef(false)
   const quitCancelButtonRef = useRef<HTMLButtonElement | null>(null)
   const resumeButtonRef = useRef<HTMLButtonElement | null>(null)
+  const quitDialogRef = useRef<HTMLDivElement | null>(null)
+  // Where focus sat before an overlay opened, so it can be handed back when
+  // every overlay has closed.
+  const focusBeforeOverlayRef = useRef<HTMLElement | null>(null)
 
   const currentLevel = LEVELS[state.levelIndex]
 
@@ -95,6 +99,25 @@ function App() {
     setQuitConfirmOpen(true)
   }, [dispatch, state.status])
 
+  const overlayOpen = quitConfirmOpen || state.status === 'paused'
+
+  // Hand focus back to whatever opened the first overlay once they have all
+  // closed, rather than dropping the user at the top of the document. This must
+  // run before the focus-move effect below, or it would record the dialog's own
+  // button as the element to return to.
+  useEffect(() => {
+    if (overlayOpen) {
+      focusBeforeOverlayRef.current ??= document.activeElement as HTMLElement | null
+      return
+    }
+
+    const previous = focusBeforeOverlayRef.current
+    focusBeforeOverlayRef.current = null
+    if (previous?.isConnected) {
+      previous.focus()
+    }
+  }, [overlayOpen])
+
   // Move focus into whichever overlay just opened so keyboard and screen-reader
   // users land on the primary action instead of staying behind the dialog.
   useEffect(() => {
@@ -104,6 +127,27 @@ function App() {
       resumeButtonRef.current?.focus()
     }
   }, [quitConfirmOpen, state.status])
+
+  // The quit prompt claims aria-modal, so Tab must not escape it. The header
+  // controls are disabled while it is open, but the sound toggle and anything
+  // else behind it would otherwise still be reachable by keyboard.
+  const handleQuitDialogKeyDown = useCallback((event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Tab') return
+
+    const focusable = quitDialogRef.current?.querySelectorAll<HTMLElement>('button')
+    if (!focusable?.length) return
+
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }, [])
 
   useKeyboardInput(state.status, handleKey, handleSpace, handlePauseToggle)
 
@@ -139,14 +183,16 @@ function App() {
               <button
                 type="button"
                 onClick={handlePauseToggle}
-                className="rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-100 transition hover:border-emerald-400 hover:text-emerald-300"
+                disabled={quitConfirmOpen}
+                className="rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-100 transition hover:border-emerald-400 hover:text-emerald-300 disabled:pointer-events-none disabled:opacity-40"
               >
                 {state.status === 'paused' ? 'Resume' : 'Pause'}
               </button>
               <button
                 type="button"
                 onClick={handleQuitClick}
-                className="rounded-full border border-red-500/60 bg-red-950/40 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-200 transition hover:border-red-300 hover:text-red-100"
+                disabled={quitConfirmOpen}
+                className="rounded-full border border-red-500/60 bg-red-950/40 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-200 transition hover:border-red-300 hover:text-red-100 disabled:pointer-events-none disabled:opacity-40"
               >
                 Quit
               </button>
@@ -200,7 +246,6 @@ function App() {
             {state.status === 'paused' && !quitConfirmOpen && (
               <div
                 role="dialog"
-                aria-modal="true"
                 aria-labelledby="pause-overlay-title"
                 className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"
               >
@@ -232,11 +277,13 @@ function App() {
 
             {quitConfirmOpen && (
               <div
+                ref={quitDialogRef}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="quit-confirm-title"
                 aria-describedby="quit-confirm-description"
-                className="absolute inset-0 z-30 flex items-center justify-center bg-slate-950/85 backdrop-blur-sm"
+                onKeyDown={handleQuitDialogKeyDown}
+                className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-sm"
               >
                 <div className="w-[min(90vw,22rem)] rounded-2xl border border-slate-700 bg-slate-900/95 p-6 text-center shadow-2xl">
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-red-300">Quit lesson</p>

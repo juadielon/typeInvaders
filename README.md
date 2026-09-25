@@ -70,7 +70,9 @@ Contributing to it:
   Selecting Quit pauses the lesson first, then asks for confirmation before returning to the lesson selector and clearing the current run.
   Cancelling the prompt restores whatever you were doing beforehand: it resumes play if Quit was what paused the run, or leaves you on the pause overlay if you had already paused manually.
   While the confirmation is open, `Escape` dismisses the prompt rather than toggling the pause beneath it, so it can never resume the run behind the dialog.
-  Both the pause overlay and the quit prompt are exposed as labelled modal dialogs and move keyboard focus to their primary action when they open.
+  The prompt is genuinely modal: it covers the whole viewport, the header Pause and Quit controls are disabled beneath it, and `Tab` cycles within the prompt.
+  Both the pause overlay and the quit prompt are exposed as labelled dialogs that move keyboard focus to their primary action when they open, then hand focus back to the control that opened them on close.
+  Only the quit prompt is marked `aria-modal`, because the header controls stay usable while the game is merely paused.
 - Clearing the required number of aliens, or completing the required Word Formation set, opens a mission-results screen.
   You can retry the mission for more practice or continue to the next level, which unlocks additional keys and increases difficulty (longer practice targets, a gentle opening spawn cadence that becomes faster during the level, and faster descent); the screen is cleared of aliens before the next level begins.
   A briefing then pauses the game until you choose to continue.
@@ -125,7 +127,7 @@ A quick reference to every rule the game currently applies.
 | --- | --- |
 | Starting a game | Choose any lesson from the lesson selector. |
 | Pausing and resuming | Use the top-right Pause button or the `Escape` key to pause and resume; the shortcut is intentionally Escape-only to avoid colliding with letter input. Pausing also holds the WPM clock and preserves the spawn cadence. |
-| Quitting a lesson | Quit always opens a confirmation prompt and returns to the lesson selector after clearing the run. Cancelling restores the previous state, resuming play only if Quit was what paused it. |
+| Quitting a lesson | Quit always opens a confirmation prompt and returns to the lesson selector after clearing the run. The prompt is modal, so the header controls are disabled beneath it. Cancelling restores the previous state, resuming play only if Quit was what paused it. |
 | Before each level | A briefing pauses the game until you choose to continue. |
 | Replaying a lesson | Available after completing a mission or reaching game over; resets score, Shield, kills and the playfield. |
 | Clearing a level | Destroy the level's target number of aliens, or complete the Word Formation word target. |

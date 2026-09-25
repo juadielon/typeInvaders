@@ -263,6 +263,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.status !== 'paused') return state
       const now = performance.now()
       const elapsedPaused = Math.max(0, now - state.pausedAt)
+      // Only deadlines still pending when the pause began may slide forward.
+      // Shifting one that had already lapsed would resurrect a finished flash
+      // or warning and replay it for the whole length of the pause.
+      const shiftPending = (deadline: number) =>
+        deadline > state.pausedAt ? deadline + elapsedPaused : deadline
       return {
         ...state,
         status: 'playing',
@@ -271,9 +276,14 @@ export function gameReducer(state: GameState, action: Action): GameState {
         levelStartedAt: state.levelStartedAt + elapsedPaused,
         nextPlasmaCheckAt: state.nextPlasmaCheckAt + elapsedPaused,
         mothershipNextCheckAt: state.mothershipNextCheckAt + elapsedPaused,
-        shieldFeedbackUntil: state.shieldFeedbackUntil > 0 ? state.shieldFeedbackUntil + elapsedPaused : 0,
-        targetWarningUntil: state.targetWarningUntil > 0 ? state.targetWarningUntil + elapsedPaused : 0,
-        levelCompletedAt: state.levelCompletedAt > 0 ? state.levelCompletedAt + elapsedPaused : 0,
+        shieldFeedbackUntil: shiftPending(state.shieldFeedbackUntil),
+        targetWarningUntil: shiftPending(state.targetWarningUntil),
+        // A start timestamp rather than a deadline: the hold is still running
+        // while less than LEVEL_CLEAR_DELAY_MS has passed since it began.
+        levelCompletedAt:
+          state.levelCompletedAt > 0 && state.levelCompletedAt + LEVEL_CLEAR_DELAY_MS > state.pausedAt
+            ? state.levelCompletedAt + elapsedPaused
+            : state.levelCompletedAt,
       }
     }
 

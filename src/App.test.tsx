@@ -75,15 +75,55 @@ describe('App pause and quit flow', () => {
     expect(screen.getByRole('button', { name: /^cancel$/i })).toHaveFocus()
   })
 
-  it('exposes the pause overlay as a labelled modal dialog', () => {
+  it('exposes the pause overlay as a labelled dialog', () => {
     render(<App />)
     startFirstMission()
 
     fireEvent.click(screen.getByRole('button', { name: /^pause$/i }))
 
+    // Not aria-modal: the header Resume and Quit controls stay available, so
+    // claiming modality would misrepresent the overlay to assistive tech.
     const dialog = screen.getByRole('dialog', { name: /take a breath\./i })
-    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).not.toHaveAttribute('aria-modal')
     expect(screen.getByRole('button', { name: /resume game/i })).toHaveFocus()
+  })
+
+  it('disables the header run controls while the quit prompt is open', () => {
+    render(<App />)
+    startFirstMission()
+
+    fireEvent.click(screen.getByRole('button', { name: /^quit$/i }))
+
+    expect(screen.getByRole('button', { name: /^resume$/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /^quit$/i })).toBeDisabled()
+  })
+
+  it('restores the paused run when the header Resume is blocked during the prompt', () => {
+    render(<App />)
+    startFirstMission()
+
+    fireEvent.click(screen.getByRole('button', { name: /^quit$/i }))
+    // Clicking straight through to the background control must not strand the
+    // run in a state that Cancel then fails to restore.
+    fireEvent.click(screen.getByRole('button', { name: /^resume$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^cancel$/i }))
+
+    expect(screen.queryByText(/leave this mission\?/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/take a breath\./i)).not.toBeInTheDocument()
+  })
+
+  it('returns focus to the control that opened the overlay', () => {
+    render(<App />)
+    startFirstMission()
+
+    const pauseButton = screen.getByRole('button', { name: /^pause$/i })
+    pauseButton.focus()
+    fireEvent.click(pauseButton)
+    expect(screen.getByRole('button', { name: /resume game/i })).toHaveFocus()
+
+    fireEvent.click(screen.getByRole('button', { name: /resume game/i }))
+
+    expect(screen.getByRole('button', { name: /^pause$/i })).toHaveFocus()
   })
 
   it('returns to the lesson selector when the quit is confirmed', () => {

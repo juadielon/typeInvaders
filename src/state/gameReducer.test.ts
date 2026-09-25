@@ -75,6 +75,32 @@ describe('gameReducer', () => {
     nowSpy.mockRestore()
   })
 
+  it('does not revive deadlines that had already lapsed before the pause', () => {
+    const nowSpy = vi.spyOn(performance, 'now')
+    nowSpy.mockReturnValue(5000)
+
+    let state = createInitialState()
+    state = {
+      ...state,
+      status: 'playing',
+      startedAt: 1000,
+      levelStartedAt: 1000,
+      // Both lapsed well before the pause began at 5000.
+      shieldFeedbackUntil: 2000,
+      targetWarningUntil: 2500,
+    }
+
+    state = gameReducer(state, { type: 'PAUSE_GAME' })
+    nowSpy.mockReturnValue(65_000)
+    state = gameReducer(state, { type: 'RESUME_GAME' })
+
+    // Shifting them would replay a finished flash for the length of the pause.
+    expect(state.shieldFeedbackUntil).toBe(2000)
+    expect(state.targetWarningUntil).toBe(2500)
+
+    nowSpy.mockRestore()
+  })
+
   it('clears the run and returns to lesson select when quitting', () => {
     let state = createInitialState()
     state = {
